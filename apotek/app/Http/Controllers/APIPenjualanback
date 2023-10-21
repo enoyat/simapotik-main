@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\M_Penjualan;
+use App\Models\M_detailpenjualan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Models\M_jurnalumum;
+use App\Models\M_mstransaksi;
+use Illuminate\Http\Request;
+
+
+class ApiPenjualan extends Controller
+{
+    public function index()
+    {
+        $barang = M_Penjualan::where('kdpst','')->get();
+        return $data=[
+            'status' => 'success',
+            'data' => $barang
+        ];
+    }
+    public function show($id)
+    {
+        $barang = M_Penjualan::find($id);
+        return $data=[
+            'status' => 'success',
+            'data' => $barang
+        ];
+    }
+    public function gennotrans()
+    {
+        $kode = DB::table('jurnalumum')->max('notrans');
+        if (empty($kode)) {
+            $noUrut = 1;
+        } else {
+            $noUrut = substr($kode, 3);
+            $noUrut++;
+        }
+        $char = "JUM";
+        $newID = $char . sprintf("%017s", $noUrut);
+        return $newID;
+    }
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tgltrans' => 'required',
+            'customer' => 'required',
+            'total' => 'required',
+            'cart'=>'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $data=[
+                'status' => 'error',
+                'data' => $validator->errors()
+            ];
+        } else {
+            $cart = $request->cart;
+            $lastid = ApiPenjualan::gennotrans();
+            $kdpst=$request->kdpst;
+
+            $penjualan=new M_penjualan;
+            $penjualan->tgltrans=$request->tgltrans;
+            $penjualan->customer=$request->customer;
+            $penjualan->total=$request->total;
+            $penjualan->kdpst=$kdpst;
+            $penjualan->save();
+            $lastid=$penjualan->id;
+
+            foreach ($cart as $key => $value) {
+                M_detailpenjualan::create([
+                    'idpenjualan' => $lastid,
+                    'kdbarang' => $value['kdbarang'],
+                    'qty' => $value['qty'],
+                    'harga' => $value['harga'],
+                    'diskon' => $value['diskon'],
+                    'jumlah' => $value['jumlah'],
+                ]);
+            }
+
+
+
+            $lastidjurnal = ApiPenjualan::gennotrans();
+            $jurnalumum = new M_jurnalumum;
+            $jurnalumum->notrans = $lastidjurnal;
+            $jurnalumum->kdpst = $kdpst;
+            $jurnalumum->tgltrans = $request->tgltrans;
+            $jurnalumum->jumlah = $request->total;
+            $jurnalumum->keterangan = "Penjualan ".$request->customer;
+            $jurnalumum->kdtransaksi = $request->kdtransaksi;
+            $datatransaksi = M_mstransaksi::find($request->kdtransaksi);
+            $jurnalumum->debet = $datatransaksi->kdakun_d;
+            $jurnalumum->kredit = $datatransaksi->kdakun_k;
+            $jurnalumum->f_post = '0';
+            $jurnalumum->userid = $kdpst;
+            $jurnalumum->save();
+
+            // posting jurnal persediaan
+            $kdtransaksi="TR0003".$kdpst;
+            $datamodal=M_detailpenjualan::with('get_barang')->where('idpenjualan',$lastid)->get();
+            $modal=0;
+            foreach ($datamodal as $itemmodal)
+            {
+                $modal=$modal+($itemmodal->get_barang->hargabeli*$itemmodal->qty);
+            }
+            $lastidjurnal = ApiPenjualan::gennotrans();
+            $jurnalumum = new M_jurnalumum;
+            $jurnalumum->notrans = $lastidjurnal;
+            $jurnalumum->kdpst = $kdpst;
+            $jurnalumum->tgltrans = $request->tgltrans;
+            $jurnalumum->jumlah = $modal;
+            $jurnalumum->keterangan = "Penjualan ".$request->customer;
+            $jurnalumum->kdtransaksi = $kdtransaksi;
+
+            $datatransaksi = M_mstransaksi::find($kdtransaksi);
+            $jurnalumum->debet = $datatransaksi->kdakun_d;
+            $jurnalumum->kredit = $datatransaksi->kdakun_k;
+            $jurnalumum->f_post = '0';
+            $jurnalumum->userid = $kdpst;
+            $jurnalumum->save();
+            return $data=[
+                'status' => 'success',
+                'data' => ['lastid'=>$lastid]
+            ];
+
+        }
+    }
+
+}

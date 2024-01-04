@@ -191,7 +191,7 @@ class Penjualan extends Controller
                     ]);
                 }
 
-               
+
                 Session::forget('cart');
                 Session::put('id', $lastid);
                 DB::commit();
@@ -290,7 +290,7 @@ class Penjualan extends Controller
             where('stok.stok', '>', 0)->
             orderby('namabarang')->get();
 
-        return view('penjualan.fetch', ['barang' => $barang]);
+        return view('penjualan.fetch', ['barang' => $barang, 'jenisharga' => $request->jenisharga]);
         //
     }
     public function trreturdetail($id)

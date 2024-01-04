@@ -32,6 +32,7 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PolyController;
 use App\Http\Controllers\JenispasienController;
 use App\Http\Controllers\LaporanRetur;
+use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -326,7 +327,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::delete('hapusmutasi/{id}', [MutasiController::class, 'hapusmutasi'])->name('mutasi.hapusmutasi');
             Route::get('rptmutasi', [MutasiController::class, 'rptmutasi'])->name('mutasi.rptmutasi');
             Route::post('laporanmutasi', [MutasiController::class, 'laporanmutasi'])->name('mutasi.laporanmutasi');
-            
+
 
         });
 
@@ -341,7 +342,10 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('show/{id}', [SesionuserController::class, 'show'])->name('sesionuser.show');
 
         });
-
+        Route::group(['prefix' => 'kartustok'], function () {
+            Route::get('/', [StokController::class, 'index'])->name('kartustok.index');
+            Route::get('laporankartustok', [StokController::class, 'laporankartustok'])->name('kartustok.laporankartustok');
+        });
         Route::get('utility/userpassword', [UtilityController::class, 'userpassword'])->name('utility.userpassword');
         Route::get('utility/register', [UtilityController::class, 'register'])->name('utility.register');
         Route::post('utility/postregister', [UtilityController::class, 'postregister'])->name('utility.postregister');

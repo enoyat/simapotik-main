@@ -50,7 +50,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Pembelian</p>
                             </a>
-                        </li>                        
+                        </li>
 
                         <li class="nav-item">
                             <a href="{{ route('supplier.index') }}"
@@ -62,7 +62,7 @@
 
                     </ul>
                 </li>
-               
+
                 <li class="nav-item">
                     <a href="#"
                         class="nav-link {{ request()->is('administrator/administrasiakademik*') ? 'active' : '' }}">
@@ -94,7 +94,13 @@
                                 <p>Lokasi Stok</p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{{ route('kartustok.index') }}"
+                                class="nav-link {{ request()->is('kartustok') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kartu Stok</p>
+                            </a>
+                        </li>
 
 
                     </ul>
@@ -109,7 +115,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        
+
                         <li class="nav-item">
                             <a href="{{ route('penjualan.retur') }}"
                                 class="nav-link {{ request()->is('penjualan/retur') ? 'active' : '' }}">

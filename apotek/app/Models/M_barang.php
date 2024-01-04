@@ -36,4 +36,5 @@ class M_barang extends Model
         return $this->belongsTo('App\\Models\\M_golongan', 'idgolongan');
     }
 
+
 }

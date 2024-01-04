@@ -6,7 +6,7 @@
                     No
                 </th>
                 <th>
-                    Kode
+                    Kode  sss
                 </th>
                 <th>
                     Nama barang

@@ -36,4 +36,48 @@ class StokController extends Controller
                 ->get();
         return view('kartustok.laporankartustok')->with(['datastok' => $datastok, 'tglawal' => $tglawal, 'tglakhir' => $tglakhir]);
     }
+    public function detail(Request $request)
+    {
+       
+        $kdtransaksi=$request->kdtransaksi;
+        if($kdtransaksi=="pembelian"){
+            $datastok = M_detailpembelian::query()
+            ->select('*', 'pembelian.tgltrans')
+            ->join('pembelian', 'detailpembelian.idpembelian', '=', 'pembelian.id')
+            ->join('barang', 'detailpembelian.kdbarang', '=', 'barang.kdbarang')
+            ->where('barang.kdbarang',$request->kdbarang)
+            ->orderby('pembelian.tgltrans','asc')           
+            ->get();
+        }
+        elseif($kdtransaksi=="returpembelian"){
+            $datastok = M_returdetailpembelian::query()
+            ->select('*', )           
+            ->join('barang', 'returdetailpembelian.kdbarang', '=', 'barang.kdbarang')
+            ->join('returpembelian', 'returdetailpembelian.idretur', '=', 'returpembelian.id')
+            ->where('returdetailpembelian.kdbarang',$request->kdbarang)           
+            ->get();
+            
+        }
+        elseif($kdtransaksi=="penjualan"){
+            $datastok = M_detailpenjualan::query()
+            ->select('*', 'penjualan.tgltrans')
+            ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
+            ->join('barang', 'detailpenjualan.kdbarang', '=', 'barang.kdbarang')
+            ->where('barang.kdbarang',$request->kdbarang)
+            ->orderby('penjualan.tgltrans','asc')           
+            ->get();
+        }
+        elseif($kdtransaksi=="returpenjualan"){
+            $datastok = M_returdetailpenjualan::query()
+            ->select('*', )           
+            ->join('barang', 'returdetailpenjualan.kdbarang', '=', 'barang.kdbarang')
+            ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
+            ->where('returdetailpenjualan.kdbarang',$request->kdbarang)           
+            ->get();
+            
+        }
+        return view('kartustok.detail')->with(['datastok' => $datastok, 'kdtransaksi' => $kdtransaksi]);
+    }
+
+
 }

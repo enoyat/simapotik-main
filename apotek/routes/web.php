@@ -345,6 +345,8 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
         Route::group(['prefix' => 'kartustok'], function () {
             Route::get('/', [StokController::class, 'index'])->name('kartustok.index');
             Route::get('laporankartustok', [StokController::class, 'laporankartustok'])->name('kartustok.laporankartustok');
+            Route::get('detail', [StokController::class, 'detail'])->name('kartustok.detail');
+
         });
         Route::get('utility/userpassword', [UtilityController::class, 'userpassword'])->name('utility.userpassword');
         Route::get('utility/register', [UtilityController::class, 'register'])->name('utility.register');

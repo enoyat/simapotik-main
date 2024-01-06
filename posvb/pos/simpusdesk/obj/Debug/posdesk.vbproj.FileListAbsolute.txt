@@ -454,13 +454,12 @@ C:\Users\Adrian Hadinata\OneDrive\Dokumen\GitHub\simapotik\posvb\pos\simpusdesk\
 C:\Users\Adrian Hadinata\OneDrive\Dokumen\GitHub\simapotik\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe
 C:\Users\Adrian Hadinata\OneDrive\Dokumen\GitHub\simapotik\posvb\pos\simpusdesk\obj\Debug\simpusdesk.xml
 C:\Users\Adrian Hadinata\OneDrive\Dokumen\GitHub\simapotik\posvb\pos\simpusdesk\obj\Debug\simpusdesk.pdb
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\BouncyCastle.Crypto.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x64\msvcr120.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x64\SqlServerSpatial140.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x86\msvcr120.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x86\SqlServerSpatial140.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.exe.config
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.exe.manifest
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.application
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.exe
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.pdb
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.xml
@@ -560,7 +559,6 @@ C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Sys
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.Xml.XPath.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.Xml.XPath.XDocument.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\BarcodeStandard.dll
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\BouncyCastle.Crypto.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Google.Protobuf.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\K4os.Compression.LZ4.dll
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\K4os.Compression.LZ4.Streams.dll
@@ -662,6 +660,7 @@ C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\sim
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormBarang.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormBarangGembong.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormBarangResep.resources
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.formcetak.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormCustomer.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormDokter.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormGembong.resources
@@ -675,10 +674,12 @@ C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\sim
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.Resources.resources
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.GenerateResource.cache
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.CoreCompileInputs.cache
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe.manifest
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.application
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.CopyComplete
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.xml
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.pdb
-C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.formcetak.resources
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.exe.manifest
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\simpusdesk.application
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.TrustInfo.xml
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe.manifest
+C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.application

@@ -28,6 +28,7 @@ Partial Class formcetak
         Me.DataGridView1 = New System.Windows.Forms.DataGridView()
         Me.btnsimpan = New System.Windows.Forms.Button()
         Me.DataGridView2 = New System.Windows.Forms.DataGridView()
+        Me.PrintDocument1 = New System.Drawing.Printing.PrintDocument()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -91,6 +92,9 @@ Partial Class formcetak
         Me.DataGridView2.Size = New System.Drawing.Size(1046, 378)
         Me.DataGridView2.TabIndex = 16
         '
+        'PrintDocument1
+        '
+        '
         'formcetak
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -118,4 +122,5 @@ Partial Class formcetak
     Friend WithEvents DataGridView1 As DataGridView
     Friend WithEvents btnsimpan As Button
     Friend WithEvents DataGridView2 As DataGridView
+    Friend WithEvents PrintDocument1 As Printing.PrintDocument
 End Class

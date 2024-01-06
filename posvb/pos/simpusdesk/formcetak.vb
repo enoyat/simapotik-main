@@ -7,7 +7,7 @@ Public Class formcetak
     Dim jmldiskon As Integer
 
     Dim panjang As Integer
-    Dim noinvoice, kasir, tgltrans As String
+    Dim noinvoice, kasir, tgltrans, jam As String
     Sub cari()
         Dim parameters = New Specialized.NameValueCollection
 
@@ -23,13 +23,19 @@ Public Class formcetak
             data.Columns.Add("tgltrans", GetType(String))
             data.Columns.Add("total", GetType(String))
             data.Columns.Add("tipepenjualan", GetType(String))
+            data.Columns.Add("email", GetType(String))
+            data.Columns.Add("jam", GetType(String))
+
+
 
             For Each Row2 In respons("data")
                 data.Rows.Add(Row2("id").ToString(),
                           Row2("idcustomer").ToString(),
                           Row2("tgltrans").ToString(),
                            Row2("total").ToString(),
-                            Row2("tipepenjualan").ToString())
+                            Row2("tipepenjualan").ToString(),
+                            Row2("email").ToString(),
+                            Row2("jam").ToString())
             Next
             DataGridView1.DataSource = data
             DataGridView1.Columns(1).Width = 300
@@ -114,19 +120,25 @@ Public Class formcetak
         Else
             ubahpanjang()
             PPD.Document = PD
-            ' PPD.ShowDialog()
+            PPD.ShowDialog()
             PD.Print()
         End If
 
     End Sub
+
+    Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
+
+    End Sub
+
     Sub ubahpanjang()
         Dim rowcount As Integer
         panjang = 0
-        rowcount = DataGridView1.Rows.Count
+        rowcount = DataGridView2.Rows.Count
         panjang = rowcount * 15
         panjang = panjang + 300
     End Sub
     Private Sub PD_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PD.PrintPage
+
         Dim f10 As New Font("Times New Roman", 8, FontStyle.Regular)
         Dim f6 As New Font("Times New Roman", 6, FontStyle.Regular)
         Dim f10b As New Font("Times New Roman", 8, FontStyle.Bold)
@@ -160,7 +172,7 @@ Public Class formcetak
         e.Graphics.DrawString("Harga", f10, Brushes.Black, 180, 150)
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, 165)
         Dim jmldata As Integer
-        jmldata = DataGridView1.Rows.Count
+        jmldata = DataGridView2.Rows.Count
         Dim tinggi As Integer
         Dim i As Long
 
@@ -212,7 +224,11 @@ Public Class formcetak
 
     Private Sub DataGridView1_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellContentClick
         noinvoice = Convert.ToString(DataGridView1.Item(0, DataGridView1.CurrentRow.Index).Value)
-        kasir = Convert.ToString(DataGridView1.Item(0, DataGridView1.CurrentRow.Index).Value)
+        kasir = Convert.ToString(DataGridView1.Item(5, DataGridView1.CurrentRow.Index).Value)
+        jam = Convert.ToString(DataGridView1.Item(6, DataGridView1.CurrentRow.Index).Value)
+        tgltrans = Convert.ToString(DataGridView1.Item(2, DataGridView1.CurrentRow.Index).Value)
+
+
         Call caridetail()
 
     End Sub

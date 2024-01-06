@@ -18,9 +18,17 @@ Public Class FormPenjualanResep
     Sub CariBarang(kode)
         Dim xkdbarang, xnamabarang As String
         Dim xharga, xqty, jumlah, qty, total As Int32
+        Dim lokasi = ComboLokasi.SelectedIndex
+        Dim asallokasi As String
+        If (lokasi = 0) Then
+            asallokasi = "TOKO"
+        Else
+            asallokasi = "G4"
+        End If
+
         Dim parameters = New Specialized.NameValueCollection
         parameters.Add("kdbarang", kode)
-        parameters.Add("idlokasi", "TOKO")
+        parameters.Add("idlokasi", asallokasi)
         parameters.Add("nim", nim)
         Dim respons = postData(urlprefix + "barang/caribarang", "POST", parameters)
         Dim state = respons.SelectToken("success").ToString
@@ -261,7 +269,7 @@ Public Class FormPenjualanResep
 
         e.Graphics.DrawString("APOTEK SEHATI", f14, Brushes.Black, centermargin, 5, tengah)
         e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
-        e.Graphics.DrawString("Telp. (0295) 392166 WA: 0811290281", f10, Brushes.Black, centermargin, 40, tengah)
+        e.Graphics.DrawString("Telp. (0295) 392166 WA: 08112901281", f10, Brushes.Black, centermargin, 40, tengah)
 
         e.Graphics.DrawString("NOTA APOTEK", f10, Brushes.Black, 0, 60)
         e.Graphics.DrawString(tgltransaksi.Value, f10, Brushes.Black, 0, 75)
@@ -330,20 +338,34 @@ Public Class FormPenjualanResep
     Function cekstok(kode, inqty)
         Dim xkdbarang, xnamabarang As String
         Dim xharga, xqty, jumlah, qty, total As Int32
-        Dim url = urlprefix + "barang/" + kode
-        Dim jsonObject = getData(url)
-        Dim isdata = jsonObject.SelectToken("data")
+        Dim lokasi = ComboLokasi.SelectedIndex
+        Dim asallokasi As String
+        If (lokasi = 0) Then
+            asallokasi = "TOKO"
+        Else
+            asallokasi = "G4"
+        End If
 
-        If (isdata.Count > 0) Then
-            xkdbarang = jsonObject.SelectToken("data")("kdbarang").ToString
-            xnamabarang = jsonObject.SelectToken("data")("namabarang").ToString
-            xqty = jsonObject.SelectToken("data")("stok").ToString
-            If (xqty = 0) Then
-                Return False
-            ElseIf (Int(xqty) < Int(inqty)) Then
-                Return False
-            End If
-            Return True
+        Dim parameters = New Specialized.NameValueCollection
+        parameters.Add("kdbarang", kode)
+        parameters.Add("idlokasi", asallokasi)
+        parameters.Add("nim", nim)
+        Dim respons = postData(urlprefix + "barang/caribarang", "POST", parameters)
+        Dim state = respons.SelectToken("success").ToString
+
+        If state = "success" Then
+            For Each Row2 In respons("data")
+                xkdbarang = Row2("kdbarang").ToString()
+                xnamabarang = Row2("namabarang").ToString()
+                xqty = Row2("stok").ToString()
+                If (xqty = 0) Then
+                    Return False
+                ElseIf (Int(xqty) < Int(inqty)) Then
+                    Return False
+                Else
+                    Return True
+                End If
+            Next
         Else
             MsgBox("Data tidak ditemukan", vbOK, "Informasi")
             txtkdbarang.Text = ""
@@ -373,7 +395,7 @@ Public Class FormPenjualanResep
                 DataGridView1.Item(7, selectedrow).Value = total
                 hitung()
             Else
-                MsgBox("cek stok")
+                MsgBox("stok tidak tersedia")
                 DataGridView1.Item(3, selectedrow).Value = 1
 
             End If

@@ -87,6 +87,7 @@
         '  ToolStripButton6.Enabled = status
         ToolStripButton3.Enabled = status
         ToolStripButton4.Enabled = status
+        ToolStripButton1.Enabled = status
         LogoutToolStripMenuItem.Enabled = status
     End Sub
 
@@ -113,5 +114,11 @@
 
     Private Sub ToolStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
 
+    End Sub
+
+    Private Sub ToolStripButton1_Click_2(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
+        formcetak.Close()
+
+        formcetak.ShowDialog()
     End Sub
 End Class

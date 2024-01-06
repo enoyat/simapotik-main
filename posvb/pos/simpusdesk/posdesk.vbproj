@@ -26,7 +26,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>31</ApplicationRevision>
+    <ApplicationRevision>34</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -227,6 +227,12 @@
     <Compile Include="FormBarangResep.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="formcetak.Designer.vb">
+      <DependentUpon>formcetak.vb</DependentUpon>
+    </Compile>
+    <Compile Include="formcetak.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormCustomer.Designer.vb">
       <DependentUpon>FormCustomer.vb</DependentUpon>
     </Compile>
@@ -315,6 +321,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBarangResep.resx">
       <DependentUpon>FormBarangResep.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="formcetak.resx">
+      <DependentUpon>formcetak.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormCustomer.resx">
       <DependentUpon>FormCustomer.vb</DependentUpon>

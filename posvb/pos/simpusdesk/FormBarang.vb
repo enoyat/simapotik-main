@@ -15,6 +15,7 @@
             Dim data As New DataTable
             data.Columns.Add("kdbarang", GetType(String))
             data.Columns.Add("namabarang", GetType(String))
+            data.Columns.Add("satuan", GetType(String))
             data.Columns.Add("hargahv", GetType(String))
             data.Columns.Add("hargagrosir", GetType(String))
             data.Columns.Add("hargaresep", GetType(String))
@@ -24,6 +25,7 @@
             For Each Row2 In respons("data")
                 data.Rows.Add(Row2("kdbarang").ToString(),
                           Row2("namabarang").ToString(),
+                          Row2("satuan").ToString(),
                           Row2("hargahv").ToString(),
                           Row2("hargagrosir").ToString(),
                           Row2("hargaresep").ToString(),

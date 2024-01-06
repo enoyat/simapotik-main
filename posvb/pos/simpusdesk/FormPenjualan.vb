@@ -287,7 +287,7 @@ Public Class FormPenjualan
 
         e.Graphics.DrawString("APOTEK SEHATI", f14, Brushes.Black, centermargin, 5, tengah)
         e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
-        e.Graphics.DrawString("Telp. (0295) 392166 WA: 0811290281", f10, Brushes.Black, centermargin, 40, tengah)
+        e.Graphics.DrawString("Telp. (0295) 392166 WA: 08112901281", f10, Brushes.Black, centermargin, 40, tengah)
 
         e.Graphics.DrawString("NOTA APOTEK", f10, Brushes.Black, 0, 60)
         e.Graphics.DrawString(tgltransaksi.Value, f10, Brushes.Black, 0, 75)

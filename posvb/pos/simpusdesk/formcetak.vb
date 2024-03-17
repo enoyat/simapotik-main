@@ -74,7 +74,8 @@ Public Class formcetak
                 data.Rows.Add(Row2("kdbarang").ToString(),
                           Row2("namabarang").ToString(),
                           Row2("harga").ToString(),
-                           Row2("qty").ToString(), jml,
+                           Row2("qty").ToString(),
+                           jml,
                             Row2("diskonpersen").ToString(),
                             Row2("diskon").ToString(),
                             Row2("jumlah").ToString(),
@@ -119,8 +120,9 @@ Public Class formcetak
             MsgBox("Status masih belum Tunai")
         Else
             ubahpanjang()
+            hitung()
             PPD.Document = PD
-            PPD.ShowDialog()
+            'PPD.ShowDialog()
             PD.Print()
         End If
 
@@ -129,8 +131,27 @@ Public Class formcetak
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
 
     End Sub
+    Sub hitung()
+        Try
+            jmltotal = 0
+            jmldiskon = 0
+            Dim jmldata As Integer
+            jmldata = DataGridView2.Rows.Count
 
+            For i = 0 To jmldata - 1
+                jmldiskon += Int(DataGridView2.Item(6, i).Value)
+                jmltotal += Int(DataGridView2.Item(7, i).Value)
+
+            Next
+
+
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Sub ubahpanjang()
+
         Dim rowcount As Integer
         panjang = 0
         rowcount = DataGridView2.Rows.Count
@@ -211,10 +232,10 @@ Public Class formcetak
         e.Graphics.DrawString(Format(jmldiskon, "##,##0"), f10b, Brushes.Black, rigtmargin, 20 + tinggi, kanan)
 
 
-        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 30 + tinggi)
-        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
-        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 40 + tinggi)
-        e.Graphics.DrawString(0, f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
+        'e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 30 + tinggi)
+        'e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
+        'e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 40 + tinggi)
+        'e.Graphics.DrawString(0, f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
 
         e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 60 + tinggi)
         e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 70 + tinggi)
@@ -227,9 +248,15 @@ Public Class formcetak
         kasir = Convert.ToString(DataGridView1.Item(5, DataGridView1.CurrentRow.Index).Value)
         jam = Convert.ToString(DataGridView1.Item(6, DataGridView1.CurrentRow.Index).Value)
         tgltrans = Convert.ToString(DataGridView1.Item(2, DataGridView1.CurrentRow.Index).Value)
-
+        jmltotal = Convert.ToString(DataGridView1.Item(3, DataGridView1.CurrentRow.Index).Value)
 
         Call caridetail()
 
     End Sub
+    Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
+        Dim pagesetup As New PageSettings
+        pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        PD.DefaultPageSettings = pagesetup
+    End Sub
+
 End Class

@@ -333,7 +333,10 @@ Public Class FormPenjualanResep
     End Sub
 
     Private Sub DataGridView1_KeyPress(sender As Object, e As KeyPressEventArgs) Handles DataGridView1.KeyPress
-
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Return) Then
+            SendKeys.Send("{TAB}")
+            e.Handled = True
+        End If
     End Sub
     Function cekstok(kode, inqty)
         Dim xkdbarang, xnamabarang As String
@@ -373,7 +376,7 @@ Public Class FormPenjualanResep
             txtkdbarang.Select()
         End If
     End Function
-    Private Sub DataGridView1_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEnter
+    Sub cellenter()
         Try
             Dim selectedrow As Integer = DataGridView1.CurrentCell.RowIndex
             Dim selectedcol As Integer = DataGridView1.CurrentCell.ColumnIndex
@@ -403,10 +406,14 @@ Public Class FormPenjualanResep
         Catch ex As Exception
 
         End Try
+    End Sub
+    Private Sub DataGridView1_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEnter
+
 
     End Sub
 
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
+        btnsimpan.Enabled = False
         Dim modebayar As String
         If CheckBox1.Checked = True Then
             modebayar = "NON TUNAI"
@@ -543,5 +550,9 @@ Public Class FormPenjualanResep
         FormDokter.Close()
         FormDokter.caller.Text = "penjualan"
         FormDokter.ShowDialog()
+    End Sub
+
+    Private Sub DataGridView1_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEndEdit
+        Call cellenter()
     End Sub
 End Class

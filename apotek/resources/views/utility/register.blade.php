@@ -58,9 +58,9 @@
                                 <label for=""><strong>Level User</strong></label>
                                 <select class="form-control" name="role" id="role">
                                     <option value="">-- Level User --</option>
-                                    <option value="1">Administrator</option>
-                                    <option value="2">Manajer</option>
-                                    <option value="3">Operator</option>
+                                    @foreach ($role as $item)
+                                    <option value="{{ $item->id }}">{{ $item->role_name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 

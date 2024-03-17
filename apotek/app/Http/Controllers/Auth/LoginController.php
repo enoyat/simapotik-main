@@ -31,22 +31,20 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        $roles = Auth::user()->roles_id;
-        Session::put('globalkdpst', Auth::user()->kdpst);
-        switch ($roles) {
-            case 1:
-                Session::put('email', Auth::user()->email);
-                return route('administrator.home.index');
-                break;
-            case 3:
-                return route('administrator.home.index');
-                break;
-            default:
-                return redirect()->route('login');
-                break;
-        }
-
-
+        // $roles = Auth::user()->roles_id;
+        // Session::put('globalkdpst', Auth::user()->kdpst);
+        // Session::put('email', Auth::user()->email);
+        // switch ($roles) {
+        //     case 1:               
+        //         return route('administrator.home.index');
+        //         break;
+        //     case 3:
+        //         return route('administrator.home.index');
+        //         break;
+        //     default:
+        //         return redirect()->route('login');
+        //         break;
+        // }
     }
 
     /**

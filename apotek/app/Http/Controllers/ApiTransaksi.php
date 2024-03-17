@@ -23,7 +23,8 @@ class ApiTransaksi extends Controller
         ];
     }
     public function detailinvoice(Request $request){
-        $iteminvoice = M_detailpenjualan::join('barang','detailpenjualan.kdbarang','barang.kdbarang')->where('idpenjualan',$request->id)->get();
+        $iteminvoice = M_detailpenjualan::join('barang','detailpenjualan.kdbarang','barang.kdbarang')->where('idpenjualan',$request->id)->
+        select('detailpenjualan.*','barang.namabarang','barang.idgolongan')->get();
         return $data = [
             'status' => 'success',
             'data' => $iteminvoice,

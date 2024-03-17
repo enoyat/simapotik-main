@@ -64,7 +64,7 @@ Route::get('/access', [App\Http\Controllers\HomeController::class, 'access'])->n
 // Roles Administrator
 
 Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
-    Route::group(['roles' => ['administrator', 'operator', 'adminunit']], function () {
+    Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
         Route::get('administrator/home', [AdministratorHomeController::class, 'index'])->name('administrator.home.index');
         Route::get('utility/gantipassword', [UtilityController::class, 'gantipassword'])->name('utility.gantipassword');
         Route::post('utility/userpasswordupdate', [UtilityController::class, 'userpasswordupdate'])->name('utility.userpasswordupdate');
@@ -137,7 +137,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('fetch', [Penjualanresep::class, 'fetch'])->name('penjualanresep.fetch');
         });
     });
-    Route::group(['roles' => ['administrator']], function () {
+    Route::group(['roles' => ['manajer']], function () {
 
         Route::group(['prefix' => 'laporantransaksi'], function () {
             Route::get('rptpembelian', [LaporanTransaksi::class, 'rptpembelian'])->name('laporantransaksi.rptpembelian');

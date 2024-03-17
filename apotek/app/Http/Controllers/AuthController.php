@@ -52,20 +52,18 @@ class AuthController extends Controller
         if (Auth::check()) { // true sekalian session field di users nanti bisa dipanggil via Auth
             //Login Success
             $cek=Auth::user();
-            if($cek->role_id=="3"){
-                Session::put('nim',$cek->nim);
-                Session::put('kdpst',$cek->kdpst);
-                Session::put('email',$request->input('email'));
-                Session::put('login',TRUE);
-                return redirect()->route('home');
+            if($cek->role_id=="10"){
+                    Session::put('email',$request->input('email'));
+                    Session::put('kdpst',$cek->kdpst);
+                    Session::put('login',TRUE);
+                    return redirect('official');
 
             }
-            else if($cek->role_id=="2"){
-                Session::put('nim',$cek->nim);
-                Session::put('kdpst',$cek->kdpst);
-                Session::put('email',$request->input('email'));
-                Session::put('login',TRUE);
-                return redirect()->route('home');
+            else if($cek->role_id=="40"){
+                    Session::put('email',$request->input('email'));
+                    Session::put('kdpst',$cek->kdpst);
+                    Session::put('login',TRUE);
+                    return redirect('home');
 
             }
             else if($cek->role_id=="1"){

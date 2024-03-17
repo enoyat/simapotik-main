@@ -20,7 +20,8 @@ class UtilityController extends Controller
     }
 
     public function register(){
-        return view ('utility.register');
+        $role=DB::table('roles')->get();
+        return view ('utility.register',compact('role'));
     }
     public function postregister(Request $request)
     {

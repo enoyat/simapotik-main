@@ -358,12 +358,15 @@ Public Class FormPenjualan
         PD.DefaultPageSettings = pagesetup
     End Sub
 
-    Private Sub DataGridView1_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellContentClick
+    Private Sub DataGridView1_CellContentClick(sender As Object, e As DataGridViewCellEventArgs)
 
     End Sub
 
     Private Sub DataGridView1_KeyPress(sender As Object, e As KeyPressEventArgs) Handles DataGridView1.KeyPress
-
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(Keys.Return) Then
+            SendKeys.Send("{TAB}")
+            e.Handled = True
+        End If
     End Sub
     Function cekstok(kode, inqty)
         Dim xkdbarang, xnamabarang As String
@@ -378,7 +381,7 @@ Public Class FormPenjualan
             xqty = jsonObject.SelectToken("data")("stok").ToString
             If (xqty = 0) Then
                 Return False
-            ElseIf (int(xqty) < int(inqty)) Then
+            ElseIf (Int(xqty) < Int(inqty)) Then
                 Return False
             End If
             Return True
@@ -389,7 +392,7 @@ Public Class FormPenjualan
             txtkdbarang.Select()
         End If
     End Function
-    Private Sub DataGridView1_CellEnter(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEnter
+    Sub cellenter()
         Try
             Dim selectedrow As Integer = DataGridView1.CurrentCell.RowIndex
             Dim selectedcol As Integer = DataGridView1.CurrentCell.ColumnIndex
@@ -412,69 +415,89 @@ Public Class FormPenjualan
                 hitung()
             Else
                 MsgBox("cek stok")
+                qty = 1
                 DataGridView1.Item(3, selectedrow).Value = 1
+                harga = Int(DataGridView1.Item(2, selectedrow).Value)
+                disk1 = Int(DataGridView1.Item(5, selectedrow).Value)
+                disk2 = Int(DataGridView1.Item(6, selectedrow).Value)
+                If (disk1 > 0) Then
+                    diskperson = (harga * qty) * disk1 / 100
+                    DataGridView1.Item(6, selectedrow).Value = diskperson
+                    disk2 = diskperson
+                End If
+                jumlah = (harga * qty) - disk2
+                total = jumlah
+                DataGridView1.Item(4, selectedrow).Value = (harga * qty)
+                DataGridView1.Item(7, selectedrow).Value = total
+                hitung()
+
 
             End If
 
 
         Catch ex As Exception
-
+            MsgBox(ex.Message)
         End Try
-
     End Sub
 
+
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
-        Dim modebayar As String
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
-        End If
-        Dim parameters = New Specialized.NameValueCollection
-
-        parameters.Add("idcustomer", txtkdcustomer.Text)
-        parameters.Add("total", jmltotal)
-        parameters.Add("email", txtkasir.Text)
-        parameters.Add("modebayar", modebayar)
-        parameters.Add("tgltrans", tgltransaksi.Value)
-        parameters.Add("tipepenjualan", combotipepenjualan.Text)
-
-
-
-        Dim respons = postData(urlprefix + "penjualan/store", "POST", parameters)
-        Dim state = respons.SelectToken("status").ToString
-        If state = "success" Then
-            Dim lastid As Integer = respons("data")("lastid")
-            txtnonota.Text = lastid
-            '  Dim parameteritems = New Specialized.NameValueCollection
-            Dim jmldata As Integer = DataGridView1.Rows.Count
-            For i As Integer = 0 To jmldata - 1
-                Dim parameteritems = New Specialized.NameValueCollection
-                parameteritems.Add("idpenjualan", lastid)
-                parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
-                parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
-                parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
-                parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
-                parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
-                parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
-                parameteritems.Add("idlokasi", "TOKO")
-
-                respons = postData(urlprefix + "penjualan/storeitem", "POST", parameteritems)
-            Next
-
-            MsgBox("Simpan Data Sukses")
-            If (kategori.Text = "khusus") Then
-                cetakrdlc()
+        Try
+            Dim modebayar As String
+            If CheckBox1.Checked = True Then
+                modebayar = "NON TUNAI"
             Else
-                PD.Print()
+                modebayar = "TUNAI"
             End If
             btnsimpan.Enabled = False
-            txtbayar.Enabled = False
-            btncetak.Enabled = True
-            btnclear.Select()
-        Else
+            Dim parameters = New Specialized.NameValueCollection
+
+            parameters.Add("idcustomer", txtkdcustomer.Text)
+            parameters.Add("total", jmltotal)
+            parameters.Add("email", txtkasir.Text)
+            parameters.Add("modebayar", modebayar)
+            parameters.Add("tgltrans", tgltransaksi.Value)
+            parameters.Add("tipepenjualan", combotipepenjualan.Text)
+
+
+
+            Dim respons = postData(urlprefix + "penjualan/store", "POST", parameters)
+            Dim state = respons.SelectToken("status").ToString
+            If state = "success" Then
+                Dim lastid As Integer = respons("data")("lastid")
+                txtnonota.Text = lastid
+                '  Dim parameteritems = New Specialized.NameValueCollection
+                Dim jmldata As Integer = DataGridView1.Rows.Count
+                For i As Integer = 0 To jmldata - 1
+                    Dim parameteritems = New Specialized.NameValueCollection
+                    parameteritems.Add("idpenjualan", lastid)
+                    parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
+                    parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
+                    parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
+                    parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
+                    parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
+                    parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
+                    parameteritems.Add("idlokasi", "TOKO")
+
+                    respons = postData(urlprefix + "penjualan/storeitem", "POST", parameteritems)
+                Next
+
+                MsgBox("Simpan Data Sukses")
+                If (kategori.Text = "khusus") Then
+                    cetakrdlc()
+                Else
+                    PD.Print()
+                End If
+                btnsimpan.Enabled = False
+                txtbayar.Enabled = False
+                btncetak.Enabled = True
+                btnclear.Select()
+            Else
                 MsgBox("ada kesahalan data")
-        End If
+            End If
+        Catch
+            MsgBox("ada kesahalan penyimpanan data")
+        End Try
 
 
     End Sub
@@ -540,6 +563,14 @@ Public Class FormPenjualan
     End Sub
 
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
+
+    End Sub
+
+    Private Sub DataGridView1_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEndEdit
+        Call cellenter()
+    End Sub
+
+    Private Sub DataGridView1_Layout(sender As Object, e As LayoutEventArgs) Handles DataGridView1.Layout
 
     End Sub
 End Class

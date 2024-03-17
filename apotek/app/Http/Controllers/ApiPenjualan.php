@@ -17,10 +17,10 @@ class ApiPenjualan extends Controller
 {
     public function index()
     {
-        $barang = M_penjualan::get();
+        $barang = M_penjualan::where('kdpst', '')->get();
         return $data = [
             'status' => 'success',
-            'data' => [],
+            'data' => $barang,
         ];
     }
     public function show($id)
@@ -302,6 +302,4 @@ class ApiPenjualan extends Controller
             ];
         }
     }
-
-   
 }

@@ -38,6 +38,7 @@
                                     <option value="namacustomer">Customer</option>
                                     <option value="resep">Resep</option>
                                     <option value="namabarang">Nama Barang</option>
+                                    <option value="namadokter">Nama Dokter</option>
                                 </Select>
 
 

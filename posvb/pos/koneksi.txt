@@ -1,1 +1,1 @@
-server=192.168.100.212;user id=admin_simpus;database=admin_simpus;password=//Dadiati**/simpus;persistsecurityinfo=True
+http://192.168.20.252/api/

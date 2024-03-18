@@ -196,6 +196,7 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'N')
                     ->where('tipepenjualan', 'T')
                     ->where('penjualan.idcustomer', "!=", "GBG")
+                    ->where('penjualan.idcustomer', "!=", "C0012")
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -212,6 +213,7 @@ class LaporanTransaksi extends Controller
                         ->where('jenispenjualan', 'N')
                         ->where('tipepenjualan', 'T')
                         ->where('penjualan.idcustomer', "!=", "GBG")
+                        ->where('penjualan.idcustomer', "!=", "C0012")
                         ->orderBy('namagolongan', 'asc')
                         ->get();
                 } else {
@@ -224,6 +226,7 @@ class LaporanTransaksi extends Controller
                         ->where('jenispenjualan', 'N')
                         ->where('tipepenjualan', 'T')
                         ->where('penjualan.idcustomer', "!=", "GBG")
+                        ->where('penjualan.idcustomer', "!=", "C0012")
                         ->where('barang.idgolongan', $request->idgolongan)
                         ->orderBy('tgltrans', 'asc')
                         ->get();
@@ -239,6 +242,7 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'N')
                     ->where('tipepenjualan', 'T')
                     ->where('penjualan.idcustomer', "!=", "GBG")
+                    ->where('penjualan.idcustomer', "!=", "C0012")
                     ->where('barang.kdbarang', $request->kdbarang)
                     ->orderBy('tgltrans', 'asc')
                     ->get();
@@ -251,6 +255,7 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'N')
                     ->where('tipepenjualan', 'T')
                     ->where('penjualan.idcustomer', "!=", "GBG")
+                    ->where('penjualan.idcustomer', "!=", "C0012")
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;

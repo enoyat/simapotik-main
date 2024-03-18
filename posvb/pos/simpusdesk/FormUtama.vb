@@ -88,11 +88,13 @@
         ToolStripButton3.Enabled = status
         ToolStripButton4.Enabled = status
         ToolStripButton1.Enabled = status
+
         LogoutToolStripMenuItem.Enabled = status
     End Sub
 
     Private Sub FormUtama_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Call Statusmenu(False)
+        ToolStripStatusLabel4.Text = urlprefix
         LoginToolStripMenuItem.Enabled = True
     End Sub
 
@@ -120,5 +122,9 @@
         formcetak.Close()
 
         formcetak.ShowDialog()
+    End Sub
+
+    Private Sub ToolStripStatusLabel3_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel3.Click
+
     End Sub
 End Class

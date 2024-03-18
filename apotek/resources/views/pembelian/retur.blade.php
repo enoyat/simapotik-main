@@ -51,7 +51,7 @@
                                         <option value="namasupplier">Supplier</option>
                                         <option value="nobatch">No Batch</option>
                                         <option value="namaproduk">Nama Produk</option>
-
+                                        <option value="noinvoice">No invoice</option>
 
                                     </Select>
 

@@ -9,6 +9,7 @@ Public Class FormLogin
 
     Sub Ceklogin()
         Try
+
             Dim url = urlprefix + "login"
             Dim client = New WebClient()
             Dim method = "POST"
@@ -54,6 +55,7 @@ Public Class FormLogin
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Call Konfigurasi()
         Ceklogin()
     End Sub
 

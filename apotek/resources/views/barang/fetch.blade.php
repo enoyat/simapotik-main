@@ -56,13 +56,16 @@ foreach ($barang as $key) {
 
 
         <td>
-
+            @if(Auth::user()->roles_id == '10')
             <a class="btn btn-xs btn-danger" data-toggle="modal"
                 data-target="#modal_hapus<?php echo $key->kdbarang; ?>">Hapus</a>
-
+           
             <a href="{{ route('barang.edit', $key->kdbarang) }}">
                 <div id='soalBtn' class='btn btn-warning btn-xs' title="Edit">edit</div>
             </a>
+            @else
+            Only Manajer 
+            @endif
         </td>
     </tr>
     <?php $i++;}?>

@@ -335,6 +335,16 @@ class Pembelian extends Controller
                 ->select('pembelian.*', 'supplier.namasupplier')
                 ->get();
         } 
+        else if ($request->kriteria == "noinvoice") {
+            $pembelian = M_pembelian::join('supplier', 'pembelian.idsupplier', '=', 'supplier.idsupplier')
+                ->join('detailpembelian', 'pembelian.id', '=', 'detailpembelian.idpembelian')
+                ->join('barang', 'detailpembelian.kdbarang', '=', 'barang.kdbarang')
+                ->where('pembelian.id', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')
+                ->where('f_statustransaksi', '0')
+                ->select('pembelian.*', 'supplier.namasupplier')
+                ->get();
+               
+        } 
         else {
             $pembelian = M_pembelian::join('supplier', 'pembelian.idsupplier', '=', 'supplier.idsupplier')
                 ->where('supplier.namasupplier', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')

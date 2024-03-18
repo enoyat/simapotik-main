@@ -17,7 +17,7 @@
                     <div class="col-12">
                         <div class="card shadow-none" style="border-radius: 10px;">
                             <div class="card-body">
-                                <h6>Selamat Datang di Dashboard SIM Apotik</h6>
+                                <h6>Selamat Datang Operator di Dashboard SIM Apotik</h6>
                                 <br>
                             </div>
                         </div>

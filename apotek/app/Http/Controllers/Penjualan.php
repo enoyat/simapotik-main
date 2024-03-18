@@ -334,13 +334,30 @@ class Penjualan extends Controller
                 ->select('penjualan.*', 'customer.namacustomer')
                 ->get();
 
-        } else {
+        } 
+        else if ($request->kriteria == "namadokter") {
+            
+            $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
+                ->join('detailpenjualan', 'penjualan.id', '=', 'detailpenjualan.idpenjualan')
+                ->join('barang', 'detailpenjualan.kdbarang', '=', 'barang.kdbarang')
+                ->join('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
+                ->join('dokter', 'detailresep.iddokter', '=', 'dokter.iddokter')
+                ->where('dokter.namadokter', 'like', '%' . $request->keyword . '%')->orderBy('penjualan.id', 'DESC')
+                ->where('f_statustransaksi', '0')
+                ->select('penjualan.*', 'dokter.*','customer.namacustomer')
+                ->get();
+
+        } 
+        
+        
+        else {
             $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
                 ->where('customer.namacustomer', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')
                 ->where('f_statustransaksi', '0')
                 ->get();
 
         }
+       
         return view('penjualan.fetchretur', ['penjualan' => $penjualan]);
         //
     }

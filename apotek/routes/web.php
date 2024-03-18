@@ -14,6 +14,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\MStransaksi;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\Operator\HomeController as OperatorHomeController;
+use App\Http\Controllers\Manajer\HomeController as ManajerHomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Pembelian;
 use App\Http\Controllers\Penjualan;
@@ -32,6 +33,7 @@ use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PolyController;
 use App\Http\Controllers\JenispasienController;
 use App\Http\Controllers\LaporanRetur;
+use App\Http\Controllers\LaporanSehati;
 use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -66,6 +68,8 @@ Route::get('/access', [App\Http\Controllers\HomeController::class, 'access'])->n
 Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
     Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
         Route::get('administrator/home', [AdministratorHomeController::class, 'index'])->name('administrator.home.index');
+        Route::get('manajer/home', [ManajerHomeController::class, 'index'])->name('manajer.home.index');
+        Route::get('operator/home', [OperatorHomeController::class, 'index'])->name('operator.home.index');
         Route::get('utility/gantipassword', [UtilityController::class, 'gantipassword'])->name('utility.gantipassword');
         Route::post('utility/userpasswordupdate', [UtilityController::class, 'userpasswordupdate'])->name('utility.userpasswordupdate');
 
@@ -137,7 +141,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('fetch', [Penjualanresep::class, 'fetch'])->name('penjualanresep.fetch');
         });
     });
-    Route::group(['roles' => ['manajer']], function () {
+    Route::group(['roles' => ['manajer','administrasi', 'operator']], function () {
 
         Route::group(['prefix' => 'laporantransaksi'], function () {
             Route::get('rptpembelian', [LaporanTransaksi::class, 'rptpembelian'])->name('laporantransaksi.rptpembelian');
@@ -155,7 +159,8 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('laporanpersediaan', [LaporanTransaksi::class, 'laporanpersediaan'])->name('laporantransaksi.laporanpersediaan');
             Route::get('rptgembong', [LaporanGembong::class, 'rptpenjualan'])->name('laporantransaksi.rptgembong');
             Route::post('laporanpenjualangembong', [LaporanGembong::class, 'laporanpenjualan'])->name('laporantransaksi.laporanpenjualangembong');
-
+            Route::get('rptsehati', [LaporanSehati::class, 'rptpenjualan'])->name('laporantransaksi.rptsehati');
+            Route::post('laporanpenjualansehati', [LaporanSehati::class, 'laporanpenjualan'])->name('laporantransaksi.laporanpenjualansehati');
             Route::get('rptrekappenjualan', [LaporanTransaksi::class, 'rptrekappenjualan'])->name('laporantransaksi.rptrekappenjualan');
             Route::post('laporanrekappenjualan', [LaporanTransaksi::class, 'laporanrekappenjualan'])->name('laporantransaksi.laporanrekappenjualan');
 
@@ -175,8 +180,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('create', [BarangController::class, 'create'])->name('barang.create');
             Route::post('store', [BarangController::class, 'store'])->name('barang.store');
             Route::post('destroy', [BarangController::class, 'destroy'])->name('barang.destroy');
-            Route::get('edit/{kdorder}', [BarangController::class, 'edit'])->name('barang.edit');
-            Route::post('update', [BarangController::class, 'update'])->name('barang.update');
+           
             Route::post('uploadgallery', [BarangController::class, 'uploadgallery'])->name('barang.uploadgallery');
             Route::get('hapusgallery/{kdorder}', [BarangController::class, 'hapusgallery'])->name('barang.hapusgallery');
             Route::get('getjenis', [BarangController::class, 'getjenis'])->name('barang.getjenis');
@@ -353,5 +357,12 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
         Route::post('utility/postregister', [UtilityController::class, 'postregister'])->name('utility.postregister');
         Route::delete('utility/userdelete/{id}', [UtilityController::class, 'userdelete'])->name('userdelete');
 
+        
+
     });
+    Route::group(['roles' => ['manajer']], function () {
+        Route::get('barang/edit/{kdorder}', [BarangController::class, 'edit'])->name('barang.edit');
+        Route::post('barang/update', [BarangController::class, 'update'])->name('barang.update');
+    });
+    
 });

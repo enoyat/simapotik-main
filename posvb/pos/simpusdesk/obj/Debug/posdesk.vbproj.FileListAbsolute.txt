@@ -683,12 +683,6 @@ C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\sim
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.TrustInfo.xml
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe.manifest
 C:\Users\ASUS\Documents\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.application
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.DataVisualization.dll
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.VisualStudio.Shell.Interop.dll
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Newtonsoft.Json.Bson.xml
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\de\Microsoft.ReportViewer.DataVisualization.resources.dll
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.GenerateResource.cache
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.pdb
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x64\msvcr120.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x64\SqlServerSpatial140.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\SqlServerTypes\x86\msvcr120.dll
@@ -802,6 +796,7 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\K4os.Compression.LZ4.Str
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\K4os.Hash.xxHash.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.Common.dll
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.DataVisualization.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.Design.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.ProcessingObjectModel.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.ReportViewer.WebForms.DLL
@@ -824,6 +819,7 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.ValueTuple.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Ubiety.Dns.Core.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\ZstdNet.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\EnvDTE.dll
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.VisualStudio.Shell.Interop.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.VisualStudio.Shell.Interop.8.0.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\stdole.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Microsoft.VisualStudio.OLE.Interop.dll
@@ -840,6 +836,7 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\MySql.Data.xml
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Newtonsoft.Json.pdb
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Newtonsoft.Json.xml
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Newtonsoft.Json.Bson.pdb
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\Newtonsoft.Json.Bson.xml
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.Buffers.xml
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.Memory.xml
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\System.Net.Http.Formatting.xml
@@ -859,6 +856,7 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\pt\Microsoft.ReportViewe
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\ru\Microsoft.ReportViewer.Common.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\zh-CHS\Microsoft.ReportViewer.Common.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\zh-CHT\Microsoft.ReportViewer.Common.resources.dll
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\de\Microsoft.ReportViewer.DataVisualization.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\es\Microsoft.ReportViewer.DataVisualization.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\fr\Microsoft.ReportViewer.DataVisualization.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\it\Microsoft.ReportViewer.DataVisualization.resources.dll
@@ -888,7 +886,6 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\pt\Microsoft.ReportViewe
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\ru\Microsoft.ReportViewer.WinForms.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\zh-CHS\Microsoft.ReportViewer.WinForms.resources.dll
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\bin\Debug\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
-F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.AssemblyReference.cache
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe.config
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormBarang.resources
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormBarangGembong.resources
@@ -905,6 +902,7 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormPenjualan
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormResetPassword.resources
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.FormUtama.resources
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.Resources.resources
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.GenerateResource.cache
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\RdlCompile.cache
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\RdlCompile.compiled
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.CoreCompileInputs.cache
@@ -914,3 +912,5 @@ F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.application
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.CopyComplete
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.exe
 F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.xml
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\simpusdesk.pdb
+F:\GitHub\simapotik-main\posvb\pos\simpusdesk\obj\Debug\posdesk.vbproj.AssemblyReference.cache

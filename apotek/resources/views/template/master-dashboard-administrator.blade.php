@@ -78,9 +78,13 @@
         $cek = Auth::user();
         ?>
         @if (!empty($cek))
+            @if (Auth::user()->roles_id == '10')
+                @include('template.partials.sidebar-manajer')
+            @endif
             @if (Auth::user()->roles_id == '1')
                 @include('template.partials.sidebar-administrator')
             @endif
+
             @if (Auth::user()->roles_id == '3')
                 @include('template.partials.sidebar-operator')
             @endif

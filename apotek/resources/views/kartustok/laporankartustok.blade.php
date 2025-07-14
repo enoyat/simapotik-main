@@ -1,4 +1,4 @@
-<?php ini_set("memory_limit","2048M"); ?>
+<?php ini_set('memory_limit', '2048M'); ?>
 
 <table width="700" border="0" cellpadding="0" cellspacing="0" style="font-size: 11px">
     <tr>
@@ -9,11 +9,12 @@
     <tr>
         <td width="100">TANGGAL </td>
         <td width="11">:</td>
-        <td width="589">{{ date("d-m-Y") }}</td>
+        <td width="589">{{ date('d-m-Y') }}</td>
     </tr>
 </table>
 
-<table width="700" height="21" border="1" cellspacing="0" bordercolor="#000000" class="grid" style="font-size: 10px">
+<table width="700" height="21" border="1" cellspacing="0" bordercolor="#000000" class="grid"
+    style="font-size: 10px">
     <tr bgcolor="#CCCCCC">
         <th width="20" height="30">No.</th>
         <th width="10">
@@ -43,6 +44,10 @@
         <th width="30">
             <p>Out Retur</p>
         </th>
+        <th width="30">
+            <p>Adjust</p>
+        </th>
+
         <th width="120">
             <p>Lokasi</p>
         </th>
@@ -59,6 +64,8 @@
 
     $i=1;
     $total=0;
+
+
     foreach ($datastok as $data) {
         # code...
 
@@ -77,10 +84,20 @@
         echo "<td align=right>".number_format($data->hna)."</td>";
         ?>
     <td align="center">{{ $data->stokawal }}</td>
-    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=pembelian&kdbarang='.$data->kdbarang) }}" target="_blank">{{ $data->jmlpembelian }}</a></td>
-    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=returpembelian&kdbarang='.$data->kdbarang) }}" target="_blank">{{ $data->jmlreturpembelian }}</a></td>
-    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=penjualan&kdbarang='.$data->kdbarang) }}" target="_blank">{{ $data->jmlpenjualan }}</a></td>
-    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=returpenjualan&kdbarang='.$data->kdbarang) }}" target="_blank">{{ $data->jmlreturpenjualan }}</a></td>
+    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=pembelian&kdbarang=' . $data->kdbarang) }}"
+            target="_blank">{{ $data->jmlpembelian }}</a></td>
+    <td align="center"> <a
+            href="{{ URL::to('kartustok/detail?kdtransaksi=returpembelian&kdbarang=' . $data->kdbarang) }}"
+            target="_blank">{{ $data->jmlreturpembelian }}</a></td>
+    <td align="center"> <a href="{{ URL::to('kartustok/detail?kdtransaksi=penjualan&kdbarang=' . $data->kdbarang) }}"
+            target="_blank">{{ $data->jmlpenjualan }}</a></td>
+    <td align="center"> <a
+            href="{{ URL::to('kartustok/detail?kdtransaksi=returpenjualan&kdbarang=' . $data->kdbarang) }}"
+            target="_blank">{{ $data->jmlreturpenjualan }}</a></td>
+    <td align="center"> <a
+            href="{{ URL::to('kartustok/detail?kdtransaksi=adjustmutasi&kdbarang=' . $data->kdbarang) }}"
+            target="_blank">{{ $data->jmladjustmutasi }}</a></td>
+
     <?php
         echo "<td align=center>";
             $jmlstok=0;

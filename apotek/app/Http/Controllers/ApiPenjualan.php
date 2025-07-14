@@ -44,50 +44,69 @@ class ApiPenjualan extends Controller
         $newID = $char . sprintf("%017s", $noUrut);
         return $newID;
     }
+
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
+        // Validasi input
+        $validatedData = $request->validate([
+            'idcustomer' => 'required',
+            'total' => 'required',
+            'email' => 'required',
+            'modebayar' => 'required',
+            'tgltrans' => 'required',
+            'tipepenjualan' => 'required',
+            'Items' => 'required|array',
+            'Items.*.kdbarang' => 'required',
+            'Items.*.qty' => 'required',
+        ]);
 
-            $jam=date("h:i");
-            $penjualan = new M_penjualan;
-            $penjualan->tgltrans = date("Y-m-d");
-            $penjualan->jam = $jam;
-            $penjualan->idcustomer = $request->idcustomer;
-            $penjualan->total = $request->total;
-            $penjualan->email = $request->email;
-            $penjualan->modebayar = $request->modebayar;
-            $penjualan->tipepenjualan = $request->tipepenjualan;
-            if ( $request->idcustomer=="P0001") {
-                $penjualan->jenispenjualan = "R";
-            }
-            $penjualan->save();
-            $lastid = $penjualan->id;
-            
-            DB::commit();
-            return $data = [
-                'status' => 'success',
-                'data' => [
-                    'lastid' => $lastid,
-                    ] 
-            ];
-            
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $data = [
-                'status' => 'error',
-                'data' => [
-                    'status'=>'error',
-                    $e->getMessage()],
-            ];
+        $jam = date("h:i");
+        if ($request->idcustomer == "P0001") {
+            $jenispenjualan = "R";
+        } else {
+            $jenispenjualan = "N";
         }
+        // Lakukan penyimpanan ke database (contoh)
+        // Misalnya, simpan ke tabel penjualan dan tabel item
+        $penjualanId = DB::table('penjualan')->insertGetId([
+            'idcustomer' => $validatedData['idcustomer'],
+            'total' => $validatedData['total'],
+            'email' => $validatedData['email'],
+            'modebayar' => $validatedData['modebayar'],
+            'tgltrans' =>  date("Y-m-d"),
+            'tipepenjualan' => $validatedData['tipepenjualan'],
+            'jam' => $jam,
+            'jenispenjualan' => $jenispenjualan,
+
+        ]);
+
+        foreach ($validatedData['Items'] as $item) {
+            DB::table('detailpenjualan')->insert([
+                'idpenjualan' => $penjualanId,
+                'kdbarang' => $item['kdbarang'],
+                'qty' => $item['qty'],
+                'harga' => $item['harga'],
+                'diskonpersen' => $item['diskonpersen'],
+                'diskon' => $item['diskon'],
+                'jumlah' => $item['jumlah'],
+                'idlokasi' => $item['idlokasi'],
+            ]);
+        }
+
+        // Kembalikan respon sukses
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil disimpan',
+            'id' => $penjualanId,
+        ], 201);
     }
+
     public function storepending(Request $request)
     {
         DB::beginTransaction();
         try {
 
-            $jam=date("h:i");
+            $jam = date("h:i");
             $penjualan = new M_pendingpenjualan;
             $penjualan->tgltrans = date("Y-m-d");
             $penjualan->jam = $jam;
@@ -98,190 +117,107 @@ class ApiPenjualan extends Controller
             $penjualan->tipepenjualan = $request->tipepenjualan;
             $penjualan->save();
             $lastid = $penjualan->id;
-            
+
             DB::commit();
             return $data = [
                 'status' => 'success',
                 'data' => [
                     'lastid' => $lastid,
-                    ] 
+                ]
             ];
-            
         } catch (\Exception $e) {
             DB::rollback();
             return $data = [
                 'status' => 'error',
                 'data' => [
-                    'status'=>'error',
-                    $e->getMessage()],
+                    'status' => 'error',
+                    $e->getMessage()
+                ],
             ];
         }
     }
-    public function storeitem(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            M_detailpenjualan::create([
-                    'idpenjualan' => $request->idpenjualan,
-                    'kdbarang' => $request->kdbarang,
-                    'qty' => $request->qty,
-                    'harga' => $request->harga,
-                    'diskonpersen' => $request->diskonpersen,
-                    'diskon' => $request->diskon,
-                    'jumlah' => $request->jumlah,
-                    'idlokasi' => $request->idlokasi,
-                ]);
-            
-            DB::commit();
-            return $data = [
-                'status' => 'success',
-                'data' => [
-                    'lastid' =>  $request->lastid,
-                    ] 
-            ];
-            
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $data = [
-                'status' => 'error',
-                'data' => [
-                    'status'=>'error',
-                    $e->getMessage()],
-            ];
-        }
-    }
+
     public function storependingitem(Request $request)
     {
         DB::beginTransaction();
         try {
             M_pendingdetailpenjualan::create([
-                    'idpenjualan' => $request->idpenjualan,
-                    'kdbarang' => $request->kdbarang,
-                    'qty' => $request->qty,
-                    'harga' => $request->harga,
-                    'diskonpersen' => $request->diskonpersen,
-                    'diskon' => $request->diskon,
-                    'jumlah' => $request->jumlah,
-                    'idlokasi' => $request->idlokasi,
-                ]);
-            
+                'idpenjualan' => $request->idpenjualan,
+                'kdbarang' => $request->kdbarang,
+                'qty' => $request->qty,
+                'harga' => $request->harga,
+                'diskonpersen' => $request->diskonpersen,
+                'diskon' => $request->diskon,
+                'jumlah' => $request->jumlah,
+                'idlokasi' => $request->idlokasi,
+            ]);
+
             DB::commit();
             return $data = [
                 'status' => 'success',
                 'data' => [
                     'lastid' =>  $request->lastid,
-                    ] 
+                ]
             ];
-            
         } catch (\Exception $e) {
             DB::rollback();
             return $data = [
                 'status' => 'error',
                 'data' => [
-                    'status'=>'error',
-                    $e->getMessage()],
+                    'status' => 'error',
+                    $e->getMessage()
+                ],
             ];
         }
     }
-    public function getpending(Request $request){
-        $pending = M_pendingpenjualan::with('get_customer')->where('email',$request->email)->get();
+    public function getpending(Request $request)
+    {
+        $pending = M_pendingpenjualan::with('get_customer')->where('email', $request->email)->get();
         return $data = [
             'status' => 'success',
             'data' => $pending,
         ];
     }
-    public function getpendingitem(Request $request){
-        $pending = M_pendingpenjualan::with('get_customer')->where('id',$request->id)->get();
+    public function getpendingitem(Request $request)
+    {
+        $pending = M_pendingpenjualan::with('get_customer')->where('id', $request->id)->get();
         return $data = [
             'status' => 'success',
             'data' => $pending,
         ];
     }
-    public function getitempending(Request $request){
-        $itempending = M_pendingdetailpenjualan::with('get_barang')->where('idpenjualan',$request->id)->get();
+    public function getitempending(Request $request)
+    {
+        $itempending = M_pendingdetailpenjualan::with('get_barang')->where('idpenjualan', $request->id)->get();
         return $data = [
             'status' => 'success',
             'data' => $itempending,
         ];
     }
-    public function hapuspending(Request $request){
-        $pending = M_pendingpenjualan::where('id',$request->id)->delete();
-        $itempending = M_pendingdetailpenjualan::where('idpenjualan',$request->id)->delete();
+    public function hapuspending(Request $request)
+    {
+        $pending = M_pendingpenjualan::where('id', $request->id)->delete();
+        $itempending = M_pendingdetailpenjualan::where('idpenjualan', $request->id)->delete();
         return $data = [
             'status' => 'success',
             'data' => [],
         ];
     }
-    // public function store(Request $request)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $result = json_decode($request->getContent(), true);
-    //         $item = $result["data"];
-    //         $cart = json_decode($item);
-    //         //return $result;
 
-    //         $lastid = ApiPenjualan::gennotrans();
-    //         $jam=date("h:i");
-    //         $penjualan = new M_penjualan;
-    //         $penjualan->tgltrans = $result["tgltrans"];
-    //         $penjualan->jam = $jam;
-    //         $penjualan->idcustomer = $result["idcustomer"];
-    //         $penjualan->total = $result["total"];
-    //         $penjualan->email = $result['email'];
-    //         $penjualan->modebayar = $result['modebayar'];
-    //         $penjualan->tipepenjualan = "T";
-    //         $penjualan->save();
-    //         $lastid = $penjualan->id;
-
-    //         $i = 0;
-    //         for ($i = 0; $i < count($cart); $i++) {
-    //             M_detailpenjualan::create([
-    //                 'idpenjualan' => $lastid,
-    //                 'kdbarang' => $cart[$i]->kdbarang,
-    //                 'qty' => $cart[$i]->qty,
-    //                 'harga' => $cart[$i]->harga,
-    //                 'diskonpersen' => $cart[$i]->diskonpersen,
-    //                 'diskon' => $cart[$i]->diskon,
-    //                 'jumlah' => $cart[$i]->jumlah,
-    //                 'idlokasi' => 'TOKO',
-    //             ]);
-    //         }
-
-            
-    //         DB::commit();
-    //         return $data = [
-    //             'status' => 'success',
-    //             'data' => [
-    //                 'status' => 'success',
-    //                 'lastid' => $lastid, 
-    //                 'jam' => $jam],
-    //         ];
-            
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return $data = [
-    //             'status' => 'error',
-    //             'data' => [
-    //                 'status'=>'error',
-    //                 $e->getMessage()],
-    //         ];
-    //     }
-    // }
     public function storeresep(Request $request)
     {
         DB::beginTransaction();
         try {
 
-            $detailresep=new M_detailresep();
-            $detailresep->idpenjualan=$request->idpenjualan;
-            $detailresep->idjenispasien=$request->idjenispasien;
-            $detailresep->namapasien=$request->namapasien;
-            $detailresep->iddokter=$request->iddokter;
-            $detailresep->idpoly=$request->idpoly;
-            $detailresep->noresep=$request->idpenjualan;
-            $detailresep->admresep='0';
-            $detailresep->admracik='0';
+            $detailresep = new M_detailresep();
+            $detailresep->idpenjualan = $request->idpenjualan;
+            $detailresep->idjenispasien = $request->idjenispasien;
+            $detailresep->namapasien = $request->namapasien;
+            $detailresep->iddokter = $request->iddokter;
+            $detailresep->idpoly = $request->idpoly;
+            $detailresep->noresep = $request->idpenjualan;
+            $detailresep->admresep = '0';
+            $detailresep->admracik = '0';
             $detailresep->save();
 
             DB::commit();
@@ -289,16 +225,16 @@ class ApiPenjualan extends Controller
                 'status' => 'success',
                 'data' => [
                     'lastid' => $request->idpenjualan,
-                    ] 
+                ]
             ];
-            
         } catch (\Exception $e) {
             DB::rollback();
             return $data = [
                 'status' => 'error',
                 'data' => [
-                    'status'=>'error',
-                    $e->getMessage()],
+                    'status' => 'error',
+                    $e->getMessage()
+                ],
             ];
         }
     }

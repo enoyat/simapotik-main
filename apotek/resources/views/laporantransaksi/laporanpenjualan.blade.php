@@ -25,7 +25,10 @@
             <p>customer</p>
         </th>
         <th width="30">
-            <p>Pembayaran</p>
+            <p>Type Penjualan</p>
+        </th>
+        <th width="30">
+            <p>Mode Pembayaran</p>
         </th>
         <th width="30">
             <p>Kasir</p>
@@ -55,6 +58,7 @@
         <td align=center valign=top>{{ $data->id }}</td>
         <td align=center valign=top>{{ date_format(date_create($data->tgltrans), 'd-m-Y') }} - Jam {{ $data->jam }}</td>
         <td valign=top>{{ $data->get_customer->namacustomer }}</td>
+        <td valign=top align=center>{{ $data->tipepenjualan }}</td>
         <td valign=top align=center>{{ $data->modebayar }}</td>
         <td valign=top align=center>{{ $data->email }}</td>
 
@@ -97,7 +101,7 @@
         }
         ?>
     <tr>
-        <td colspan="6" align="right"></td>
+        <td colspan="7" align="right"></td>
         <td align="right" style="font-size: 13px;">Total penjualan: <b><?php echo number_format($total); ?></b></td>
     </tr>
 </table>

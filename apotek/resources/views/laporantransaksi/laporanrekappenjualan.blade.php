@@ -28,8 +28,12 @@
             <p>Resep</p>
         </th>
         <th width="50">
-            <p>Retur</p>
+            <p>Retur HV</p>
         </th>
+        <th width="50">
+            <p>Retur Resep</p>
+        </th>
+
         <th width="50">
             <p>Jumlah</p>
         </th>
@@ -43,6 +47,8 @@
     $totalhv=0;
     $totalresep=0;
     $totalretur=0;
+    $totalreturresep=0;
+
     $i=1;
     foreach ($datapenjualan as $data) {
         # code...
@@ -61,14 +67,16 @@
         <td valign=top align=right>{{ number_format($data["jumlah"]) }}</td>
         <td valign=top align=right>{{ number_format($data["jumlahresep"]) }}</td>
         <td valign=top align=right>{{ number_format($data["jumlahretur"]) }}</td>
-        <td valign=top align=right>{{ number_format(($data["jumlah"]+$data["jumlahresep"])-$data["jumlahretur"]) }}</td>
+        <td valign=top align=right>{{ number_format($data["jumlahreturresep"]) }}</td>
+        <td valign=top align=right>{{ number_format(($data["jumlah"]+$data["jumlahresep"])-($data["jumlahretur"]+$data["jumlahreturresep"])) }}</td>
 
     </tr>
     <?php
         $totalhv=$totalhv+$data["jumlah"];
         $totalresep=$totalresep+$data["jumlahresep"];
         $totalretur=$totalretur+$data["jumlahretur"];
-        $total=$total+(($data["jumlah"]+$data["jumlahresep"])-$data["jumlahretur"]);
+        $totalreturresep=$totalreturresep+$data["jumlahreturresep"];
+        $total=$total+(($data["jumlah"]+$data["jumlahresep"])-($data["jumlahretur"]+$data["jumlahreturresep"]));
 
         $i++;
 
@@ -81,6 +89,7 @@
         <td align="right" style="font-size: 13px;"><b><?php echo number_format($totalhv); ?></b></td>
         <td align="right" style="font-size: 13px;"><b><?php echo number_format($totalresep); ?></b></td>
         <td align="right" style="font-size: 13px;"><b><?php echo number_format($totalretur); ?></b></td>
+        <td align="right" style="font-size: 13px;"><b><?php echo number_format($totalreturresep); ?></b></td>
         <td align="right" style="font-size: 13px;"><b><?php echo number_format($total); ?></b></td>
 
     </tr>

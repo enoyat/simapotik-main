@@ -30,8 +30,20 @@ class Penjualan extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -85,9 +97,7 @@ class Penjualan extends Controller
     {
         $kdtransaksi = "TR0002";
         $customer = M_customer::get();
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('stok.stok', '>', 0)->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('stok.stok', '>', 0)->get();
 
         $mstransaksis = M_mstransaksi::orderby('namatransaksi')->get();
         return view('penjualan.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi, 'customer' => $customer]);
@@ -191,12 +201,11 @@ class Penjualan extends Controller
                     ]);
                 }
 
-               
+
                 Session::forget('cart');
                 Session::put('id', $lastid);
                 DB::commit();
                 return Redirect()->route('penjualan.invoice');
-
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -207,8 +216,13 @@ class Penjualan extends Controller
     public function invoice(Request $request)
     {
         $datapenjualan = M_penjualan::find($request->id);
+        $kategori = $datapenjualan->get_customer->kategori;
         $data = M_detailpenjualan::with('get_barang', 'get_penjualan')->where('idpenjualan', $request->id)->get();
-        return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
+        if ($kategori == "khusus") {
+            return view('penjualan.invoicekhusus')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
+        } else {
+            return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
+        }
     }
 
     public function batal()
@@ -247,7 +261,7 @@ class Penjualan extends Controller
     }
     public function trdetailresep($id)
     {
-        $data = M_detailresep::with('get_jenispasien','get_poly','get_dokter')->where('idpenjualan', $id)->get();
+        $data = M_detailresep::with('get_jenispasien', 'get_poly', 'get_dokter')->where('idpenjualan', $id)->get();
         return view("penjualan.detailresep")->with('data', $data);
     }
     public function hapuspenjualan(Request $request)
@@ -268,15 +282,11 @@ class Penjualan extends Controller
             Alert::success('gagal dihapus, karena masih ada transaksi retur yang aktif');
             return redirect()->back();
         }
-
     }
     public function caribarang(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('stok.stok', '>', 0)->
-            orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('stok.stok', '>', 0)->orderby('namabarang')->get();
 
         return view('penjualan.formbarang', ['barang' => $barang, 'jenisharga' => $request->jenisharga]);
         //
@@ -284,11 +294,7 @@ class Penjualan extends Controller
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->
-            where('stok.stok', '>', 0)->
-            orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->where('stok.stok', '>', 0)->orderby('namabarang')->get();
 
         return view('penjualan.fetch', ['barang' => $barang]);
         //
@@ -319,45 +325,50 @@ class Penjualan extends Controller
                 ->leftjoin('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
                 ->leftjoin('dokter', 'detailresep.iddokter', '=', 'dokter.iddokter')
                 ->where('barang.namabarang', 'like', '%' . $request->keyword . '%')->orderBy('penjualan.id', 'DESC')
+                ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('f_statustransaksi', '0')
                 ->select('penjualan.*', 'customer.namacustomer', 'detailresep.namapasien', 'dokter.namadokter')
                 ->get();
-            
-
         } else if ($request->kriteria == "resep") {
             $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
                 ->join('detailpenjualan', 'penjualan.id', '=', 'detailpenjualan.idpenjualan')
                 ->join('barang', 'detailpenjualan.kdbarang', '=', 'barang.kdbarang')
                 ->join('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
                 ->where('detailresep.noresep', 'like', '%' . $request->keyword . '%')->orderBy('penjualan.id', 'DESC')
+                ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('f_statustransaksi', '0')
                 ->select('penjualan.*', 'customer.namacustomer')
                 ->get();
+        } else if ($request->kriteria == "namadokter") {
 
-        } 
-        else if ($request->kriteria == "namadokter") {
-            
             $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
                 ->join('detailpenjualan', 'penjualan.id', '=', 'detailpenjualan.idpenjualan')
                 ->join('barang', 'detailpenjualan.kdbarang', '=', 'barang.kdbarang')
                 ->join('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
                 ->join('dokter', 'detailresep.iddokter', '=', 'dokter.iddokter')
                 ->where('dokter.namadokter', 'like', '%' . $request->keyword . '%')->orderBy('penjualan.id', 'DESC')
+                ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('f_statustransaksi', '0')
-                ->select('penjualan.*', 'dokter.*','customer.namacustomer')
+                ->select('penjualan.*', 'dokter.*', 'customer.namacustomer')
                 ->get();
-
-        } 
-        
-        
-        else {
+        } else if ($request->kriteria == "pasien") {
+            $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
+                ->join('detailpenjualan', 'penjualan.id', '=', 'detailpenjualan.idpenjualan')
+                ->join('barang', 'detailpenjualan.kdbarang', '=', 'barang.kdbarang')
+                ->join('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
+                ->where('detailresep.namapasien', 'like', '%' . $request->keyword . '%')->orderBy('penjualan.id', 'DESC')
+                ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
+                ->where('f_statustransaksi', '0')
+                ->select('penjualan.*', 'customer.namacustomer')
+                ->get();
+        } else {
             $penjualan = M_penjualan::join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
                 ->where('customer.namacustomer', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')
+                ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('f_statustransaksi', '0')
                 ->get();
-
         }
-       
+
         return view('penjualan.fetchretur', ['penjualan' => $penjualan]);
         //
     }
@@ -369,7 +380,7 @@ class Penjualan extends Controller
     public function inbond($id)
     {
         $lokasi = M_stoklokasi::where('f_default', '0')->get();
-        $kdtransaksi = "TR0001" ;
+        $kdtransaksi = "TR0001";
         $data = M_penjualan::find($id);
         $dataorder = M_detailpenjualan::with('get_barang', 'get_penjualan')->where('idpenjualan', $id)->get();
         return view('penjualan.inbond')->with(['penjualan' => $data, 'datapenjualan' => $dataorder, 'lokasi' => $lokasi, 'kdtransaksi' => $kdtransaksi]);
@@ -414,7 +425,6 @@ class Penjualan extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function formretur(Request $request)
@@ -440,9 +450,10 @@ class Penjualan extends Controller
         return redirect()->route('penjualan.retur')
             ->with('success', 'Transaksi Sukses');
     }
-    public function ubahtipepenjualan(Request $request){
-        M_penjualan::where('id',$request->id)->update([
-            'tipepenjualan'=>"T",
+    public function ubahtipepenjualan(Request $request)
+    {
+        M_penjualan::where('id', $request->id)->update([
+            'tipepenjualan' => "T",
             'tgltrans' => Carbon::now(),
             'jam' => date("h:i"),
             'email' => Session::get('email')
@@ -453,9 +464,5 @@ class Penjualan extends Controller
         Alert::success('Tipe Penjualan Berhasil Diubah');
         return redirect()->route('penjualan.retur')
             ->with('success', 'Transaksi Sukses');
-
-
     }
-
-
 }

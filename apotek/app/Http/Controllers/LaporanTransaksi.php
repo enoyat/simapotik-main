@@ -357,7 +357,7 @@ class LaporanTransaksi extends Controller
                     return view('laporantransaksi.laporanpenjualanresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Kredit']);
                 }
             }
-            
+
         } else {
             if ($request->kriteria == "nofaktur") {
                 $datapenjualan = M_penjualan::with('get_detailpenjualan', 'get_customer', 'get_detailresep')
@@ -429,44 +429,41 @@ class LaporanTransaksi extends Controller
                     // ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
                     // ->join('detailresep', 'detailresep.idpenjualan', '=', 'penjualan.id')
                     // ->where('jenispenjualan', 'R')
-                    // ->where('tipepenjualan', 'T')                   
-                    // ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])     
-                    // ->where('detailresep.iddokter', $request->iddokter)           
+                    // ->where('tipepenjualan', 'T')
+                    // ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
+                    // ->where('detailresep.iddokter', $request->iddokter)
                     // ->orderBy('tgltrans', 'asc')
                     // ->get();
                     $datapenjualan = M_penjualan::with('get_detailpenjualan', 'get_customer', 'get_detailresep')
-                    ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
-                    ->where('jenispenjualan', 'R')
-                    ->where('tipepenjualan', 'T')
-                    ->whereHas('get_detailresep', function ($query) use ($request) {
-                        $query->where('iddokter', $request->iddokter);
-                    })
-                    ->get()
-                    ->sortBy(function ($query) {
-                        return $query->namadokter;
-                    });
-
-                    
-                   
-                    return view('laporantransaksi.laporanpenjualanresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
-                }
-            }
-            else if ($request->kriteria == "barang") {
-
-                $datapenjualan = M_detailpenjualan::select('*', 'detailpenjualan.diskon', 'golongan.namagolongan')
-                        ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
-                        ->join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
-                        ->join('barang', 'barang.kdbarang', '=', 'detailpenjualan.kdbarang')
-                        ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
-                        ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
+                        ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'T')
-                        ->where('barang.kdbarang', $request->kdbarang)
-                        ->orderBy('tgltrans', 'asc')
-                        ->get();
-                   
-                    return view('laporantransaksi.laporanpenjualanpergolonganresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
-                
+                        ->whereHas('get_detailresep', function ($query) use ($request) {
+                            $query->where('iddokter', $request->iddokter);
+                        })
+                        ->get()
+                        ->sortBy(function ($query) {
+                            return $query->namadokter;
+                        });
+
+                    return view('laporantransaksi.laporanpenjualanresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
+                }
+            } else if ($request->kriteria == "barang") {
+
+                $datapenjualan = M_detailpenjualan::select('*', 'detailpenjualan.diskon', 'golongan.namagolongan')
+                    ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
+                    ->join('customer', 'penjualan.idcustomer', '=', 'customer.idcustomer')
+                    ->join('barang', 'barang.kdbarang', '=', 'detailpenjualan.kdbarang')
+                    ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
+                    ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
+                    ->where('jenispenjualan', 'R')
+                    ->where('tipepenjualan', 'T')
+                    ->where('barang.kdbarang', $request->kdbarang)
+                    ->orderBy('tgltrans', 'asc')
+                    ->get();
+
+                return view('laporantransaksi.laporanpenjualanpergolonganresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
+
             }
         }
     }
@@ -547,60 +544,92 @@ class LaporanTransaksi extends Controller
     }
     public function laporanrekappenjualan(Request $request)
     {
+
+        ini_set('max_execution_time', 180);
         $golongan = M_golongan::get();
+
         $datapenjualan = array();
         foreach ($golongan as $key => $value) {
+
             $hv = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
                 ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
                 ->join('barang', 'barang.kdbarang', '=', 'detailpenjualan.kdbarang')
                 ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
                 ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('barang.idgolongan', $value->idgolongan)
-                ->where('penjualan.jenispenjualan',"N")
+                ->where('penjualan.jenispenjualan', "N")
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
-                $resep = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
+            if($hv->count()<1){
+                $hv=0;
+            }
+            else {
+                $hv=$hv[0]->jumlah;
+            }
+
+            $resep = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
                 ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
                 ->join('barang', 'barang.kdbarang', '=', 'detailpenjualan.kdbarang')
                 ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
                 ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('barang.idgolongan', $value->idgolongan)
-                ->where('penjualan.jenispenjualan',"R")
+                ->where('penjualan.jenispenjualan', "R")
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
-                $retur = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
+            if($resep->count()<1){
+                $resep=0;
+            }
+            else {
+                $resep=$resep[0]->jumlah;
+            }
+            $retur = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
                 ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
                 ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
                 ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
                 ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
+                ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
                 ->whereBetween('returpenjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
                 ->where('barang.idgolongan', $value->idgolongan)
+                ->where('penjualan.jenispenjualan', 'N')
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
-            
-            $datapenjualan[]=[
-                'idgolongan'=>$value->idgolongan,
-                'namagolongan'=>$value->namagolongan,
-                'jumlah'=>$hv[0]->jumlah,
-                'jumlahresep'=>$resep[0]->jumlah,  
-                'jumlahretur'=>$retur[0]->jumlah,              
+
+            if($retur->count()<1){
+                $retur=0;
+            }
+            else {
+                $retur=$retur[0]->jumlah;
+            }
+                $returresep = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
+                ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
+                ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
+                ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
+                ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
+                ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
+                ->whereBetween('returpenjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
+                ->where('barang.idgolongan', $value->idgolongan)
+                ->where('penjualan.jenispenjualan', 'R')
+                ->groupby('barang.idgolongan', 'namagolongan')
+                ->get();
+
+            if($returresep->count()<1){
+                $returresep=0;
+            }
+            else {
+                $returresep=$returresep[0]->jumlah;
+            }
+
+            $datapenjualan[] = [
+                'idgolongan' => $value->idgolongan,
+                'namagolongan' => $value->namagolongan,
+                'jumlah' => $hv,
+                'jumlahresep' => $resep,
+                'jumlahretur' => $retur,
+                'jumlahreturresep' => $returresep,
+
             ];
-            // $transkrip[] = Transkrip::where([
-            //     ['idgolongan', $request->nim],
-            //     ['kdkmk', $value->kdkmk],
-            //     ['kdpst', $session_get_kdpst],
-            // ])->first();
         }
-        
-        // $datapenjualan = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
-        //     ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
-        //     ->join('barang', 'barang.kdbarang', '=', 'detailpenjualan.kdbarang')
-        //     ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
-        //     ->whereBetween('penjualan.tgltrans', [$request->tglmulai, $request->tglakhir])
-        //     ->groupby('barang.idgolongan', 'namagolongan')
-        //     ->orderBy('namagolongan', 'asc')
-        //     ->get();
-        //  dd($datapenjualan);
+
         return view('laporantransaksi.laporanrekappenjualan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $request->tglmulai, 'tglakhir' => $request->tglakhir]);
 
     }

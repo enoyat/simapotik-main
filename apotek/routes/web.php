@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Administrator\HomeController as AdministratorHomeController;
 use App\Http\Controllers\Akun;
 use App\Http\Controllers\BarangController;
@@ -98,7 +99,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('inretur/{id}', [Pembelian::class, 'inretur'])->name('pembelian.inretur');
             Route::get('forminretur', [Pembelian::class, 'forminretur'])->name('pembelian.forminretur');
             Route::post('approveinretur', [Pembelian::class, 'approveinretur'])->name('pembelian.approveinretur');
-
         });
         Route::group(['prefix' => 'penjualan'], function () {
             Route::get('/', [Penjualan::class, 'index'])->name('penjualan');
@@ -141,7 +141,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('fetch', [Penjualanresep::class, 'fetch'])->name('penjualanresep.fetch');
         });
     });
-    Route::group(['roles' => ['manajer','administrasi', 'operator']], function () {
+    Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
 
         Route::group(['prefix' => 'laporantransaksi'], function () {
             Route::get('rptpembelian', [LaporanTransaksi::class, 'rptpembelian'])->name('laporantransaksi.rptpembelian');
@@ -163,16 +163,12 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('laporanpenjualansehati', [LaporanSehati::class, 'laporanpenjualan'])->name('laporantransaksi.laporanpenjualansehati');
             Route::get('rptrekappenjualan', [LaporanTransaksi::class, 'rptrekappenjualan'])->name('laporantransaksi.rptrekappenjualan');
             Route::post('laporanrekappenjualan', [LaporanTransaksi::class, 'laporanrekappenjualan'])->name('laporantransaksi.laporanrekappenjualan');
-
-
-
         });
         Route::group(['prefix' => 'laporanretur'], function () {
             Route::get('rptreturpembelian', [LaporanRetur::class, 'rptreturpembelian'])->name('laporanretur.rptreturpembelian');
             Route::post('laporanreturpembelian', [LaporanRetur::class, 'laporanreturpembelian'])->name('laporanretur.laporanreturpembelian');
             Route::get('rptreturpenjualan', [LaporanRetur::class, 'rptreturpenjualan'])->name('laporanretur.rptreturpenjualan');
             Route::post('laporanreturpenjualan', [LaporanRetur::class, 'laporanreturpenjualan'])->name('laporanretur.laporanreturpenjualan');
-
         });
 
         Route::group(['prefix' => 'barang'], function () {
@@ -180,7 +176,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('create', [BarangController::class, 'create'])->name('barang.create');
             Route::post('store', [BarangController::class, 'store'])->name('barang.store');
             Route::post('destroy', [BarangController::class, 'destroy'])->name('barang.destroy');
-           
+
             Route::post('uploadgallery', [BarangController::class, 'uploadgallery'])->name('barang.uploadgallery');
             Route::get('hapusgallery/{kdorder}', [BarangController::class, 'hapusgallery'])->name('barang.hapusgallery');
             Route::get('getjenis', [BarangController::class, 'getjenis'])->name('barang.getjenis');
@@ -188,7 +184,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('getbarang', [BarangController::class, 'getbarang'])->name('barang.getbarang');
 
             Route::get('fetch', [BarangController::class, 'fetch'])->name('barang.fetch');
-
         });
         Route::group(['prefix' => 'supplier'], function () {
             Route::get('/', [SupplierController::class, 'index'])->name('supplier.index');
@@ -198,7 +193,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('edit/{kdorder}', [SupplierController::class, 'edit'])->name('supplier.edit');
             Route::post('update', [SupplierController::class, 'update'])->name('supplier.update');
             Route::get('getsupplier', [SupplierController::class, 'getsupplier'])->name('supplier.getsupplier');
-
         });
         Route::group(['prefix' => 'stoklokasi'], function () {
             Route::get('/', [LokasiController::class, 'index'])->name('stoklokasi.index');
@@ -216,7 +210,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('edit/{kdorder}', [CustomerController::class, 'edit'])->name('customer.edit');
             Route::post('update', [CustomerController::class, 'update'])->name('customer.update');
             Route::get('getcustomer', [CustomerController::class, 'getcustomer'])->name('customer.getcustomer');
-
         });
         Route::group(['prefix' => 'dokter'], function () {
             Route::get('/', [DokterController::class, 'index'])->name('dokter.index');
@@ -226,7 +219,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('edit/{kdorder}', [DokterController::class, 'edit'])->name('dokter.edit');
             Route::post('update', [DokterController::class, 'update'])->name('dokter.update');
             Route::get('getdokter', [DokterController::class, 'getdokter'])->name('dokter.getdokter');
-
         });
         Route::group(['prefix' => 'poly'], function () {
             Route::get('/', [PolyController::class, 'index'])->name('poly.index');
@@ -236,7 +228,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('edit/{kdorder}', [PolyController::class, 'edit'])->name('poly.edit');
             Route::post('update', [PolyController::class, 'update'])->name('poly.update');
             Route::get('getpoly', [PolyController::class, 'getpoly'])->name('poly.getpoly');
-
         });
         Route::group(['prefix' => 'jenispasien'], function () {
             Route::get('/', [JenispasienController::class, 'index'])->name('jenispasien.index');
@@ -246,7 +237,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('edit/{kdorder}', [JenispasienController::class, 'edit'])->name('jenispasien.edit');
             Route::post('update', [JenispasienController::class, 'update'])->name('jenispasien.update');
             Route::get('getjenispasien', [JenispasienController::class, 'getjenispasien'])->name('jenispasien.getjenispasien');
-
         });
         Route::group(['prefix' => 'kategori'], function () {
             Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
@@ -284,6 +274,8 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('store', [StokOpnameController::class, 'store'])->name('stokopname.store');
             Route::get('rptstokopname', [StokOpnameController::class, 'rptstokopname'])->name('stokopname.rptstokopname');
             Route::post('cetakstokopname', [StokOpnameController::class, 'cetakstokopname'])->name('stokopname.cetakstokopname');
+            Route::get('expstokopname', [StokOpnameController::class, 'expstokopname'])->name('stokopname.expstokopname');
+            Route::post('exportstokopname', [StokOpnameController::class, 'exportstokopname'])->name('stokopname.exportstokopname');
         });
         Route::group(['prefix' => 'stokawal'], function () {
             Route::get('/', [StokAwalController::class, 'index'])->name('stokawal.index');
@@ -314,7 +306,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('rincianorder', [OrderController::class, 'rincianorder'])->name('order.rincianorder');
             Route::get('caribarang', [OrderController::class, 'caribarang'])->name('order.caribarang');
             Route::get('fetch', [OrderController::class, 'fetch'])->name('order.fetch');
-
         });
         Route::group(['prefix' => 'mutasi'], function () {
             Route::get('/', [MutasiController::class, 'index'])->name('mutasi.index');
@@ -331,8 +322,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::delete('hapusmutasi/{id}', [MutasiController::class, 'hapusmutasi'])->name('mutasi.hapusmutasi');
             Route::get('rptmutasi', [MutasiController::class, 'rptmutasi'])->name('mutasi.rptmutasi');
             Route::post('laporanmutasi', [MutasiController::class, 'laporanmutasi'])->name('mutasi.laporanmutasi');
-
-
         });
 
         Route::group(['prefix' => 'sesionuser'], function () {
@@ -344,25 +333,19 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('update/{id}', [SesionuserController::class, 'update'])->name('sesionuser.update');
             Route::get('getuser', [SesionuserController::class, 'getuser'])->name('sesionuser.getuser');
             Route::get('show/{id}', [SesionuserController::class, 'show'])->name('sesionuser.show');
-
         });
         Route::group(['prefix' => 'kartustok'], function () {
             Route::get('/', [StokController::class, 'index'])->name('kartustok.index');
             Route::get('laporankartustok', [StokController::class, 'laporankartustok'])->name('kartustok.laporankartustok');
             Route::get('detail', [StokController::class, 'detail'])->name('kartustok.detail');
-
         });
         Route::get('utility/userpassword', [UtilityController::class, 'userpassword'])->name('utility.userpassword');
         Route::get('utility/register', [UtilityController::class, 'register'])->name('utility.register');
         Route::post('utility/postregister', [UtilityController::class, 'postregister'])->name('utility.postregister');
         Route::delete('utility/userdelete/{id}', [UtilityController::class, 'userdelete'])->name('userdelete');
-
-        
-
     });
     Route::group(['roles' => ['manajer']], function () {
         Route::get('barang/edit/{kdorder}', [BarangController::class, 'edit'])->name('barang.edit');
         Route::post('barang/update', [BarangController::class, 'update'])->name('barang.update');
     });
-    
 });

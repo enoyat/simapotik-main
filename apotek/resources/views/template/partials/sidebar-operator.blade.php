@@ -74,15 +74,7 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('laporantransaksi.rptsehati') }}"
-                                class="nav-link {{ request()->is('laporantransaksi.rptsehati') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Laporan Penjualan Sehati</p>
-                            </a>
-                        </li>
-                    </ul>
+
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('laporantransaksi.rptgembong') }}"

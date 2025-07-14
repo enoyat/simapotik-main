@@ -30,7 +30,8 @@ class ApiBarang extends Controller
                 where('stok.stok', '>=', 0)->
                 where('f_status', "AKTIF")->
                 where('idgolongan',"!=","G0004")->
-                where('idgolongan',"!=","G0006")
+                where('idgolongan',"!=","G0006")->
+                 where('idgolongan',"!=","G0005")
 
                 ->get();
                 return $data = [
@@ -42,6 +43,25 @@ class ApiBarang extends Controller
             $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
                 where('stok.idlokasi', $request->idlokasi)->
                 Where('namabarang', 'like', '%' . $request->namabarang . '%')->
+                 where('idgolongan',"!=","G0005")->
+                where('stok.stok', '>=', 0)->
+                where('f_status', "AKTIF")
+                ->get();
+
+            return $data = [
+                'status' => 'success',
+                'data' => $barang,
+            ];
+        }
+    }
+
+    public function getbarangkelontong(Request $request)
+    {
+
+            $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
+                where('stok.idlokasi', $request->idlokasi)->
+                Where('namabarang', 'like', '%' . $request->namabarang . '%')->
+                where('idgolongan',"=","G0005")->
                 where('stok.stok', '>=', 0)->
                 where('f_status', "AKTIF")
                 ->get();
@@ -54,7 +74,7 @@ class ApiBarang extends Controller
                 'status' => 'success',
                 'data' => $barang,
             ];
-        }
+
     }
     // public function caribarang(Request $request)
     // {

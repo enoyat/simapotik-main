@@ -7,6 +7,6 @@
     <title>Verifiy</title>
 </head>
 <body>
-    Akun anda tidak berhak!
+    Akun anda belum Aktif!
 </body>
 </html>

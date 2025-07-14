@@ -21,6 +21,7 @@ Route::get('barang', 'App\Http\Controllers\ApiBarang@index');
 Route::get('barang/{id}', 'App\Http\Controllers\ApiBarang@show');
 Route::post('barang/store', 'App\Http\Controllers\ApiBarang@store');
 Route::post('barang/getbarang', 'App\Http\Controllers\ApiBarang@getbarang');
+Route::post('barang/getbarangkelontong', 'App\Http\Controllers\ApiBarang@getbarangkelontong');
 Route::post('barang/caribarang', 'App\Http\Controllers\ApiBarang@caribarang');
 
 Route::get('customer', 'App\Http\Controllers\ApiCustomer@index');
@@ -43,7 +44,7 @@ Route::get('dokter/{id}', 'App\Http\Controllers\ApiDokter@show');
 Route::post('dokter/getdokter', 'App\Http\Controllers\ApiDokter@getdokter');
 Route::post('dokter/caridokter', 'App\Http\Controllers\ApiDokter@caridokter');
 
-Route::get('penjualan', 'App\Http\Controllers\ApiPenjualan@index'); 
+Route::get('penjualan', 'App\Http\Controllers\ApiPenjualan@index');
 Route::get('penjualan/{id}', 'App\Http\Controllers\ApiPenjualan@show');
 
 Route::post('transaksi/getinvoice', [App\Http\Controllers\ApiTransaksi::class, 'getinvoice']);

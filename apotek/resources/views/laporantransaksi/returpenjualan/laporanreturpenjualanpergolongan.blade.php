@@ -2,10 +2,10 @@
 <table width="900" border="0" cellpadding="0" cellspacing="0" style="font-size: 11px">
     <tr>
     <td align="center" colspan="3"><h2>Laporan Retur Penjualan</h2></strong>
-    <p>@if (isset($email)) 
+    <p>@if (isset($email))
         {{ $email }}
         @endif
-    </p></td>		
+    </p></td>
 
     </tr>
       <tr>
@@ -18,6 +18,7 @@
         <table width="900" height="21" border="1"  cellspacing="0" bordercolor="#000000" class="grid" style="font-size: 11px">
         <tr bgcolor="#CCCCCC">
         <th width="20" height="30">No.</th>
+        <th  width="10">Jenis Penjualan</th>
         <th width="20" ><p>notrans</p></th>
         <th width="40" ><p>Tanggal</p></th>
         <th width="50" ><p>customer</p></th>
@@ -57,6 +58,7 @@
         //....... body detail
         echo "<tr >";
         echo "<td height='20' align=center>$i</td>";
+        echo "<td align=center>".$data->jenispenjualan."</td>";
         echo "<td align=center>".$data->id."</td>";
         echo "<td align=center>".date_format(date_create($data->tgltrans),"d-m-Y")."</td>";
         echo "<td>".$data->namacustomer."</td>";
@@ -79,7 +81,7 @@
     }
     ?>
     <tr>
-        <td colspan="10" align="right">Total</td>
+        <td colspan="11" align="right">Total</td>
         <td align="right"><?php echo number_format($totaldiskon); ?></td>
         <td align="right"><?php echo number_format($total); ?></td>
     </tr>

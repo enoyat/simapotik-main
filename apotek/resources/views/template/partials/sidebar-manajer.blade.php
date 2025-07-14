@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary  elevation-4">
     <!-- Brand Logo -->
     <div class="brand-link">
-        <img src="{{ asset('assets/img/logoapotik.png') }}" class="brand-image" >
+        <img src="{{ asset('assets/img/logoapotik.png') }}" class="brand-image">
         <span class="brand-text font-weight-light" style="color:transparent">SIM Apotik</span>
     </div>
 
@@ -73,7 +73,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a href="{{ route('mutasi.index') }}"
                                 class="nav-link {{ request()->is('mutasi*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -204,18 +204,27 @@
                                 <p>Cetak Stok</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('stokopname.stok') }}"
-                                class="nav-link {{ request()->is('stokopname/stok*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Adjustment Stok</p>
-                            </a>
-                        </li>
+                        @if (Auth::user()->roles_id == '10')
+                            <li class="nav-item">
+                                <a href="{{ route('stokopname.stok') }}"
+                                    class="nav-link {{ request()->is('stokopname/stok*') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Adjustment Stok</p>
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a href="{{ route('stokopname.rptstokopname') }}"
                                 class="nav-link {{ request()->is('stokopname/rpt*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Cetak Stok Opname</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('stokopname.expstokopname') }}"
+                                class="nav-link {{ request()->is('stokopname/exp*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Export Excel Stok Opname</p>
                             </a>
                         </li>
                     </ul>
@@ -258,15 +267,7 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('laporantransaksi.rptsehati') }}"
-                                class="nav-link {{ request()->is('laporantransaksi.rptsehati') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Laporan Penjualan Sehati</p>
-                            </a>
-                        </li>
-                    </ul>
+
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('laporantransaksi.rptgembong') }}"

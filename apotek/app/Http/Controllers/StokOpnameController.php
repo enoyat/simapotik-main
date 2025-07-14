@@ -44,9 +44,7 @@ class StokOpnameController extends Controller
         //   ->where('barang.kdkategori', $request->kdkategori)
         // ->get();
         $datastok = M_stok::with('get_barang', 'get_lokasi')->where('idlokasi', $request->idlokasi)->first();
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', $request->idlokasi)->
-            where('barang.kdkategori', $request->kdkategori)->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', $request->idlokasi)->where('barang.kdkategori', $request->kdkategori)->get();
 
         if ($barang->count() < 1) {
             Alert::error('Data Tidak Ditemukan', 'Gagal');
@@ -74,10 +72,7 @@ class StokOpnameController extends Controller
         //     ->where('barang.kdpst', Session::get('globalkdpst'))
         //     ->where('barang.kdkategori', $request->kdkategori)
         //     ->get();
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', $request->idlokasi)->
-        where('barang.kdkategori', $request->kdkategori)->
-        get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', $request->idlokasi)->where('barang.kdkategori', $request->kdkategori)->get();
 
         return view('stokopname.fetch', ['barang' => $barang]);
         //
@@ -110,16 +105,18 @@ class StokOpnameController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
-            'stokfisik' => 'required|numeric',
-            'keterangan' => 'required',
-            'selisih' => 'required',
+        $request->validate(
+            [
+                'stokfisik' => 'required|numeric',
+                'keterangan' => 'required',
+                'selisih' => 'required',
 
-        ],
+            ],
             [
                 'stokfisik.required' => 'stok fisik tidak boleh kosong',
                 'stokfisik.numeric' => 'stokfisik harus angka',
-            ]);
+            ]
+        );
         $stokopname = new M_stokopname();
         $stokopname->tanggal = Carbon::now();
         $stokopname->kdbarang = $request->kdbarang;
@@ -134,7 +131,6 @@ class StokOpnameController extends Controller
             'status' => $simpan,
             'message' => $simpan ? 'Data Berhasil Disimpan' : 'Data Gagal Disimpan',
         ];
-
     }
 
     /**
@@ -182,16 +178,17 @@ class StokOpnameController extends Controller
     }
     public function rptstokopname()
     {
-        $lokasi= M_stoklokasi::get();
+        $lokasi = M_stoklokasi::get();
         return view('stokopname.rptstokopname', ['lokasi' => $lokasi]);
         //
     }
+
     public function cetakstokopname(Request $request)
     {
         $tglmulai = $request->tglmulai;
         $tglakhir = $request->tglakhir;
         $barang = M_barang::with('get_kategori')
-            ->select('barang.*', 'stokopname.tanggal', 'stoklokasi.namalokasi','stokopname.stoksistem', 'stokopname.stokfisik', 'stokopname.selisih', 'stokopname.keterangan')
+            ->select('barang.*', 'stokopname.tanggal', 'stoklokasi.namalokasi', 'stokopname.stoksistem', 'stokopname.stokfisik', 'stokopname.selisih', 'stokopname.keterangan')
             ->join('stokopname', 'stokopname.kdbarang', '=', 'barang.kdbarang')
             ->join('stoklokasi', 'stoklokasi.idlokasi', '=', 'stokopname.idlokasi')
             ->where('barang.kdpst', Session::get('globalkdpst'))
@@ -201,5 +198,17 @@ class StokOpnameController extends Controller
         return view('stokopname.laporanstokopname', ['barang' => $barang, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir]);
         //
     }
-
+    public function expstokopname()
+    {
+        $lokasi = M_stoklokasi::get();
+        return view('stokopname.expstokopname', ['lokasi' => $lokasi]);
+        //
+    }
+    public function exportstokopname(Request $request)
+    {
+        $lokasi = M_stoklokasi::get();
+        $datastok = M_barang::with('jmlstok')->orderby('namabarang')->get();
+        return view('stokopname.exportstokopname', ['datastok' => $datastok, 'lokasi' => $lokasi, 'title' => 'Laporan Stok Opname']);
+        //
+    }
 }

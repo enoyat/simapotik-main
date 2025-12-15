@@ -1,5 +1,9 @@
 ﻿Imports Microsoft.Reporting.WinForms
 Imports System.Drawing.Printing
+Imports Newtonsoft.Json
+Imports System.Net.Http
+Imports System.Text
+
 Public Class FormPenjualanResep
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
@@ -53,6 +57,7 @@ Public Class FormPenjualanResep
                     total = jumlah
                     Dim row As String() = New String() {xkdbarang, xnamabarang, xharga, qty, jumlah, "0", "0", total}
                     DataGridView1.Rows.Add(row)
+                    Call hitung()
                 Else
                     MsgBox("Data tidak ditemukan", vbOK, "Informasi")
                     Call hitung()
@@ -267,13 +272,13 @@ Public Class FormPenjualanResep
         Dim garis As String
         garis = "----------------------------------------------------------------------------"
 
-        e.Graphics.DrawString("APOTEK SEHATI", f14, Brushes.Black, centermargin, 5, tengah)
-        e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
-        e.Graphics.DrawString("Telp. (0295) 392166 WA: 08112901281", f10, Brushes.Black, centermargin, 40, tengah)
+        e.Graphics.DrawString(toko, f14, Brushes.Black, centermargin, 5, tengah)
+        e.Graphics.DrawString(alamat, f10, Brushes.Black, centermargin, 25, tengah)
+        e.Graphics.DrawString(telpon, f10, Brushes.Black, centermargin, 40, tengah)
 
         e.Graphics.DrawString("NOTA APOTEK", f10, Brushes.Black, 0, 60)
         e.Graphics.DrawString(tgltransaksi.Value, f10, Brushes.Black, 0, 75)
-        e.Graphics.DrawString("NPWP: 02.908.598.2-507.000", f10, Brushes.Black, 0, 90)
+        e.Graphics.DrawString(npwp, f10, Brushes.Black, 0, 90)
         e.Graphics.DrawString("Harga sudah termasuk PPN", f10, Brushes.Black, 0, 105)
         e.Graphics.DrawString("Pro ", f10, Brushes.Black, 0, 125)
         e.Graphics.DrawString(":", f10, Brushes.Black, 65, 125)
@@ -413,7 +418,8 @@ Public Class FormPenjualanResep
     End Sub
 
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
-        btnsimpan.Enabled = False
+
+
         Dim modebayar As String
         If CheckBox1.Checked = True Then
             modebayar = "NON TUNAI"
@@ -424,45 +430,59 @@ Public Class FormPenjualanResep
             MsgBox("Belum memilih DOkter")
             Exit Sub
         End If
-        Dim parameters = New Specialized.NameValueCollection
-
-        parameters.Add("idcustomer", txtkdcustomer.Text)
-        parameters.Add("total", jmltotal)
-        parameters.Add("email", txtkasir.Text)
-        parameters.Add("modebayar", modebayar)
-        parameters.Add("tgltrans", tgltransaksi.Value)
-        parameters.Add("tipepenjualan", combotipepenjualan.Text)
+        btnsimpan.Enabled = False
 
 
+        ' Mengumpulkan data untuk Items dari DataGridView1
+        Dim items As New List(Of Dictionary(Of String, String))
+        Dim jmldata As Integer = DataGridView1.Rows.Count
 
-        Dim respons = postData(urlprefix + "penjualan/store", "POST", parameters)
-        Dim state = respons.SelectToken("status").ToString
-        If state = "success" Then
-            Dim lastid As Integer = respons("data")("lastid")
-            txtnonota.Text = lastid
-            '  Dim parameteritems = New Specialized.NameValueCollection
-            Dim jmldata As Integer = DataGridView1.Rows.Count
-            For i As Integer = 0 To jmldata - 1
-                Dim parameteritems = New Specialized.NameValueCollection
-                parameteritems.Add("idpenjualan", lastid)
-                parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
-                parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
-                parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
-                parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
-                parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
-                parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
-                If (ComboLokasi.SelectedIndex = 0) Then
-                    parameteritems.Add("idlokasi", "TOKO")
-                Else
-                    parameteritems.Add("idlokasi", "G4")
-                End If
+        For i As Integer = 0 To jmldata - 1
+            Dim idlokasi = ""
+            If (ComboLokasi.SelectedIndex = 0) Then
+                idlokasi = "TOKO"
+            Else
+                idlokasi = "G4"
+            End If
+            Dim item As New Dictionary(Of String, String) From {
+                    {"kdbarang", DataGridView1.Item(0, i).Value},
+                    {"qty", DataGridView1.Item(3, i).Value},
+                    {"harga", DataGridView1.Item(2, i).Value},
+                    {"diskonpersen", DataGridView1.Item(5, i).Value},
+                    {"diskon", DataGridView1.Item(6, i).Value},
+                    {"jumlah", DataGridView1.Item(7, i).Value},
+                    {"idlokasi", idlokasi}
+                }
+            items.Add(item)
+        Next
 
-                postData(urlprefix + "penjualan/storeitem", "POST", parameteritems)
-            Next
+        ' Membuat dictionary utama untuk JSON
+        Dim datapenjualan As New Dictionary(Of String, Object) From {
+                    {"idcustomer", txtkdcustomer.Text},
+                    {"total", jmltotal},
+                    {"email", txtkasir.Text},
+                    {"modebayar", modebayar},
+                    {"tgltrans", tgltransaksi.Value},
+                    {"tipepenjualan", combotipepenjualan.Text},
+                    {"Items", items}
+            }
 
+        ' Serialize ke JSON string
+        Dim jsonString As String = JsonConvert.SerializeObject(datapenjualan, Formatting.Indented)
+
+        ' Kirim ke API
+        Dim apiUrl As String = urlprefix + "penjualan/store" ' Ganti dengan URL API Anda
+        Dim responseContent As String = ""
+        'Console.WriteLine(jsonString)
+        Dim isSuccess As Boolean = SendJsonToApi(apiUrl, jsonString, responseContent)
+
+        If isSuccess Then
+            MsgBox("Simpan Sukses")
+            ' Dim lastid As Integer = respons("data")("lastid")
+            'txtnonota.Text = lastid
             Dim parameterreseps = New Specialized.NameValueCollection
-            parameterreseps.Add("idpenjualan", lastid)
-            parameterreseps.Add("noresep", lastid)
+            parameterreseps.Add("idpenjualan", txtnonota.Text)
+            parameterreseps.Add("noresep", txtnonota.Text)
             parameterreseps.Add("iddokter", txtiddokter.Text)
             parameterreseps.Add("namapasien", txtnamapasien.Text)
             parameterreseps.Add("tipepenjualan", combotipepenjualan.Text)
@@ -472,16 +492,20 @@ Public Class FormPenjualanResep
             postData(urlprefix + "penjualan/storeresep", "POST", parameterreseps)
 
 
-            MsgBox("Simpan Data Sukses")
+            'MsgBox("Simpan Data Sukses")
             'PPD.ShowDialog()
             PD.Print()
             btnsimpan.Enabled = False
             txtbayar.Enabled = False
             btncetak.Enabled = True
             btnclear.Select()
+
         Else
-            MsgBox("ada kesahalan data")
+            ' API gagal
+            MsgBox($"Gagal simpan. Respon: {responseContent}")
         End If
+
+
 
 
     End Sub
@@ -555,4 +579,36 @@ Public Class FormPenjualanResep
     Private Sub DataGridView1_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellEndEdit
         Call cellenter()
     End Sub
+
+    Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
+
+    End Sub
+
+    Private Sub PrintDocument1_BeginPrint(sender As Object, e As PrintEventArgs) Handles PrintDocument1.BeginPrint
+
+    End Sub
+    Function SendJsonToApi(apiUrl As String, jsonData As String, ByRef responseContent As String) As Boolean
+        Try
+            Using client As New HttpClient()
+                Dim content As New StringContent(jsonData, Encoding.UTF8, "application/json")
+                Dim response As HttpResponseMessage = client.PostAsync(apiUrl, content).Result
+
+                responseContent = response.Content.ReadAsStringAsync().Result
+
+                If response.IsSuccessStatusCode Then
+                    Dim responseObject = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseContent)
+                    Dim id As String = responseObject("id").ToString()
+                    txtnonota.Text = id
+                    Return True ' Berhasil
+                Else
+                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}")
+                    Return False ' Gagal
+                End If
+            End Using
+        Catch ex As Exception
+            responseContent = $"Exception: {ex.Message}"
+            Console.WriteLine(responseContent)
+            Return False ' Gagal karena exception
+        End Try
+    End Function
 End Class

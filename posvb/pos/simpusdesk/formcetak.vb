@@ -1,5 +1,9 @@
 ﻿Imports Microsoft.Reporting.WinForms
 Imports System.Drawing.Printing
+Imports Newtonsoft.Json
+Imports System.Net.Http
+Imports System.Text
+
 Public Class formcetak
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
@@ -159,30 +163,43 @@ Public Class formcetak
         panjang = panjang + 300
     End Sub
     Private Sub PD_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PD.PrintPage
-
+        Dim namaprinter = cekprinter()
         Dim f10 As New Font("Times New Roman", 8, FontStyle.Regular)
         Dim f6 As New Font("Times New Roman", 6, FontStyle.Regular)
         Dim f10b As New Font("Times New Roman", 8, FontStyle.Bold)
-        Dim f14 As New Font("Times New Roman", 14, FontStyle.Bold)
+        Dim f14 As New Font("Times New Roman", 12, FontStyle.Bold)
         Dim leftmargin As Integer = PD.DefaultPageSettings.Margins.Left
         Dim centermargin As Integer = PD.DefaultPageSettings.PaperSize.Width / 2
         Dim rigtmargin As Integer = PD.DefaultPageSettings.PaperSize.Width
+        Dim garis = "----------------------------------------------------------------------------"
+
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            f10 = New Font("FontB11", 6, FontStyle.Regular)
+            f6 = New Font("FontB11", 6, FontStyle.Regular)
+            f10b = New Font("FontB11", 7, FontStyle.Bold)
+            f14 = New Font("Times New Roman", 14, FontStyle.Bold)
+            leftmargin = PD.DefaultPageSettings.Margins.Left
+            centermargin = PD.DefaultPageSettings.PaperSize.Width / 2
+            rigtmargin = PD.DefaultPageSettings.PaperSize.Width
+            garis = "--------------------------------------------------------------------------------------------------------"
+
+        End If
+
+
 
         Dim kanan As New StringFormat
         Dim tengah As New StringFormat
         kanan.Alignment = StringAlignment.Far
         tengah.Alignment = StringAlignment.Center
-        Dim garis As String
         Dim hargagolongan = 0
-        garis = "----------------------------------------------------------------------------"
 
-        e.Graphics.DrawString("APOTEK SEHATI", f14, Brushes.Black, centermargin, 5, tengah)
-        e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
-        e.Graphics.DrawString("Telp. (0295) 392166 WA: 08112901281", f10, Brushes.Black, centermargin, 40, tengah)
+        e.Graphics.DrawString(toko, f14, Brushes.Black, centermargin, 5, tengah)
+        e.Graphics.DrawString(alamat, f10, Brushes.Black, centermargin, 25, tengah)
+        e.Graphics.DrawString(telpon, f10, Brushes.Black, centermargin, 40, tengah)
 
         e.Graphics.DrawString("NOTA APOTEK", f10, Brushes.Black, 0, 60)
         e.Graphics.DrawString(tgltrans, f10, Brushes.Black, 0, 75)
-        e.Graphics.DrawString("NPWP: 02.908.598.2-507.000", f10, Brushes.Black, 0, 90)
+        e.Graphics.DrawString(npwp, f10, Brushes.Black, 0, 90)
         e.Graphics.DrawString("Harga sudah termasuk PPN", f10, Brushes.Black, 0, 105)
         e.Graphics.DrawString("No. Nota", f10, Brushes.Black, 0, 125)
         e.Graphics.DrawString(":", f10, Brushes.Black, 65, 125)
@@ -253,10 +270,50 @@ Public Class formcetak
         Call caridetail()
 
     End Sub
+
+    Private Sub txtcari_TextChanged(sender As Object, e As EventArgs) Handles txtcari.TextChanged
+
+    End Sub
+
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
         Dim pagesetup As New PageSettings
-        pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        Dim namaprinter = cekprinter()
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            pagesetup.PaperSize = New PaperSize("Custom", 240, panjang)
+        Else
+            pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        End If
         PD.DefaultPageSettings = pagesetup
     End Sub
+    Function SendJsonToApi(apiUrl As String, jsonData As String, ByRef responseContent As String) As Boolean
+        Try
+            Using client As New HttpClient()
+                Dim content As New StringContent(jsonData, Encoding.UTF8, "application/json")
+                Dim response As HttpResponseMessage = client.PostAsync(apiUrl, content).Result
+
+                responseContent = response.Content.ReadAsStringAsync().Result
+
+                If response.IsSuccessStatusCode Then
+                    Dim responseObject = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseContent)
+                    Dim id As String = responseObject("id").ToString()
+                    '  txtnonota.Text = id
+                    Return True ' Berhasil
+                Else
+                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}")
+                    Return False ' Gagal
+                End If
+            End Using
+        Catch ex As Exception
+            responseContent = $"Exception: {ex.Message}"
+            Console.WriteLine(responseContent)
+            Return False ' Gagal karena exception
+        End Try
+    End Function
+
+    Function cekprinter()
+        Dim settings As PrinterSettings = New PrinterSettings()
+        Dim paijo = settings.PrinterName
+        Return paijo
+    End Function
 
 End Class

@@ -26,7 +26,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>48</ApplicationRevision>
+    <ApplicationRevision>67</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -227,6 +227,12 @@
     <Compile Include="FormBarangGembong.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormBarangKelontong.Designer.vb">
+      <DependentUpon>FormBarangKelontong.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormBarangKelontong.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormBarangResep.Designer.vb">
       <DependentUpon>FormBarangResep.vb</DependentUpon>
     </Compile>
@@ -261,6 +267,18 @@
       <DependentUpon>FormInvoice.vb</DependentUpon>
     </Compile>
     <Compile Include="FormInvoice.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKelontong.Designer.vb">
+      <DependentUpon>FormKelontong.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormKelontong.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKonfigurasi.Designer.vb">
+      <DependentUpon>FormKonfigurasi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormKonfigurasi.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormLogin.Designer.vb">
@@ -325,6 +343,9 @@
     <EmbeddedResource Include="FormBarangGembong.resx">
       <DependentUpon>FormBarangGembong.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormBarangKelontong.resx">
+      <DependentUpon>FormBarangKelontong.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormBarangResep.resx">
       <DependentUpon>FormBarangResep.vb</DependentUpon>
     </EmbeddedResource>
@@ -342,6 +363,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormInvoice.resx">
       <DependentUpon>FormInvoice.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormKelontong.resx">
+      <DependentUpon>FormKelontong.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormKonfigurasi.resx">
+      <DependentUpon>FormKonfigurasi.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.vb</DependentUpon>
@@ -396,6 +423,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="buku_png_16_dnx_icon.ico" />
+    <Content Include="config.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SqlServerTypes\Loader.cs" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">

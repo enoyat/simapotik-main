@@ -5,9 +5,15 @@ Imports MySql.Data.MySqlClient
 Imports Newtonsoft.Json.Linq
 
 Module modConnection
-    'Public urlprefix = "http://192.168.100.104:8000/api/"
-    Public urlprefix = ""
-    Public username, kdpst, toko, alamat, telpon, nim As String
+    Public urlprefix As String
+    'Public urlprefix = ""
+    Public username, kdpst As String
+    Public toko = "APOTEK SEHATIJAYA JUWANA"
+    Public alamat = "Jl.P.Diponegoro no 38"
+    Public telpon = "Telp. WA: 0853-8590-1298"
+    Public npwp = "NPWP: 02.908.598.2-507.000"
+
+    Public nim = ""
 
     Public ipserver, idkoneksi As String
     Public role_id As String
@@ -55,8 +61,11 @@ Module modConnection
         Return content
     End Function
     Sub Konfigurasi()
-        urlprefix = BacaBarisKe("C:\server\config.txt", 1)
-        ' ipserver = BacaBarisKe(Application.StartupPath & "\config.txt", 1)
+        'urlprefix = "http://192.168.20.252/api/"
+        'urlprefix = "http://simapotik.local/api/"
+
+        ' urlprefix = BacaBarisKe("C:\server\config.txt", 1)
+        urlprefix = BacaBarisKe(Application.StartupPath & "\config.txt", 1)
         idkoneksi = ";user id=admin_simpus;database=admin_simpus;password=//Dadiati**/simpus;persistsecurityinfo=True"
     End Sub
     Sub Koneksi()

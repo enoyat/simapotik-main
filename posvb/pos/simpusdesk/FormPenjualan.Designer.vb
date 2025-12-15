@@ -170,6 +170,7 @@ Partial Class FormPenjualan
         Me.txtdisplayjmltotal.Location = New System.Drawing.Point(448, 12)
         Me.txtdisplayjmltotal.Multiline = True
         Me.txtdisplayjmltotal.Name = "txtdisplayjmltotal"
+        Me.txtdisplayjmltotal.ReadOnly = True
         Me.txtdisplayjmltotal.Size = New System.Drawing.Size(635, 81)
         Me.txtdisplayjmltotal.TabIndex = 2
         Me.txtdisplayjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right

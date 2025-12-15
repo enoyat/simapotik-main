@@ -1,5 +1,8 @@
 ﻿Imports Microsoft.Reporting.WinForms
 Imports System.Drawing.Printing
+Imports Newtonsoft.Json
+Imports System.Net.Http
+Imports System.Text
 Public Class FormPenjualan
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
@@ -269,29 +272,41 @@ Public Class FormPenjualan
     End Sub
 
     Private Sub PD_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PD.PrintPage
+        Dim namaprinter = cekprinter()
         Dim f10 As New Font("Times New Roman", 8, FontStyle.Regular)
         Dim f6 As New Font("Times New Roman", 6, FontStyle.Regular)
         Dim f10b As New Font("Times New Roman", 8, FontStyle.Bold)
-        Dim f14 As New Font("Times New Roman", 14, FontStyle.Bold)
+        Dim f14 As New Font("Times New Roman", 12, FontStyle.Bold)
         Dim leftmargin As Integer = PD.DefaultPageSettings.Margins.Left
         Dim centermargin As Integer = PD.DefaultPageSettings.PaperSize.Width / 2
         Dim rigtmargin As Integer = PD.DefaultPageSettings.PaperSize.Width
+        Dim garis = "----------------------------------------------------------------------------"
+
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            f10 = New Font("FontB11", 6, FontStyle.Regular)
+            f6 = New Font("FontB11", 6, FontStyle.Regular)
+            f10b = New Font("FontB11", 7, FontStyle.Bold)
+            f14 = New Font("Times New Roman", 14, FontStyle.Bold)
+            leftmargin = PD.DefaultPageSettings.Margins.Left
+            centermargin = PD.DefaultPageSettings.PaperSize.Width / 2
+            rigtmargin = PD.DefaultPageSettings.PaperSize.Width
+            garis = "--------------------------------------------------------------------------------------------------------"
+
+        End If
 
         Dim kanan As New StringFormat
         Dim tengah As New StringFormat
         kanan.Alignment = StringAlignment.Far
         tengah.Alignment = StringAlignment.Center
-        Dim garis As String
         Dim hargagolongan = 0
-        garis = "----------------------------------------------------------------------------"
 
-        e.Graphics.DrawString("APOTEK SEHATI", f14, Brushes.Black, centermargin, 5, tengah)
-        e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
-        e.Graphics.DrawString("Telp. (0295) 392166 WA: 08112901281", f10, Brushes.Black, centermargin, 40, tengah)
+        e.Graphics.DrawString(toko, f14, Brushes.Black, centermargin, 5, tengah)
+        e.Graphics.DrawString(alamat, f10, Brushes.Black, centermargin, 25, tengah)
+        e.Graphics.DrawString(telpon, f10, Brushes.Black, centermargin, 40, tengah)
 
         e.Graphics.DrawString("NOTA APOTEK", f10, Brushes.Black, 0, 60)
         e.Graphics.DrawString(tgltransaksi.Value, f10, Brushes.Black, 0, 75)
-        e.Graphics.DrawString("NPWP: 02.908.598.2-507.000", f10, Brushes.Black, 0, 90)
+        e.Graphics.DrawString(npwp, f10, Brushes.Black, 0, 90)
         e.Graphics.DrawString("Harga sudah termasuk PPN", f10, Brushes.Black, 0, 105)
         e.Graphics.DrawString("No. Nota", f10, Brushes.Black, 0, 125)
         e.Graphics.DrawString(":", f10, Brushes.Black, 65, 125)
@@ -311,18 +326,18 @@ Public Class FormPenjualan
                 hargagolongan = hargagolongan + (DataGridView1.Rows(baris).Cells(7).Value)
             Else
                 tinggi += 15
-                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(3).Value.ToString, f10, Brushes.Black, 0, 165 + tinggi)
+                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(3).Value.ToString, f6, Brushes.Black, 0, 165 + tinggi)
                 Dim jmlnamabarang = Len(DataGridView1.Rows(baris).Cells(1).Value.ToString)
                 If jmlnamabarang > 30 Then
                     Dim namabarangpendek = DataGridView1.Rows(baris).Cells(1).Value.ToString
 
-                    e.Graphics.DrawString(namabarangpendek.Substring(0, Math.Min(30, namabarangpendek.Length)), f10, Brushes.Black, 25, 165 + tinggi)
+                    e.Graphics.DrawString(namabarangpendek.Substring(0, Math.Min(30, namabarangpendek.Length)), f6, Brushes.Black, 25, 165 + tinggi)
                 Else
-                    e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(1).Value.ToString, f10, Brushes.Black, 25, 165 + tinggi)
+                    e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(1).Value.ToString, f6, Brushes.Black, 25, 165 + tinggi)
                 End If
                 i = DataGridView1.Rows(baris).Cells(7).Value
                 DataGridView1.Rows(baris).Cells(7).Value = Format(i, "##,##0")
-                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(7).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(7).Value.ToString, f6, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
             End If
         Next
         If (hargagolongan > 0) Then
@@ -354,7 +369,12 @@ Public Class FormPenjualan
 
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
         Dim pagesetup As New PageSettings
-        pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        Dim namaprinter = cekprinter()
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            pagesetup.PaperSize = New PaperSize("Custom", 240, panjang)
+        Else
+            pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        End If
         PD.DefaultPageSettings = pagesetup
     End Sub
 
@@ -440,64 +460,98 @@ Public Class FormPenjualan
         End Try
     End Sub
 
-
-    Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
+    Function SendJsonToApi(apiUrl As String, jsonData As String, ByRef responseContent As String) As Boolean
         Try
-            Dim modebayar As String
-            If CheckBox1.Checked = True Then
+            Using client As New HttpClient()
+                Dim content As New StringContent(jsonData, Encoding.UTF8, "application/json")
+                Dim response As HttpResponseMessage = client.PostAsync(apiUrl, content).Result
+
+                responseContent = response.Content.ReadAsStringAsync().Result
+
+                If response.IsSuccessStatusCode Then
+                    Dim responseObject = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseContent)
+                    Dim id As String = responseObject("id").ToString()
+                    txtnonota.Text = id
+                    Return True ' Berhasil
+                Else
+                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}")
+                    Return False ' Gagal
+                End If
+            End Using
+        Catch ex As Exception
+            responseContent = $"Exception: {ex.Message}"
+            Console.WriteLine(responseContent)
+            Return False ' Gagal karena exception
+        End Try
+    End Function
+    Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
+
+        Dim modebayar As String
+        If CheckBox1.Checked = True Then
                 modebayar = "NON TUNAI"
             Else
                 modebayar = "TUNAI"
             End If
             btnsimpan.Enabled = False
-            Dim parameters = New Specialized.NameValueCollection
-
-            parameters.Add("idcustomer", txtkdcustomer.Text)
-            parameters.Add("total", jmltotal)
-            parameters.Add("email", txtkasir.Text)
-            parameters.Add("modebayar", modebayar)
-            parameters.Add("tgltrans", tgltransaksi.Value)
-            parameters.Add("tipepenjualan", combotipepenjualan.Text)
 
 
+            ' Mengumpulkan data untuk Items dari DataGridView1
+            Dim items As New List(Of Dictionary(Of String, String))
+            Dim jmldata As Integer = DataGridView1.Rows.Count
 
-            Dim respons = postData(urlprefix + "penjualan/store", "POST", parameters)
-            Dim state = respons.SelectToken("status").ToString
-            If state = "success" Then
-                Dim lastid As Integer = respons("data")("lastid")
-                txtnonota.Text = lastid
-                '  Dim parameteritems = New Specialized.NameValueCollection
-                Dim jmldata As Integer = DataGridView1.Rows.Count
-                For i As Integer = 0 To jmldata - 1
-                    Dim parameteritems = New Specialized.NameValueCollection
-                    parameteritems.Add("idpenjualan", lastid)
-                    parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
-                    parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
-                    parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
-                    parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
-                    parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
-                    parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
-                    parameteritems.Add("idlokasi", "TOKO")
+            For i As Integer = 0 To jmldata - 1
+                Dim item As New Dictionary(Of String, String) From {
+                    {"kdbarang", DataGridView1.Item(0, i).Value},
+                    {"qty", DataGridView1.Item(3, i).Value},
+                    {"harga", DataGridView1.Item(2, i).Value},
+                    {"diskonpersen", DataGridView1.Item(5, i).Value},
+                    {"diskon", DataGridView1.Item(6, i).Value},
+                    {"jumlah", DataGridView1.Item(7, i).Value},
+                    {"idlokasi", "TOKO"}
+                }
+                items.Add(item)
+            Next
 
-                    respons = postData(urlprefix + "penjualan/storeitem", "POST", parameteritems)
-                Next
+            ' Membuat dictionary utama untuk JSON
+            Dim datapenjualan As New Dictionary(Of String, Object) From {
+                    {"idcustomer", txtkdcustomer.Text},
+                    {"total", jmltotal},
+                    {"email", txtkasir.Text},
+                    {"modebayar", modebayar},
+                    {"tgltrans", tgltransaksi.Value},
+                    {"tipepenjualan", combotipepenjualan.Text},
+                    {"Items", items}
+            }
 
-                MsgBox("Simpan Data Sukses")
-                If (kategori.Text = "khusus") Then
-                    cetakrdlc()
-                Else
-                    PD.Print()
-                End If
-                btnsimpan.Enabled = False
-                txtbayar.Enabled = False
-                btncetak.Enabled = True
-                btnclear.Select()
+            ' Serialize ke JSON string
+            Dim jsonString As String = JsonConvert.SerializeObject(datapenjualan, Formatting.Indented)
+
+            ' Kirim ke API
+            Dim apiUrl As String = urlprefix + "penjualan/store" ' Ganti dengan URL API Anda
+        Dim responseContent As String = ""
+        'Console.WriteLine(jsonString)
+        Dim isSuccess As Boolean = SendJsonToApi(apiUrl, jsonString, responseContent)
+
+        If isSuccess Then
+            MsgBox("Simpan Sukses")
+            ' Dim lastid As Integer = respons("data")("lastid")
+            'txtnonota.Text = lastid
+
+            ' API sukses
+            If kategori.Text = "khusus" Then
+                cetakrdlc()
             Else
-                MsgBox("ada kesahalan data")
+                PD.Print()
             End If
-        Catch
-            MsgBox("ada kesahalan penyimpanan data")
-        End Try
+
+            btnsimpan.Enabled = False
+            txtbayar.Enabled = False
+            btncetak.Enabled = True
+            btnclear.Select()
+        Else
+            ' API gagal
+            MsgBox($"Gagal simpan. Respon: {responseContent}")
+        End If
 
 
     End Sub
@@ -573,4 +627,15 @@ Public Class FormPenjualan
     Private Sub DataGridView1_Layout(sender As Object, e As LayoutEventArgs) Handles DataGridView1.Layout
 
     End Sub
+
+    Private Sub FormPenjualan_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+
+    End Sub
+
+    Function cekprinter()
+        Dim settings As PrinterSettings = New PrinterSettings()
+        Dim paijo = settings.PrinterName
+        Return paijo
+    End Function
+
 End Class

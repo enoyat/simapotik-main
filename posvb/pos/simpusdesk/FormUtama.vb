@@ -88,6 +88,8 @@
         ToolStripButton3.Enabled = status
         ToolStripButton4.Enabled = status
         ToolStripButton1.Enabled = status
+        ToolStripButton2.Enabled = status
+
 
         LogoutToolStripMenuItem.Enabled = status
     End Sub
@@ -126,5 +128,16 @@
 
     Private Sub ToolStripStatusLabel3_Click(sender As Object, e As EventArgs) Handles ToolStripStatusLabel3.Click
 
+    End Sub
+
+    Private Sub ToolStripButton2_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton2.Click
+        FormKelontong.Close()
+
+        FormKelontong.ShowDialog()
+    End Sub
+
+    Private Sub KonfigurasiToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles KonfigurasiToolStripMenuItem.Click
+        FormKonfigurasi.Close()
+        FormKonfigurasi.ShowDialog()
     End Sub
 End Class

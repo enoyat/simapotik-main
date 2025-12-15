@@ -166,6 +166,7 @@ Partial Class FormPenjualanResep
         Me.txtdisplayjmltotal.Location = New System.Drawing.Point(520, 12)
         Me.txtdisplayjmltotal.Multiline = True
         Me.txtdisplayjmltotal.Name = "txtdisplayjmltotal"
+        Me.txtdisplayjmltotal.ReadOnly = True
         Me.txtdisplayjmltotal.Size = New System.Drawing.Size(584, 81)
         Me.txtdisplayjmltotal.TabIndex = 2
         Me.txtdisplayjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -433,6 +434,9 @@ Partial Class FormPenjualanResep
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(668, 58)
         Me.Panel1.TabIndex = 46
+        '
+        'PrintDocument1
+        '
         '
         'txtnamapasien
         '

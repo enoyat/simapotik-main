@@ -1,5 +1,8 @@
 ﻿Imports Microsoft.Reporting.WinForms
 Imports System.Drawing.Printing
+Imports Newtonsoft.Json
+Imports System.Net.Http
+Imports System.Text
 Public Class FormGembong
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
@@ -225,6 +228,7 @@ Public Class FormGembong
     End Sub
 
     Private Sub PD_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PD.PrintPage
+        Dim namaprinter = cekprinter()
         Dim f10 As New Font("Times New Roman", 8, FontStyle.Regular)
         Dim f6 As New Font("Times New Roman", 6, FontStyle.Regular)
         Dim f10b As New Font("Times New Roman", 8, FontStyle.Bold)
@@ -232,13 +236,25 @@ Public Class FormGembong
         Dim leftmargin As Integer = PD.DefaultPageSettings.Margins.Left
         Dim centermargin As Integer = PD.DefaultPageSettings.PaperSize.Width / 2
         Dim rigtmargin As Integer = PD.DefaultPageSettings.PaperSize.Width
+        Dim garis = "----------------------------------------------------------------------------"
+
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            f10 = New Font("FontB11", 6, FontStyle.Regular)
+            f6 = New Font("FontB11", 6, FontStyle.Regular)
+            f10b = New Font("FontB11", 7, FontStyle.Bold)
+            f14 = New Font("Times New Roman", 14, FontStyle.Bold)
+            leftmargin = PD.DefaultPageSettings.Margins.Left
+            centermargin = PD.DefaultPageSettings.PaperSize.Width / 2
+            rigtmargin = PD.DefaultPageSettings.PaperSize.Width
+            garis = "--------------------------------------------------------------------------------------------------------"
+
+        End If
+
 
         Dim kanan As New StringFormat
         Dim tengah As New StringFormat
         kanan.Alignment = StringAlignment.Far
         tengah.Alignment = StringAlignment.Center
-        Dim garis As String
-        garis = "----------------------------------------------------------------------------"
 
         e.Graphics.DrawString("Apotek Sehati", f14, Brushes.Black, centermargin, 5, tengah)
         e.Graphics.DrawString("Jl. Kol. Sugiono No. 2B PATI", f10, Brushes.Black, centermargin, 25, tengah)
@@ -297,7 +313,12 @@ Public Class FormGembong
 
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
         Dim pagesetup As New PageSettings
-        pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        Dim namaprinter = cekprinter()
+        If (namaprinter = "EPSON TM-U220 Receipt") Then
+            pagesetup.PaperSize = New PaperSize("Custom", 240, panjang)
+        Else
+            pagesetup.PaperSize = New PaperSize("Custom", 280, panjang)
+        End If
         PD.DefaultPageSettings = pagesetup
     End Sub
 
@@ -334,55 +355,91 @@ Public Class FormGembong
         End Try
 
     End Sub
+    Function SendJsonToApi(apiUrl As String, jsonData As String, ByRef responseContent As String) As Boolean
+        Try
+            Using client As New HttpClient()
+                Dim content As New StringContent(jsonData, Encoding.UTF8, "application/json")
+                Dim response As HttpResponseMessage = client.PostAsync(apiUrl, content).Result
 
+                responseContent = response.Content.ReadAsStringAsync().Result
+
+                If response.IsSuccessStatusCode Then
+                    Dim responseObject = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseContent)
+                    Dim id As String = responseObject("id").ToString()
+                    txtnonota.Text = id
+                    Return True ' Berhasil
+                Else
+                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}")
+                    Return False ' Gagal
+                End If
+            End Using
+        Catch ex As Exception
+            responseContent = $"Exception: {ex.Message}"
+            Console.WriteLine(responseContent)
+            Return False ' Gagal karena exception
+        End Try
+    End Function
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
+
         Dim modebayar As String
         If CheckBox1.Checked = True Then
             modebayar = "NON TUNAI"
         Else
             modebayar = "TUNAI"
         End If
-        Dim parameters = New Specialized.NameValueCollection
-
-        parameters.Add("idcustomer", txtkdcustomer.Text)
-        parameters.Add("total", jmltotal)
-        parameters.Add("email", txtkasir.Text)
-        parameters.Add("modebayar", modebayar)
-        parameters.Add("tgltrans", tgltransaksi.Value)
-        parameters.Add("tipepenjualan", "T")
+        btnsimpan.Enabled = False
 
 
+        ' Mengumpulkan data untuk Items dari DataGridView1
+        Dim items As New List(Of Dictionary(Of String, String))
+        Dim jmldata As Integer = DataGridView1.Rows.Count
 
-        Dim respons = postData(urlprefix + "penjualan/store", "POST", parameters)
-        Dim state = respons.SelectToken("status").ToString
-        If state = "success" Then
-            Dim lastid As Integer = respons("data")("lastid")
-            txtnonota.Text = lastid
-            '  Dim parameteritems = New Specialized.NameValueCollection
-            Dim jmldata As Integer = DataGridView1.Rows.Count
-            For i As Integer = 0 To jmldata - 1
-                Dim parameteritems = New Specialized.NameValueCollection
-                parameteritems.Add("idpenjualan", lastid)
-                parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
-                parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
-                parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
-                parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
-                parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
-                parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
-                parameteritems.Add("idlokasi", "TOKO")
+        For i As Integer = 0 To jmldata - 1
+            Dim item As New Dictionary(Of String, String) From {
+                {"kdbarang", DataGridView1.Item(0, i).Value},
+                {"qty", DataGridView1.Item(3, i).Value},
+                {"harga", DataGridView1.Item(2, i).Value},
+                {"diskonpersen", DataGridView1.Item(5, i).Value},
+                {"diskon", DataGridView1.Item(6, i).Value},
+                {"jumlah", DataGridView1.Item(7, i).Value},
+                {"idlokasi", "TOKO"}
+            }
+            items.Add(item)
+        Next
 
-                respons = postData(urlprefix + "penjualan/storeitem", "POST", parameteritems)
-            Next
+        ' Membuat dictionary utama untuk JSON
+        Dim datapenjualan As New Dictionary(Of String, Object) From {
+                {"idcustomer", txtkdcustomer.Text},
+                {"total", jmltotal},
+                {"email", txtkasir.Text},
+                {"modebayar", modebayar},
+                {"tgltrans", tgltransaksi.Value},
+                {"tipepenjualan", "T"},
+                {"Items", items}
+        }
 
-            MsgBox("Simpan Data Sukses")
-            Call cetakrdlc()
-            'PD.Print()
+        ' Serialize ke JSON string
+        Dim jsonString As String = JsonConvert.SerializeObject(datapenjualan, Formatting.Indented)
+
+        ' Kirim ke API
+        Dim apiUrl As String = urlprefix + "penjualan/store" ' Ganti dengan URL API Anda
+        Dim responseContent As String = ""
+        'Console.WriteLine(jsonString)
+        Dim isSuccess As Boolean = SendJsonToApi(apiUrl, jsonString, responseContent)
+
+        If isSuccess Then
+            MsgBox("Simpan Sukses")
+
+            PD.Print()
             btnsimpan.Enabled = False
+            txtbayar.Enabled = False
             btncetak.Enabled = True
-            btncetak.Select()
+            btnclear.Select()
         Else
-            MsgBox("ada kesahalan data")
+            ' API gagal
+            MsgBox($"Gagal simpan. Respon: {responseContent}")
         End If
+
 
 
     End Sub
@@ -445,4 +502,9 @@ Public Class FormGembong
         FormPending.Close()
         FormPending.ShowDialog()
     End Sub
+    Function cekprinter()
+        Dim settings As PrinterSettings = New PrinterSettings()
+        Dim paijo = settings.PrinterName
+        Return paijo
+    End Function
 End Class

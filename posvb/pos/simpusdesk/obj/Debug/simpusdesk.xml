@@ -27,6 +27,11 @@ simpusdesk
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="M:simpusdesk.FormKelontong.hitung">
+ <summary>
+ 
+ </summary>
+</member>
 <member name="M:simpusdesk.FormPenjualan.hitung">
  <summary>
  

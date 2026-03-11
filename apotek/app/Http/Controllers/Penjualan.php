@@ -14,6 +14,7 @@ use App\Models\M_returdetailpenjualan;
 use App\Models\M_returpenjualan;
 use App\Models\M_stok;
 use App\Models\M_stoklokasi;
+use App\Models\M_toko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -215,13 +216,14 @@ class Penjualan extends Controller
     }
     public function invoice(Request $request)
     {
+        $toko = M_toko::first();
         $datapenjualan = M_penjualan::find($request->id);
         $kategori = $datapenjualan->get_customer->kategori;
         $data = M_detailpenjualan::with('get_barang', 'get_penjualan')->where('idpenjualan', $request->id)->get();
         if ($kategori == "khusus") {
             return view('penjualan.invoicekhusus')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
         } else {
-            return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
+            return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan, 'toko'=>$toko]);
         }
     }
 

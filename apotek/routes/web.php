@@ -1,41 +1,36 @@
 <?php
 
 use App\Http\Controllers\Administrator\HomeController as AdministratorHomeController;
-use App\Http\Controllers\Akun;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DokterController;
 use App\Http\Controllers\GolonganController;
+use App\Http\Controllers\History\HsLaporanTransaksi;
+use App\Http\Controllers\History\HsPembelian;
+use App\Http\Controllers\History\HsPenjualan;
+use App\Http\Controllers\History\HsStokController;
 use App\Http\Controllers\JenisController;
+use App\Http\Controllers\JenispasienController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\Kelompokakun;
-use App\Http\Controllers\Laporan;
-use App\Http\Controllers\LaporanTransaksi;
 use App\Http\Controllers\LaporanGembong;
+use App\Http\Controllers\LaporanRetur;
+use App\Http\Controllers\LaporanSehati;
+use App\Http\Controllers\LaporanTransaksi;
 use App\Http\Controllers\LokasiController;
-use App\Http\Controllers\MStransaksi;
+use App\Http\Controllers\Manajer\HomeController as ManajerHomeController;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\Operator\HomeController as OperatorHomeController;
-use App\Http\Controllers\Manajer\HomeController as ManajerHomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Pembelian;
 use App\Http\Controllers\Penjualan;
-use App\Http\Controllers\Postingjurnal;
-use App\Http\Controllers\Postingjurnalpenyesuaian;
+use App\Http\Controllers\Penjualanresep;
+use App\Http\Controllers\PolyController;
 use App\Http\Controllers\SesionuserController;
 use App\Http\Controllers\StokAwalController;
-use App\Http\Controllers\StokOpnameController;
-use App\Http\Controllers\Subtransaksi;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\Trjurnalpenyesuaian;
-use App\Http\Controllers\Trkeuangan;
-use App\Http\Controllers\UtilityController;
-use App\Http\Controllers\Penjualanresep;
-use App\Http\Controllers\DokterController;
-use App\Http\Controllers\PolyController;
-use App\Http\Controllers\JenispasienController;
-use App\Http\Controllers\LaporanRetur;
-use App\Http\Controllers\LaporanSehati;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\StokOpnameController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -60,8 +55,8 @@ Route::get('/register', function () {
 
 Auth::routes([
     'register' => false,
-    'reset' => false,
-    'verify' => false,
+    'reset'    => false,
+    'verify'   => false,
 ]);
 Route::get('/access', [App\Http\Controllers\HomeController::class, 'access'])->name('access');
 // Roles Administrator
@@ -347,5 +342,34 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
     Route::group(['roles' => ['manajer']], function () {
         Route::get('barang/edit/{kdorder}', [BarangController::class, 'edit'])->name('barang.edit');
         Route::post('barang/update', [BarangController::class, 'update'])->name('barang.update');
+    });
+    Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
+        Route::group(['prefix' => 'hspembelian'], function () {
+
+            Route::get('trdetail/{id}', [HsPembelian::class, 'trdetail'])->name('hspembelian.trdetail');
+            Route::get('retur', [HsPembelian::class, 'retur'])->name('hspembelian.retur');
+            Route::get('fetchretur', [HsPembelian::class, 'fetchretur'])->name('hspembelian.fetchretur');
+            Route::get('listretur/{id}', [HsPembelian::class, 'listretur'])->name('hspembelian.listretur');
+            Route::get('trreturdetail/{id}', [HsPembelian::class, 'trreturdetail'])->name('hspembelian.trreturdetail');
+
+        });
+        Route::group(['prefix' => 'hskartustok'], function () {
+            Route::get('/', [HsStokController::class, 'index'])->name('hskartustok.index');
+            Route::get('laporankartustok', [HsStokController::class, 'laporankartustok'])->name('hskartustok.laporankartustok');
+            Route::get('detail', [HsStokController::class, 'detail'])->name('hskartustok.detail');
+        });
+        Route::group(['prefix' => 'hspenjualan'], function () {
+
+            Route::get('trdetail/{id}', [HsPenjualan::class, 'trdetail'])->name('hspenjualan.trdetail');
+
+            Route::get('retur', [HsPenjualan::class, 'retur'])->name('hspenjualan.retur');
+            Route::get('fetchretur', [HsPenjualan::class, 'fetchretur'])->name('hspenjualan.fetchretur');
+            Route::get('listretur/{id}', [HsPenjualan::class, 'listretur'])->name('hspenjualan.listretur');
+            Route::get('trdetailresep/{id}', [HsPenjualan::class, 'trdetailresep'])->name('penjualan.trdetailresep');
+        });
+        Route::group(['prefix' => 'hslaporantransaksi'], function () {
+            Route::get('rptpersediaan', [HsLaporanTransaksi::class, 'rptpersediaan'])->name('hslaporantransaksi.rptpersediaan');
+            Route::post('laporanpersediaan', [HsLaporanTransaksi::class, 'laporanpersediaan'])->name('hslaporantransaksi.laporanpersediaan');
+        });
     });
 });

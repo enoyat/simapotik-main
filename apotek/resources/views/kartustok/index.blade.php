@@ -5,7 +5,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-12">
-                        <h1>Kartu Stok</h1>
+                        <h1>History Kartu Stok</h1>
                         <hr>
 
                     </div>

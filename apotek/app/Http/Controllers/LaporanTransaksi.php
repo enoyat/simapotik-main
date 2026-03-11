@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\M_barang;
@@ -109,15 +108,15 @@ class LaporanTransaksi extends Controller
     public function rptpenjualan()
     {
         $golongan = M_golongan::get();
-        $dokter = M_dokter::get();
+        $dokter   = M_dokter::get();
         return view('laporantransaksi.rptpenjualan')->with(['golongan' => $golongan, 'dokter' => $dokter]);
     }
     public function laporanpenjualan(Request $request)
     {
-        $tglmulai = $request->tglmulai;
-        $tglakhir = $request->tglakhir;
+        $tglmulai      = $request->tglmulai;
+        $tglakhir      = $request->tglakhir;
         $tipepenjualan = $request->tipepenjualan;
-        $kasir = $request->email;
+        $kasir         = $request->email;
         if ($tipepenjualan == "K") {
             // dd($kasir);
             if ($request->kriteria == "nofaktur") {
@@ -268,14 +267,14 @@ class LaporanTransaksi extends Controller
     public function rptpenjualanresep()
     {
         $golongan = M_golongan::get();
-        $dokter = M_dokter::get();
+        $dokter   = M_dokter::get();
         return view('laporantransaksi.rptpenjualanresep')->with(['golongan' => $golongan, 'dokter' => $dokter]);
     }
     public function laporanpenjualanresep(Request $request)
     {
-        $tglmulai = $request->tglmulai;
-        $tglakhir = $request->tglakhir;
-        $kasir = $request->email;
+        $tglmulai      = $request->tglmulai;
+        $tglakhir      = $request->tglakhir;
+        $kasir         = $request->email;
         $tipepenjualan = $request->tipepenjualan;
         // dd($kasir);
         if ($tipepenjualan == "K") {
@@ -473,8 +472,8 @@ class LaporanTransaksi extends Controller
     }
     public function laporanlabarugi(Request $request)
     {
-        $tglmulai = $request->tglmulai;
-        $tglakhir = $request->tglakhir;
+        $tglmulai      = $request->tglmulai;
+        $tglakhir      = $request->tglakhir;
         $datapenjualan = M_penjualan::select('*', 'detailpenjualan.diskon as diskpenjualan')
             ->join('customer', 'customer.idcustomer', '=', 'penjualan.idcustomer')
             ->join('detailpenjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
@@ -548,7 +547,7 @@ class LaporanTransaksi extends Controller
         ini_set('max_execution_time', 180);
         $golongan = M_golongan::get();
 
-        $datapenjualan = array();
+        $datapenjualan = [];
         foreach ($golongan as $key => $value) {
 
             $hv = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
@@ -560,11 +559,10 @@ class LaporanTransaksi extends Controller
                 ->where('penjualan.jenispenjualan', "N")
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
-            if($hv->count()<1){
-                $hv=0;
-            }
-            else {
-                $hv=$hv[0]->jumlah;
+            if ($hv->count() < 1) {
+                $hv = 0;
+            } else {
+                $hv = $hv[0]->jumlah;
             }
 
             $resep = M_detailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
@@ -576,11 +574,10 @@ class LaporanTransaksi extends Controller
                 ->where('penjualan.jenispenjualan', "R")
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
-            if($resep->count()<1){
-                $resep=0;
-            }
-            else {
-                $resep=$resep[0]->jumlah;
+            if ($resep->count() < 1) {
+                $resep = 0;
+            } else {
+                $resep = $resep[0]->jumlah;
             }
             $retur = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
                 ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
@@ -594,13 +591,12 @@ class LaporanTransaksi extends Controller
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
 
-            if($retur->count()<1){
-                $retur=0;
+            if ($retur->count() < 1) {
+                $retur = 0;
+            } else {
+                $retur = $retur[0]->jumlah;
             }
-            else {
-                $retur=$retur[0]->jumlah;
-            }
-                $returresep = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
+            $returresep = M_returdetailpenjualan::select(DB::raw("SUM(jumlah) as jumlah"), 'barang.idgolongan', 'namagolongan')
                 ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
                 ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
                 ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
@@ -612,19 +608,18 @@ class LaporanTransaksi extends Controller
                 ->groupby('barang.idgolongan', 'namagolongan')
                 ->get();
 
-            if($returresep->count()<1){
-                $returresep=0;
-            }
-            else {
-                $returresep=$returresep[0]->jumlah;
+            if ($returresep->count() < 1) {
+                $returresep = 0;
+            } else {
+                $returresep = $returresep[0]->jumlah;
             }
 
             $datapenjualan[] = [
-                'idgolongan' => $value->idgolongan,
-                'namagolongan' => $value->namagolongan,
-                'jumlah' => $hv,
-                'jumlahresep' => $resep,
-                'jumlahretur' => $retur,
+                'idgolongan'       => $value->idgolongan,
+                'namagolongan'     => $value->namagolongan,
+                'jumlah'           => $hv,
+                'jumlahresep'      => $resep,
+                'jumlahretur'      => $retur,
                 'jumlahreturresep' => $returresep,
 
             ];

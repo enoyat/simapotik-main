@@ -1,0 +1,29 @@
+<div style="display: inline;  float:left; width:300px">
+                        
+                        <input type="text" name="search" id="search" class="form-control"
+                            placeholder="Cari Produk / Barang" />
+                    </div>
+                    <br>
+                    <br>
+<div id="databarang">
+    @include('penjualan.fetch')
+</div>
+<script>
+function getdatastok(namabarang) {
+    $.ajax({
+
+        url: "{{ route('penjualan.fetch') }}",
+        method: "GET",
+        data: {
+            namabarang: namabarang
+        },
+        success: function(data) {
+            $('#databarang').html(data);
+        }
+    });
+};
+$('#search').change(function() {
+    var namabarang = $('#search').val();
+    getdatastok(namabarang);
+});
+</script>

@@ -45,42 +45,81 @@ class ApiPenjualan extends Controller
         return $newID;
     }
 
-    public function store(Request $request)
-    {
-        // Validasi input
-        $validatedData = $request->validate([
-            'idcustomer' => 'required',
-            'total' => 'required',
-            'email' => 'required',
-            'modebayar' => 'required',
-            'tgltrans' => 'required',
-            'tipepenjualan' => 'required',
-            'Items' => 'required|array',
-            'Items.*.kdbarang' => 'required',
-            'Items.*.qty' => 'required',
-        ]);
+   public function store(Request $request)
+{
+    DB::beginTransaction();
 
-        $jam = date("h:i");
+    try {
+
+        $items = $request->Items ?? $request->items;
+
+        if(!$items){
+            return response()->json([
+                "status"=>"error",
+                "message"=>"Items tidak ditemukan"
+            ],400);
+        }
+
+        $stokKurang = [];
+
+        foreach($items as $item){
+
+            $barang = DB::table('stok')
+                ->where('kdbarang',$item['kdbarang'])
+                ->where('idlokasi',$item['idlokasi'])
+                ->lockForUpdate()
+                ->first();
+
+            if(!$barang){
+                $stokKurang[] = [
+                    'kdbarang'=>$item['kdbarang'],
+                    'stok'=>0,
+                    'diminta'=>$item['qty']
+                ];
+                continue;
+            }
+
+            if($barang->stok < $item['qty']){
+                $stokKurang[] = [
+                    'kdbarang'=>$item['kdbarang'],
+                    'stok'=>$barang->stok,
+                    'diminta'=>$item['qty']
+                ];
+            }
+
+        }
+
+        if(count($stokKurang) > 0){
+
+            DB::rollBack();
+
+            return response()->json([
+                "status"=>"stok_tidak_cukup",
+                "items"=>$stokKurang
+            ]);
+        }
+
+        $jam = date("H:i");
+
         if ($request->idcustomer == "P0001") {
             $jenispenjualan = "R";
         } else {
             $jenispenjualan = "N";
         }
-        // Lakukan penyimpanan ke database (contoh)
-        // Misalnya, simpan ke tabel penjualan dan tabel item
+
         $penjualanId = DB::table('penjualan')->insertGetId([
-            'idcustomer' => $validatedData['idcustomer'],
-            'total' => $validatedData['total'],
-            'email' => $validatedData['email'],
-            'modebayar' => $validatedData['modebayar'],
-            'tgltrans' =>  date("Y-m-d"),
-            'tipepenjualan' => $validatedData['tipepenjualan'],
+            'idcustomer' => $request->idcustomer,
+            'total' => $request->total,
+            'email' => $request->email,
+            'modebayar' => $request->modebayar,
+            'tgltrans' => date("Y-m-d"),
+            'tipepenjualan' => $request->tipepenjualan,
             'jam' => $jam,
             'jenispenjualan' => $jenispenjualan,
-
         ]);
 
-        foreach ($validatedData['Items'] as $item) {
+        foreach ($items as $item) {
+
             DB::table('detailpenjualan')->insert([
                 'idpenjualan' => $penjualanId,
                 'kdbarang' => $item['kdbarang'],
@@ -91,20 +130,40 @@ class ApiPenjualan extends Controller
                 'jumlah' => $item['jumlah'],
                 'idlokasi' => $item['idlokasi'],
             ]);
+
+            // // UPDATE STOK
+            // DB::table('stok')
+            //     ->where('kdbarang',$item['kdbarang'])
+            //     ->where('idlokasi',$item['idlokasi'])
+            //     ->decrement('stok',$item['qty']);
+
         }
 
-        // Kembalikan respon sukses
+        DB::commit();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Data berhasil disimpan',
-            'id' => $penjualanId,
-        ], 201);
+            'id_penjualan' => $penjualanId
+        ]);
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return response()->json([
+            'status'=>'error',
+            'message'=>$e->getMessage()
+        ],500);
     }
+}
 
     public function storepending(Request $request)
     {
         DB::beginTransaction();
         try {
+
+
 
             $jam = date("h:i");
             $penjualan = new M_pendingpenjualan;

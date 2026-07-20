@@ -117,12 +117,9 @@ use app\Http\Controllers\Penjualan;
                             <table class="header-table">
                                 <tr>
 
-                                    <td width="90">
+                                 
+                                    <td class="toko-info text-center">
                                         <img src="{{ url('assets/img/logoapotik.png') }}" class="logo">
-                                    </td>
-
-                                    <td class="toko-info">
-                                        <h2>{{ $toko->toko }}</h2>
                                         <p>{{ $toko->alamat }}</p>
                                         <p>Telp: {{ $toko->telpon }}</p>
                                     </td>

@@ -4,12 +4,12 @@
     <tr>
         <td>Tanggal Transaksi</td>
         <td>:</td>
-        <td>{{ date_format(date_create($tglmulai),"d-m-Y") }}</td>
+        <td>{{ date_format(date_create($tglmulai), 'd-m-Y') }}</td>
     </tr>
     <tr>
         <td>S/d Tanggal</td>
         <td>:</td>
-        <td>{{ date_format(date_create($tglakhir),"d-m-Y") }}</td>
+        <td>{{ date_format(date_create($tglakhir), 'd-m-Y') }}</td>
 
 
 </table>
@@ -46,6 +46,9 @@
             <th>
                 Keterangan
             </th>
+            <th>
+                User
+            </th>
 
 
         </tr>
@@ -67,7 +70,8 @@
             <td style="text-align: center"><?php echo $key->stoksistem; ?></td>
             <td style="text-align: center"><?php echo $key->stokfisik; ?></td>
             <td style="text-align: center"><?php echo $key->selisih; ?></td>
-            <td style="text-align: left" ><?php echo $key->keterangan; ?></td>
+            <td style="text-align: left"><?php echo $key->keterangan; ?></td>
+            <td style="text-align: left"><?php echo $key->email; ?></td>
 
         </tr>
         <?php $i++; } ?>

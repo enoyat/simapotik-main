@@ -126,6 +126,8 @@ class StokOpnameController extends Controller
         $stokopname->selisih = $request->selisih;
         $stokopname->keterangan = $request->keterangan;
         $stokopname->kdpst = Session::get('globalkdpst');
+        $stokopname->email = auth()->user()->email;
+
         $simpan = $stokopname->save();
         return $data = [
             'status' => $simpan,

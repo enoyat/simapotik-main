@@ -27,16 +27,111 @@ class StokController extends Controller
         $tglakhir = $request->tglakhir;
         DB::statement("SET SQL_MODE=''");
 
-        $datastok = M_barang::query()
-            ->select('*', 'golongan.namagolongan')
-            ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
-            ->where('barang.kdbarang', $request->kdbarang)
-            ->addSelect(DB::raw('(SELECT sum(qty) as jmlout FROM detailpenjualan WHERE detailpenjualan.kdbarang = barang.kdbarang ) as jmlpenjualan'))
-            ->addSelect(DB::raw('(SELECT sum(qty) as jmlreturout FROM returdetailpenjualan WHERE returdetailpenjualan.kdbarang = barang.kdbarang ) as jmlreturpenjualan'))
-            ->addSelect(DB::raw('(SELECT sum(qty) as jmlin FROM detailpembelian  WHERE detailpembelian.kdbarang = barang.kdbarang ) as jmlpembelian'))
-            ->addSelect(DB::raw('(SELECT sum(qty) as jmlreturin FROM returdetailpembelian  WHERE returdetailpembelian.kdbarang = barang.kdbarang ) as jmlreturpembelian'))
-            ->addSelect(DB::raw('(SELECT sum(qty) as jmlmutasi FROM detailmutasi  WHERE detailmutasi.kdbarang = barang.kdbarang ) as jmladjustmutasi'))
-            ->get();
+        // $datastok = M_barang::query()
+        //     ->select('*', 'golongan.namagolongan')
+        //     ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
+        //     ->where('barang.kdbarang', $request->kdbarang)
+        //     ->addSelect(DB::raw('(SELECT sum(qty) as jmlout FROM detailpenjualan WHERE detailpenjualan.kdbarang = barang.kdbarang ) as jmlpenjualan'))
+        //     ->addSelect(DB::raw('(SELECT sum(qty) as jmlreturout FROM returdetailpenjualan WHERE returdetailpenjualan.kdbarang = barang.kdbarang ) as jmlreturpenjualan'))
+        //     ->addSelect(DB::raw('(SELECT sum(qty) as jmlin FROM detailpembelian  WHERE detailpembelian.kdbarang = barang.kdbarang ) as jmlpembelian'))
+        //     ->addSelect(DB::raw('(SELECT sum(qty) as jmlreturin FROM returdetailpembelian  WHERE returdetailpembelian.kdbarang = barang.kdbarang ) as jmlreturpembelian'))
+        //     ->addSelect(DB::raw('(SELECT sum(qty) as jmlmutasi FROM detailmutasi  WHERE detailmutasi.kdbarang = barang.kdbarang ) as jmladjustmutasi'))
+        //     ->get();
+        $datastok = "SELECT *
+FROM
+(
+    /* PEMBELIAN */
+   SELECT
+        pb.tgltrans,
+        pb.id,
+        'Pembelian' jenis_transaksi,
+        s.namasupplier lokasi_asal,
+        g.namalokasi gudang_tujuan,
+        d.qty masuk,
+        0 keluar,
+        d.kdbarang,
+      	d.idlokasi,
+
+        pb.email,
+        TIME(pb.tgltrans) jam
+    FROM detailpembelian d
+    JOIN pembelian pb
+        ON pb.id=d.idpembelian
+    JOIN supplier s
+        ON s.idsupplier=pb.idsupplier
+    JOIN stoklokasi g
+        ON g.idlokasi=d.idlokasi
+
+UNION ALL
+
+    /* PENJUALAN */
+
+   SELECT
+        pj.tgltrans,
+        pj.id,
+        'Penjualan',
+        g.namalokasi,
+        pj.modebayar,
+        0,
+        d.qty,
+        d.kdbarang,
+        'TOKO',
+        pj.email,
+        pj.jam
+
+    FROM detailpenjualan d
+    JOIN penjualan pj
+        ON pj.id=d.idpenjualan
+    JOIN stoklokasi g
+        ON g.idlokasi=d.idlokasi
+UNION ALL
+
+    /* MUTASI KELUAR */
+SELECT
+        m.tglmutasi,
+        m.id,
+        'Mutasi Keluar',
+        ga.namalokasi gudanga,
+        gt.namalokasi gudangt,
+        0,
+        m.qty,
+        m.kdbarang,
+        m.idlokasi,
+
+        m.email,
+        TIME(m.tglmutasi)
+
+    FROM detailmutasi m
+    JOIN stoklokasi ga
+        ON ga.idlokasi=m.idlokasi
+    JOIN stoklokasi gt
+        ON gt.idlokasi=m.idlokasidest
+
+    UNION ALL
+    SELECT
+        a.tanggal,
+        a.id,
+        'Adjustment',
+        a.keterangan,
+        a.stoksistem,
+        a.stokfisik,
+        a.selisih,
+         a.kdbarang,
+          a.idlokasi,
+        a.email,
+        TIME(a.created_at)
+
+    FROM stokopname a
+    JOIN stoklokasi g
+        ON g.idlokasi=a.idlokasi
+
+
+) kartu
+WHERE kdbarang = ?
+AND idlokasi = ?
+ORDER BY tanggal,jam,id;";
+
+
         return view('kartustok.laporankartustok')->with(['datastok' => $datastok, 'tglawal' => $tglawal, 'tglakhir' => $tglakhir]);
     }
     public function detail(Request $request)

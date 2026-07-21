@@ -45,6 +45,13 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+Route::get('/tes', function () {
+    return [
+        'url' => url('/'),
+        'secure' => request()->isSecure(),
+        'scheme' => request()->getScheme(),
+    ];
+});
 Route::get('/', function () {
     return redirect()->route('login');
 });

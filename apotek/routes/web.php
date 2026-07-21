@@ -351,7 +351,6 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('fetchretur', [HsPembelian::class, 'fetchretur'])->name('hspembelian.fetchretur');
             Route::get('listretur/{id}', [HsPembelian::class, 'listretur'])->name('hspembelian.listretur');
             Route::get('trreturdetail/{id}', [HsPembelian::class, 'trreturdetail'])->name('hspembelian.trreturdetail');
-
         });
         Route::group(['prefix' => 'hskartustok'], function () {
             Route::get('/', [HsStokController::class, 'index'])->name('hskartustok.index');

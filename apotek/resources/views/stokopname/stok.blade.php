@@ -5,7 +5,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>STOK  OPNAME</h1>
+                        <h1>STOK OPNAME</h1>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,18 @@
 
                             @csrf
                             <br>
+                            <div id="loading" class="text-center p-5" style="display:none;">
+                                <div class="spinner-border text-primary" role="status" style="width:4rem;height:4rem;">
+                                </div>
+
+                                <h5 class="mt-3">
+                                    Sedang memproses data stok opname...
+                                </h5>
+
+                                <small>Mohon tunggu beberapa saat.</small>
+                            </div>
+
+                            <div id="datastok"></div>
                             <div id="datastok"></div>
 
                             <br>
@@ -48,28 +60,47 @@
         </section>
     </div>
     <script>
-        function getdatastok(idlokasi,idjenis,kdkategori) {
-                $.ajax({
+        function getdatastok(idlokasi, idjenis, kdkategori) {
 
-                    url: "{{ route('stokopname.fetch') }}",
-                    method: "GET",
-                    data: {
-                        kdkategori: kdkategori,
-                        idjenis: idjenis,
-                        idlokasi: idlokasi
-                    },
-                    success: function(data) {
-                        $('#datastok').html(data);
-                    }
-                });
-        };
-        $('#kdkategori').change(function() {
+            $.ajax({
+                url: "{{ route('stokopname.fetch') }}",
+                method: "GET",
+                data: {
+                    kdkategori: kdkategori,
+                    idjenis: idjenis,
+                    idlokasi: idlokasi
+                },
+
+                beforeSend: function() {
+                    $('#loading').show();
+                    $('#datastok').hide();
+                },
+
+                success: function(data) {
+                    $('#datastok').html(data);
+                },
+
+                complete: function() {
+                    $('#loading').hide();
+                    $('#datastok').show();
+                },
+
+                error: function() {
+                    $('#loading').hide();
+                    $('#datastok').show();
+                    alert('Terjadi kesalahan saat mengambil data.');
+                }
+            });
+        }
+        $('#idlokasi, #kdkategori').change(function() {
+
             var idlokasi = $('#idlokasi').val();
             var idjenis = $('#idjenis').val();
-            var kdkategori = $(this).val();
+            var kdkategori = $('#kdkategori').val();
 
-            getdatastok(idlokasi, idjenis, kdkategori);
+            if (idlokasi != '' && kdkategori != '') {
+                getdatastok(idlokasi, idjenis, kdkategori);
+            }
         });
-
     </script>
 @endsection

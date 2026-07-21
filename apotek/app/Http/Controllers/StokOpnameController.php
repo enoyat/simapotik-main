@@ -102,37 +102,49 @@ class StokOpnameController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
     public function store(Request $request)
     {
+        $request->validate([
+            'stokfisik' => 'required|numeric',
+            'keterangan' => 'required',
+            'selisih' => 'required',
+        ]);
 
-        $request->validate(
-            [
-                'stokfisik' => 'required|numeric',
-                'keterangan' => 'required',
-                'selisih' => 'required',
+        DB::beginTransaction();
 
-            ],
-            [
-                'stokfisik.required' => 'stok fisik tidak boleh kosong',
-                'stokfisik.numeric' => 'stokfisik harus angka',
-            ]
-        );
-        $stokopname = new M_stokopname();
-        $stokopname->tanggal = Carbon::now();
-        $stokopname->kdbarang = $request->kdbarang;
-        $stokopname->idlokasi = $request->idlokasi;
-        $stokopname->stoksistem = $request->stok;
-        $stokopname->stokfisik = $request->stokfisik;
-        $stokopname->selisih = $request->selisih;
-        $stokopname->keterangan = $request->keterangan;
-        $stokopname->kdpst = Session::get('globalkdpst');
-        $stokopname->email = auth()->user()->email;
+        try {
 
-        $simpan = $stokopname->save();
-        return $data = [
-            'status' => $simpan,
-            'message' => $simpan ? 'Data Berhasil Disimpan' : 'Data Gagal Disimpan',
-        ];
+            $stokopname = new M_stokopname();
+
+            $stokopname->tanggal = Carbon::now();
+            $stokopname->kdbarang = $request->kdbarang;
+            $stokopname->idlokasi = $request->idlokasi;
+            $stokopname->stoksistem = $request->stok;
+            $stokopname->stokfisik = $request->stokfisik;
+            $stokopname->selisih = $request->selisih;
+            $stokopname->keterangan = $request->keterangan;
+            $stokopname->kdpst = Session::get('globalkdpst');
+            $stokopname->email = auth()->user()->email;
+
+            $stokopname->save();
+
+            DB::commit();
+
+            return [
+                'status' => true,
+                'message' => 'Data Berhasil Disimpan'
+            ];
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return [
+                'status' => false,
+                'message' => $e->getMessage()
+            ];
+        }
     }
 
     /**

@@ -107,6 +107,7 @@
                         kdbarang: kdbarang,
                         tglmulai: $('#inputTglmulai').val(),
                         tglakhir: $('#inputTglakhir').val(),
+                        idlokasi: 'TOKO',
                         _token: CSRF_TOKEN
                     },
                     beforeSend: function() {

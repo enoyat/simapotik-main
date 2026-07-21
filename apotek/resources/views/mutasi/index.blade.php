@@ -1,13 +1,12 @@
 @extends('template.master-dashboard-administrator')
 @section('contents')
-
     <div class="content-wrapper">
         <section class="content-header">
             <div class="container-fluid">
-                    <div class="col-sm-6">
-                        <h1>Mutasi Stok</h1>
-                        <a href="{{ route('mutasi.baru') }}" class="btn btn-primary">Baru</a>
-                    </div>
+                <div class="col-sm-6">
+                    <h1>Mutasi Stok</h1>
+                    <a href="{{ route('mutasi.baru') }}" class="btn btn-primary">Baru</a>
+                </div>
             </div>
         </section>
         <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
@@ -65,12 +64,16 @@
                                     </div>
                                     <div class="col-12 mb-3" style="font-size: 12px">
 
-                                        <div data-url="{{ route('mutasi.listproduk') }}" class="btn btn-sm btn-info  btn-action">Cari Produk</div>
-                                        <input type="text" id="kdbarang" name="kdbarang" value="" size=20 placeholder="Kode" readonly>
-                                        <input type="text" name="namabarang" value="" size=30 id="namabarang" placeholder="Nama Produk"
-                                            style="text-align: left">
-                                            Stok Max: <input type="number" name="qtymax" value="" id="qtymax" min=1 max=999 placeholder="qty"  readonly>
-                                        Mutasi: <input type="number" name="qty" value="" id="qty" min=1 max=999 placeholder="qty" >
+                                        <div data-url="{{ route('mutasi.listproduk') }}"
+                                            class="btn btn-sm btn-info  btn-action">Cari Produk</div>
+                                        <input type="text" id="kdbarang" name="kdbarang" value="" size=20
+                                            placeholder="Kode" readonly>
+                                        <input type="text" name="namabarang" value="" size=30 id="namabarang"
+                                            placeholder="Nama Produk" style="text-align: left">
+                                        Stok Max: <input type="number" name="qtymax" value="" id="qtymax" min=1
+                                            max=999 placeholder="qty" readonly>
+                                        Mutasi: <input type="number" name="qty" value="" id="qty" min=1
+                                            max=999 placeholder="qty">
                                         <button type="button" class="btn btn-primary" id="tambah">+</button>
                                     </div>
                                     <!-- Shopping Summery -->
@@ -101,8 +104,8 @@
         $('#tambah').click(function() {
             var qty = $("#qty").val();
             var harga = $("#harga").val();
-            var diskon= $("#diskon").val();
-            var jumlah = qty * harga-diskon;
+            var diskon = $("#diskon").val();
+            var jumlah = qty * harga - diskon;
             $("#jumlah").val(jumlah);
             $.ajax({
                 url: "{{ route('mutasi.cart') }}",
@@ -111,7 +114,7 @@
                     "_token": "{{ csrf_token() }}",
                     "tglmutasi": $("#tgltrans").val(),
                     "idlokasi": $("#idlokasi").val(),
-                    "idlokasidest": $("#idlokasidest").val(),                    
+                    "idlokasidest": $("#idlokasidest").val(),
                     "kdbarang": $("#kdbarang").val(),
                     "namabarang": $("#namabarang").val(),
                     "qty": $("#qty").val(),
@@ -120,11 +123,11 @@
                 },
                 dataType: "text",
                 success: function(response) {
-                    if(response=="sukses"){
+                    if (response == "sukses") {
                         $("#cart").load("{{ route('mutasi.cartview') }}");
                         kosong();
                         $("#kdbarang").focus();
-                    }else{
+                    } else {
                         alert(response);
                     }
                 }
@@ -140,7 +143,7 @@
         }
         $('.btn-action').click(function() {
             var url = $(this).data("url");
-            var idlokasi=$("#idlokasi").val();
+            var idlokasi = $("#idlokasi").val();
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -167,7 +170,6 @@
                 }
             });
         });
-
     </script>
 
 

@@ -18,9 +18,9 @@
         <div class="form-group row">
             <label for="kdbarang" class="col-sm-3 col-form-label">Lokasi</label>
             <div class="col-sm-8">
-                {{ $barang->get_lokasi->namalokasi}}
-                <input type="hidden" class="form-control" id="idlokasi" name="idlokasi" value="{{ $barang->idlokasi }}"
-                    readonly>
+                {{ $barang->get_lokasi->namalokasi }}
+                <input type="hidden" class="form-control" id="idlokasi" name="idlokasi"
+                    value="{{ $barang->idlokasi }}" readonly>
             </div>
         </div>
         <div class="form-group row">
@@ -39,45 +39,47 @@
         <div class="form-group row">
             <label for="selisih" class="col-sm-3 col-form-label">Selisih</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="selisih" name="selisih" value=""
-                readonly>
+                <input type="text" class="form-control" id="selisih" name="selisih" value="" readonly>
             </div>
         </div>
         <div class="form-group row">
             <label for="selisih" class="col-sm-3 col-form-label">Keterangan</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="keterangan" name="keterangan" value=""
-                required>
+                <input type="text" class="form-control" id="keterangan" name="keterangan" value="" required>
             </div>
         </div>
         <div class="form-group row">
             <div class="offset-sm-3 col-sm-10">
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" class="btn btn-primary" id="btnSubmit">Simpan</button>
             </div>
         </div>
     </form>
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#stokfisik").focus();
-        $('#stokfisik').keyup(function () {
-            var idlokasi= $('#idlokasi').val();
+        $('#stokfisik').keyup(function() {
+            var idlokasi = $('#idlokasi').val();
             var stok = $('#stok').val();
             var stokfisik = $('#stokfisik').val();
             var selisih = stokfisik - stok;
             $('#selisih').val(selisih);
         });
     });
-    $("#add-stokopname-form").submit(function(event){
+    $('form').submit(function() {
+        $('#btnSubmit')
+            .prop('disabled', true)
+            .text('Menyimpan...');
+    });
+    $("#add-stokopname-form").submit(function(event) {
         event.preventDefault();
         var kdkategori = $('#kdkategori').val();
         var idjenis = $('#idjenis').val();
         var idlokasi = $('#idlokasi').val();
-         $.ajax({
-              url: "/stokopname/store",
-              type:"POST",
-              data:
-              {
+        $.ajax({
+            url: "/stokopname/store",
+            type: "POST",
+            data: {
                 'kdbarang': $('#kdbarang').val(),
                 'idlokasi': $('#idlokasi').val(),
                 'namabarang': $('#namabarang').val(),
@@ -87,18 +89,16 @@
                 'keterangan': $('#keterangan').val(),
                 '_token': $('input[name=_token]').val()
 
-              },
-              success: function(response){
+            },
+            success: function(response) {
                 alert(response.message);
                 $('#myModal').modal('hide');
                 $('.modal-backdrop').hide();
-                getdatastok(idlokasi,idjenis,kdkategori);
+                getdatastok(idlokasi, idjenis, kdkategori);
 
 
-              },
+            },
 
-              });
-          });
-
-
+        });
+    });
 </script>

@@ -1,9 +1,9 @@
 <table class="table shopping-summery table-responsive-md">
     <thead>
         <tr class="main-hading">
-        <th>tglmutasi</th>
-        <th>lokasi awal</th>
-        <th>lokasi dest</th>
+            <th>tglmutasi</th>
+            <th>lokasi awal</th>
+            <th>lokasi dest</th>
             <th>Kode</th>
             <th>Produk</th>
             <th class="text-center">qty</th>
@@ -13,15 +13,15 @@
     </thead>
     <tbody>
 
- 
+
         @if (Session::has('cart'))
             <?php $i = 0;
             $total = 0; ?>
             @foreach (Session::get('cart') as $item)
                 <tr>
-                <td class="image" data-title="No">{{ $item['tglmutasi'] }}</td>
-                <td class="image" data-title="No">{{ $item['idlokasi'] }}</td>
-                <td class="image" data-title="No">{{ $item['idlokasidest'] }}</td>
+                    <td class="image" data-title="No">{{ $item['tglmutasi'] }}</td>
+                    <td class="image" data-title="No">{{ $item['idlokasi'] }}</td>
+                    <td class="image" data-title="No">{{ $item['idlokasidest'] }}</td>
                     <td class="image" data-title="No">{{ $item['kdbarang'] }}</td>
                     <td class="product-des" data-title="Description">
                         {{ $item['namabarang'] }}
@@ -30,7 +30,7 @@
                         {{ $item['qty'] }}
                     </td>
                     <td style="display: none">
-                        {{ $i; }}
+                        {{ $i }}
                     </td>
                     <td class="action" data-title="Remove">
                         <div class="btn btnhapus"><i class="bi bi-trash3"></i></div>
@@ -55,13 +55,13 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-7 col-12">
-                        <div class="right">
-                            <ul>
-                                <button type="submit" class="button5">Simpan</button>
-                            </ul>
+                    <div class="right">
+                        <ul>
+                            <button type="submit" class="button5" id="btnSubmit">Simpan</button>
+                        </ul>
 
 
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,5 +83,10 @@
                 $("#cart").load("{{ route('mutasi.cartview') }}");
             },
         });
+    });
+    $('form').submit(function() {
+        $('#btnSubmit')
+            .prop('disabled', true)
+            .text('Menyimpan...');
     });
 </script>

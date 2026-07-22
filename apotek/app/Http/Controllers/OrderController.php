@@ -28,8 +28,20 @@ class OrderController extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -90,10 +102,7 @@ class OrderController extends Controller
     public function caribarang()
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%aa%')->
-        orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%aa%')->orderby('namabarang')->get();
 
         return view('order.formbarang', ['barang' => $barang]);
         //
@@ -101,10 +110,7 @@ class OrderController extends Controller
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%'.$request->namabarang.'%')->
-        orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->orderby('namabarang')->get();
 
         return view('order.fetch', ['barang' => $barang]);
         //
@@ -194,7 +200,6 @@ class OrderController extends Controller
             Session::forget('cart');
             Session::put('id', $lastid);
             return Redirect()->route('order.invoice');
-
         }
     }
     public function invoice()
@@ -243,8 +248,8 @@ class OrderController extends Controller
     public function trorder()
     {
         $order = M_order::with('get_supplier')
-            ->orderBy('id', 'DESC')->get();
-           
+            ->orderBy('id', 'DESC')->limit(500)->get();
+
         return view('order.trorder')->with(['order' => $order]);
     }
     public function trdetail($id)
@@ -297,7 +302,7 @@ class OrderController extends Controller
 
                 $pembelian->kdpst = Session::get('globalkdpst');
                 $pembelian->email = Session::get('email');
-                $pembelian->idorder=$request->idorder;
+                $pembelian->idorder = $request->idorder;
                 $pembelian->save();
                 $lastid = $pembelian->id;
 
@@ -349,7 +354,6 @@ class OrderController extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function invoicepembelian()

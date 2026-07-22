@@ -14,7 +14,7 @@ class M_detailmutasi extends Model
     #kalau kolom primary keynya bernama id, maka baris dibawah ini boleh diisi, dan boleh juga tidak buat
     protected $primaryKey = 'id';
     protected $guarded = [];
-    public $timestamps = false;
+    // public $timestamps = false;
 
     public function get_barang()
     {
@@ -24,6 +24,4 @@ class M_detailmutasi extends Model
     {
         return $this->belongsTo(M_mutasi::class, 'idmutasi', 'id');
     }
-
-
 }

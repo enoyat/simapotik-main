@@ -14,7 +14,7 @@ class M_Pembelian extends Model
     #kalau kolom primary keynya bernama id, maka baris dibawah ini boleh diisi, dan boleh juga tidak buat
     protected $primaryKey = 'id';
     protected $guarded = [];
-    public $timestamps = false;
+    // public $timestamps = false;
     public function get_detailpembelian()
     {
         return $this->hasMany(M_detailpembelian::class, 'idpembelian', 'id');
@@ -23,5 +23,4 @@ class M_Pembelian extends Model
     {
         return $this->belongsTo(M_supplier::class, 'idsupplier', 'idsupplier');
     }
-
 }

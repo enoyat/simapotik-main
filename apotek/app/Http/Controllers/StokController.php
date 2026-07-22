@@ -52,7 +52,7 @@ class StokController extends Controller
                 d.kdbarang,
                 d.idlokasi,
                 pb.email,
-                TIME(pb.tgltrans) AS jam
+                TIME(pb.created_at) AS jam
             FROM detailpembelian d
             INNER JOIN pembelian pb
                 ON pb.id = d.idpembelian
@@ -96,7 +96,7 @@ class StokController extends Controller
                 m.kdbarang,
                 m.idlokasi,
                 m.email,
-                TIME(m.tglmutasi)
+                TIME(m.created_at)
             FROM detailmutasi m
             INNER JOIN stoklokasi ga
                 ON ga.idlokasi = m.idlokasi

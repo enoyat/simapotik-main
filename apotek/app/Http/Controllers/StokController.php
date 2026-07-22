@@ -12,6 +12,7 @@ use App\Models\M_pembelian;
 use App\Models\M_penjualan;
 use App\Models\M_returdetailpembelian;
 use App\Models\M_returdetailpenjualan;
+use App\Models\M_stoklokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,10 +20,12 @@ class StokController extends Controller
 {
     public function index()
     {
-        return view('kartustok.index');
+        $lokasi = M_stoklokasi::get();
+        return view('kartustok.index', compact('lokasi'));
     }
     public function laporankartustok(Request $request)
     {
+
         $request->validate([
             'kdbarang' => 'required',
             'idlokasi' => 'required'
@@ -177,9 +180,11 @@ JOIN stoklokasi g
     ON g.idlokasi = d.idlokasi
         ) kartu
         WHERE kdbarang = ?
+        and idlokasi= ?
         ORDER BY tgltrans, jam, id
     ", [
-            $request->kdbarang
+            $request->kdbarang,
+            $request->idlokasi
         ]);
 
         return view('kartustok.laporankartustok', [

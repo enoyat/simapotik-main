@@ -28,20 +28,21 @@
                             </ul>
                         </div>
                     @endif
-
                     <div class="col-6">
                         <label>Filter Pencarian</label>
+                        <select name="idlokasi" id="idlokasi" class="form-control col-6">
+                            <option value="">== Pilih Lokasi ==</option>
+                            @foreach ($lokasi as $row)
+                                <option value="{{ $row->idlokasi }}">{{ $row->namalokasi }}</option>
+                            @endforeach
+                        </select>
                         <select name="kdbarang" id="kdbarang" class="form-control col-6"></select>
                         {{-- <label>Periode Pencarian</label> --}}
                         {{-- <input type="date" name="tglmulai" id="inputTglmulai" value="" required="required"
                             title=""> s/d <input type="date" name="tglakhir" id="inputTglmulai" value=""
                             required="required" title=""> --}}
-
                         <button type="button" class="btn btn-primary" id="btn-cari">Cari</button>
-
                     </div>
-
-
 
                 </div>
                 <div id="loading" style="display:none">
@@ -98,6 +99,9 @@
         });
         $('#btn-cari').click(function() {
             var kdbarang = $('#kdbarang').val();
+            var idlokasi = $('#idlokasi').val();
+
+
             if (kdbarang != '') {
                 $.ajax({
                     url: "{{ route('kartustok.laporankartustok') }}",
@@ -105,9 +109,7 @@
                     dataType: 'html',
                     data: {
                         kdbarang: kdbarang,
-                        tglmulai: $('#inputTglmulai').val(),
-                        tglakhir: $('#inputTglakhir').val(),
-                        idlokasi: 'TOKO',
+                        idlokasi: idlokasi,
                         _token: CSRF_TOKEN
                     },
                     beforeSend: function() {

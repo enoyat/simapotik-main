@@ -73,6 +73,7 @@
             <td style="text-align: left"><?php echo $key->keterangan; ?></td>
             <td style="text-align: left"><?php echo $key->email; ?></td>
 
+
         </tr>
         <?php $i++; } ?>
     </tbody>

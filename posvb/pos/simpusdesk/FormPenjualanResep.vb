@@ -41,7 +41,7 @@ Public Class FormPenjualanResep
         If state = "success" Then
             For Each Row2 In respons("data")
                 xkdbarang = Row2("kdbarang").ToString()
-                xnamabarang = Row2("namabarang").ToString()
+                xnamabarang = Row2("namabarang").ToString() + " Sat: (" + Row2("satuan").ToString() + ")"
                 xqty = Row2("stok").ToString()
                 xharga = Row2("hargaresep").ToString()
 

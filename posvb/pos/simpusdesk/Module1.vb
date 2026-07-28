@@ -6,7 +6,6 @@ Imports Newtonsoft.Json.Linq
 
 Module modConnection
     Public urlprefix As String
-    'Public urlprefix = ""
     Public username, kdpst As String
     Public toko = "APOTEK SEHATIJAYA JUWANA"
     Public alamat = "Jl.P.Diponegoro no 38"
@@ -22,10 +21,6 @@ Module modConnection
     Public biayadenda As Double = 500
     Public simpan, ubah, hapus As String
     Public str As String
-    Public strServer As String = "localhost"
-    Public strDbase As String = "simpus" 'Databas name
-    Public strUser As String = "root"  'Database user
-    Public strPass As String = ""     'Database password
     Public connDB As MySqlConnection
 
     Public Function postData(url As String, method As String, parameters As Specialized.NameValueCollection)
@@ -61,24 +56,7 @@ Module modConnection
         Return content
     End Function
     Sub Konfigurasi()
-        'urlprefix = "http://192.168.20.252/api/"
-        'urlprefix = "http://simapotik.local/api/"
-
-        ' urlprefix = BacaBarisKe("C:\server\config.txt", 1)
         urlprefix = BacaBarisKe(Application.StartupPath & "\config.txt", 1)
-        idkoneksi = ";user id=admin_simpus;database=admin_simpus;password=//Dadiati**/simpus;persistsecurityinfo=True"
-    End Sub
-    Sub Koneksi()
-        Dim Lokasidata As String
-        Lokasidata = My.Settings.simpusConnectionString
-        'Lokasidata = "server = 192.168.100.212;user id=admin_simpus;password=//Dadiati**/simpus;persistsecurityinfo=True;database=admin_simpus"
-        connDB = New MySql.Data.MySqlClient.MySqlConnection(Lokasidata)
-        If connDB.State = ConnectionState.Open Then
-            connDB.Close()
-        Else
-            connDB = New MySql.Data.MySqlClient.MySqlConnection(Lokasidata)
-            connDB.Open()
-        End If
     End Sub
 
 End Module

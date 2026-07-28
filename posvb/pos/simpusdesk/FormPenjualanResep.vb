@@ -8,6 +8,7 @@ Imports Newtonsoft.Json.Linq
 Public Class FormPenjualanResep
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
+    Dim grandtotal As Integer
     Dim jmltotal As Integer
     Dim jmldiskon As Integer
     Dim panjang As Integer
@@ -21,7 +22,7 @@ Public Class FormPenjualanResep
     End Sub
 
     Sub CariBarang(kode)
-        Dim xkdbarang, xnamabarang As String
+        Dim xkdbarang, xsatuan, xnamabarang As String
         Dim xharga, xqty, jumlah, qty, total As Int32
         Dim lokasi = ComboLokasi.SelectedIndex
         Dim asallokasi As String
@@ -41,7 +42,8 @@ Public Class FormPenjualanResep
         If state = "success" Then
             For Each Row2 In respons("data")
                 xkdbarang = Row2("kdbarang").ToString()
-                xnamabarang = Row2("namabarang").ToString() + " Sat: (" + Row2("satuan").ToString() + ")"
+                xnamabarang = Row2("namabarang").ToString()
+                xsatuan = Row2("satuan").ToString()
                 xqty = Row2("stok").ToString()
                 xharga = Row2("hargaresep").ToString()
 
@@ -56,9 +58,12 @@ Public Class FormPenjualanResep
                     qty = txtqty.Text
                     jumlah = xharga * qty
                     total = jumlah
-                    Dim row As String() = New String() {xkdbarang, xnamabarang, xharga, qty, jumlah, "0", "0", total}
+                    Dim row As String() = New String() {xkdbarang, xnamabarang, xharga, qty, xsatuan, jumlah, "0", "0", total}
                     DataGridView1.Rows.Add(row)
                     Call hitung()
+                    txtkdbarang.Text = ""
+                    txtqty.Text = "1"
+                    txtkdbarang.Select()
                 Else
                     MsgBox("Data tidak ditemukan", vbOK, "Informasi")
                     Call hitung()
@@ -110,6 +115,7 @@ Public Class FormPenjualanResep
         txtnamacustomer.Text = "Pelanggan Umum"
         txtnamapasien.Text = ""
         txtiddokter.Text = ""
+        TextGrandTotal.Text = 0
         txtjmltotal.Text = 0
         txtdisplayjmltotal.Text = 0
         txtbayar.Text = 0
@@ -137,8 +143,8 @@ Public Class FormPenjualanResep
             jmldata = DataGridView1.Rows.Count
 
             For i = 0 To jmldata - 1
-                jmldiskon += Int(DataGridView1.Item(6, i).Value)
-                jmltotal += Int(DataGridView1.Item(7, i).Value)
+                jmldiskon += Int(DataGridView1.Item(7, i).Value)
+                jmltotal += Int(DataGridView1.Item(8, i).Value)
 
             Next
             'Dim nilai = jmltotal Mod 500
@@ -147,9 +153,9 @@ Public Class FormPenjualanResep
             'Else
             '    jmltotal = Math.Round(jmltotal / 500) * 500
             'End If
+            grandtotal = jmltotal + jmldiskon
 
-
-
+            TextGrandTotal.Text = grandtotal.ToString("#,##0")
             txtjmltotal.Text = jmltotal.ToString()
             TextDiskon.Text = jmldiskon.ToString
             txtdisplayjmltotal.Text = jmltotal.ToString("#,##0")
@@ -314,18 +320,21 @@ Public Class FormPenjualanResep
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, tinggi)
         e.Graphics.DrawString(txtkasir.Text, f6, Brushes.Black, 0, 10 + tinggi)
         e.Graphics.DrawString("Total : ", f10b, Brushes.Black, 120, 10 + tinggi)
-        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
+        e.Graphics.DrawString(Format(grandtotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
         e.Graphics.DrawString("Diskon: ", f10b, Brushes.Black, 120, 20 + tinggi)
         e.Graphics.DrawString(Format(jmldiskon, "##,##0"), f10b, Brushes.Black, rigtmargin, 20 + tinggi, kanan)
-        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 30 + tinggi)
-        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
-        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 40 + tinggi)
-        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
+        e.Graphics.DrawString("Jumlah : ", f10b, Brushes.Black, 120, 30 + tinggi)
+        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
 
-        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 60 + tinggi)
-        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 70 + tinggi)
-        e.Graphics.DrawString("SEMOGA LEKAS SEMBUH", f10, Brushes.Black, 0, 80 + tinggi)
-        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 100 + tinggi)
+        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 40 + tinggi)
+        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
+        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 50 + tinggi)
+        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 50 + tinggi, kanan)
+
+        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 70 + tinggi)
+        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 80 + tinggi)
+        e.Graphics.DrawString("SEMOGA LEKAS SEMBUH", f10, Brushes.Black, 0, 90 + tinggi)
+        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 110 + tinggi)
     End Sub
 
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
@@ -391,17 +400,17 @@ Public Class FormPenjualanResep
             qty = Int(DataGridView1.Item(3, selectedrow).Value)
             If (cekstok(DataGridView1.Item(0, selectedrow).Value, qty) = True) Then
                 harga = Int(DataGridView1.Item(2, selectedrow).Value)
-                disk1 = Int(DataGridView1.Item(5, selectedrow).Value)
-                disk2 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk1 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk2 = Int(DataGridView1.Item(7, selectedrow).Value)
                 If (disk1 > 0) Then
                     diskperson = (harga * qty) * disk1 / 100
-                    DataGridView1.Item(6, selectedrow).Value = diskperson
+                    DataGridView1.Item(7, selectedrow).Value = diskperson
                     disk2 = diskperson
                 End If
                 jumlah = (harga * qty) - disk2
                 total = jumlah
-                DataGridView1.Item(4, selectedrow).Value = (harga * qty)
-                DataGridView1.Item(7, selectedrow).Value = total
+                DataGridView1.Item(5, selectedrow).Value = (harga * qty)
+                DataGridView1.Item(8, selectedrow).Value = total
                 hitung()
             Else
                 MsgBox("stok tidak tersedia")
@@ -420,7 +429,7 @@ Public Class FormPenjualanResep
 
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
 
-
+        btnsimpan.Enabled = False
         Dim modebayar As String
         If CheckBox1.Checked = True Then
             modebayar = "NON TUNAI"
@@ -449,9 +458,9 @@ Public Class FormPenjualanResep
                     {"kdbarang", DataGridView1.Item(0, i).Value},
                     {"qty", DataGridView1.Item(3, i).Value},
                     {"harga", DataGridView1.Item(2, i).Value},
-                    {"diskonpersen", DataGridView1.Item(5, i).Value},
-                    {"diskon", DataGridView1.Item(6, i).Value},
-                    {"jumlah", DataGridView1.Item(7, i).Value},
+                    {"diskonpersen", DataGridView1.Item(6, i).Value},
+                    {"diskon", DataGridView1.Item(7, i).Value},
+                    {"jumlah", DataGridView1.Item(8, i).Value},
                     {"idlokasi", idlokasi}
                 }
             items.Add(item)
@@ -496,7 +505,7 @@ Public Class FormPenjualanResep
             'MsgBox("Simpan Data Sukses")
             'PPD.ShowDialog()
             PD.Print()
-            btnsimpan.Enabled = False
+
             txtbayar.Enabled = False
             btncetak.Enabled = True
             btnclear.Select()
@@ -504,6 +513,8 @@ Public Class FormPenjualanResep
         Else
             ' API gagal
             MsgBox($"Gagal simpan. Respon: {responseContent}")
+            btnsimpan.Enabled = True
+            txtbayar.Select()
         End If
 
 
@@ -549,9 +560,9 @@ Public Class FormPenjualanResep
                 parameteritems.Add("kdbarang", DataGridView1.Item(0, i).Value)
                 parameteritems.Add("qty", DataGridView1.Item(3, i).Value)
                 parameteritems.Add("harga", DataGridView1.Item(2, i).Value)
-                parameteritems.Add("diskonpersen", DataGridView1.Item(5, i).Value)
-                parameteritems.Add("diskon", DataGridView1.Item(6, i).Value)
-                parameteritems.Add("jumlah", DataGridView1.Item(7, i).Value)
+                parameteritems.Add("diskonpersen", DataGridView1.Item(6, i).Value)
+                parameteritems.Add("diskon", DataGridView1.Item(7, i).Value)
+                parameteritems.Add("jumlah", DataGridView1.Item(8, i).Value)
                 parameteritems.Add("idlokasi", "TOKO")
 
                 respons = postData(urlprefix + "penjualan/storependingitem", "POST", parameteritems)

@@ -77,6 +77,8 @@ Partial Class FormKelontong
         Me.diskonamount = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.total = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.golongan = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.TextGrandTotal = New System.Windows.Forms.TextBox()
         Me.Panel1.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -143,7 +145,7 @@ Partial Class FormKelontong
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(765, 535)
+        Me.Label6.Location = New System.Drawing.Point(764, 539)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(50, 16)
         Me.Label6.TabIndex = 87
@@ -152,7 +154,7 @@ Partial Class FormKelontong
         'TextDiskon
         '
         Me.TextDiskon.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextDiskon.Location = New System.Drawing.Point(845, 529)
+        Me.TextDiskon.Location = New System.Drawing.Point(844, 533)
         Me.TextDiskon.Name = "TextDiskon"
         Me.TextDiskon.ReadOnly = True
         Me.TextDiskon.Size = New System.Drawing.Size(222, 22)
@@ -326,7 +328,7 @@ Partial Class FormKelontong
         '
         'btncetak
         '
-        Me.btncetak.Location = New System.Drawing.Point(910, 653)
+        Me.btncetak.Location = New System.Drawing.Point(910, 691)
         Me.btncetak.Name = "btncetak"
         Me.btncetak.Size = New System.Drawing.Size(75, 30)
         Me.btncetak.TabIndex = 70
@@ -335,7 +337,7 @@ Partial Class FormKelontong
         '
         'btnsimpan
         '
-        Me.btnsimpan.Location = New System.Drawing.Point(829, 653)
+        Me.btnsimpan.Location = New System.Drawing.Point(829, 691)
         Me.btnsimpan.Name = "btnsimpan"
         Me.btnsimpan.Size = New System.Drawing.Size(75, 30)
         Me.btnsimpan.TabIndex = 68
@@ -345,7 +347,7 @@ Partial Class FormKelontong
         'CheckBox1
         '
         Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(844, 626)
+        Me.CheckBox1.Location = New System.Drawing.Point(844, 664)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(138, 17)
         Me.CheckBox1.TabIndex = 67
@@ -356,7 +358,7 @@ Partial Class FormKelontong
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(765, 595)
+        Me.Label3.Location = New System.Drawing.Point(765, 633)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(57, 16)
         Me.Label3.TabIndex = 66
@@ -365,7 +367,7 @@ Partial Class FormKelontong
         'txtkembali
         '
         Me.txtkembali.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtkembali.Location = New System.Drawing.Point(845, 592)
+        Me.txtkembali.Location = New System.Drawing.Point(845, 630)
         Me.txtkembali.Name = "txtkembali"
         Me.txtkembali.ReadOnly = True
         Me.txtkembali.Size = New System.Drawing.Size(222, 22)
@@ -376,7 +378,7 @@ Partial Class FormKelontong
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(765, 566)
+        Me.Label2.Location = New System.Drawing.Point(765, 604)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(44, 16)
         Me.Label2.TabIndex = 64
@@ -385,7 +387,7 @@ Partial Class FormKelontong
         'txtbayar
         '
         Me.txtbayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtbayar.Location = New System.Drawing.Point(845, 560)
+        Me.txtbayar.Location = New System.Drawing.Point(845, 598)
         Me.txtbayar.Name = "txtbayar"
         Me.txtbayar.Size = New System.Drawing.Size(222, 22)
         Me.txtbayar.TabIndex = 63
@@ -407,7 +409,7 @@ Partial Class FormKelontong
         '
         'btnclear
         '
-        Me.btnclear.Location = New System.Drawing.Point(991, 653)
+        Me.btnclear.Location = New System.Drawing.Point(991, 691)
         Me.btnclear.Name = "btnclear"
         Me.btnclear.Size = New System.Drawing.Size(75, 30)
         Me.btnclear.TabIndex = 69
@@ -418,7 +420,7 @@ Partial Class FormKelontong
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(765, 507)
+        Me.Label1.Location = New System.Drawing.Point(764, 570)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(51, 16)
         Me.Label1.TabIndex = 62
@@ -427,7 +429,7 @@ Partial Class FormKelontong
         'txtjmltotal
         '
         Me.txtjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtjmltotal.Location = New System.Drawing.Point(845, 501)
+        Me.txtjmltotal.Location = New System.Drawing.Point(844, 564)
         Me.txtjmltotal.Name = "txtjmltotal"
         Me.txtjmltotal.ReadOnly = True
         Me.txtjmltotal.Size = New System.Drawing.Size(222, 22)
@@ -525,11 +527,33 @@ Partial Class FormKelontong
         Me.golongan.HeaderText = "Golongan"
         Me.golongan.Name = "golongan"
         '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.Location = New System.Drawing.Point(764, 511)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(39, 16)
+        Me.Label16.TabIndex = 93
+        Me.Label16.Text = "Total"
+        '
+        'TextGrandTotal
+        '
+        Me.TextGrandTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextGrandTotal.Location = New System.Drawing.Point(844, 505)
+        Me.TextGrandTotal.Name = "TextGrandTotal"
+        Me.TextGrandTotal.ReadOnly = True
+        Me.TextGrandTotal.Size = New System.Drawing.Size(222, 22)
+        Me.TextGrandTotal.TabIndex = 92
+        Me.TextGrandTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
         'FormKelontong
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1086, 740)
+        Me.Controls.Add(Me.Label16)
+        Me.Controls.Add(Me.TextGrandTotal)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.combotipepenjualan)
         Me.Controls.Add(Me.Label8)
@@ -625,4 +649,6 @@ Partial Class FormKelontong
     Friend WithEvents diskonamount As DataGridViewTextBoxColumn
     Friend WithEvents total As DataGridViewTextBoxColumn
     Friend WithEvents golongan As DataGridViewTextBoxColumn
+    Friend WithEvents Label16 As Label
+    Friend WithEvents TextGrandTotal As TextBox
 End Class

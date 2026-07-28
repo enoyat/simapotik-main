@@ -10,6 +10,7 @@ Public Class FormKelontong
     Dim PPD As New PrintPreviewDialog
     Dim jmltotal As Integer
     Dim jmldiskon As Integer
+    Dim GrandTotal As Integer
 
     Dim panjang As Integer
     Sub ubahharga()
@@ -49,7 +50,7 @@ Public Class FormKelontong
         If state = "success" Then
             For Each Row2 In respons("data")
                 xkdbarang = Row2("kdbarang").ToString()
-                xnamabarang = Row2("namabarang").ToString() + " Sat: (" + Row2("satuan").ToString() + ")"
+                xnamabarang = Row2("namabarang").ToString()
                 xqty = Row2("stok").ToString()
 
                 If (xqty = 0) Then
@@ -124,6 +125,8 @@ Public Class FormKelontong
     Sub bersih()
         txtkdcustomer.Text = "C0001"
         txtnamacustomer.Text = "Pelanggan Umum"
+        TextGrandTotal.Text = 0
+        txtjmltotal.Text = 0
         txtjmltotal.Text = 0
         txtdisplayjmltotal.Text = 0
         txtbayar.Text = 0
@@ -154,18 +157,14 @@ Public Class FormKelontong
                 jmltotal += Int(DataGridView1.Item(7, i).Value)
 
             Next
-            'Dim nilai = jmltotal Mod 500
-            'If (nilai > 0 & nilai < 500) Then
-            '    jmltotal = Math.Round(jmltotal / 500) * 500 + 500
-            'Else
-            '    jmltotal = Math.Round(jmltotal / 500) * 500
-            'End If
+            GrandTotal = jmldiskon + jmltotal
 
 
 
             txtjmltotal.Text = jmltotal.ToString()
             TextDiskon.Text = jmldiskon.ToString
             txtdisplayjmltotal.Text = jmltotal.ToString("#,##0")
+            TextGrandTotal.Text = GrandTotal.ToString("#,##0")
 
         Catch ex As Exception
 
@@ -310,7 +309,7 @@ Public Class FormKelontong
         e.Graphics.DrawString(tgltransaksi.Value, f10, Brushes.Black, 0, 75)
         e.Graphics.DrawString("No. Nota", f10, Brushes.Black, 0, 125)
         e.Graphics.DrawString(":", f10, Brushes.Black, 65, 125)
-        e.Graphics.DrawString(txtnonota.Text, f10, Brushes.Black, 65, 125)
+        e.Graphics.DrawString(txtnonota.Text, f10, Brushes.Black, 68, 125)
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, 135)
         e.Graphics.DrawString("Qty", f10, Brushes.Black, 0, 150)
         e.Graphics.DrawString("Nama", f10, Brushes.Black, 25, 150)
@@ -351,20 +350,21 @@ Public Class FormKelontong
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, tinggi)
         e.Graphics.DrawString(txtkasir.Text, f6, Brushes.Black, 0, 10 + tinggi)
         e.Graphics.DrawString("Total : ", f10b, Brushes.Black, 120, 10 + tinggi)
-        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
+        e.Graphics.DrawString(Format(GrandTotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
         e.Graphics.DrawString("Diskon: ", f10b, Brushes.Black, 120, 20 + tinggi)
         e.Graphics.DrawString(Format(jmldiskon, "##,##0"), f10b, Brushes.Black, rigtmargin, 20 + tinggi, kanan)
+        e.Graphics.DrawString("Jumlah : ", f10b, Brushes.Black, 120, 30 + tinggi)
+        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
 
+        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 40 + tinggi)
+        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
+        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 50 + tinggi)
+        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 50 + tinggi, kanan)
 
-        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 30 + tinggi)
-        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
-        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 40 + tinggi)
-        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
-
-        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 60 + tinggi)
-        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 70 + tinggi)
-        e.Graphics.DrawString("Terima kasih", f10, Brushes.Black, 0, 80 + tinggi)
-        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 100 + tinggi)
+        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 70 + tinggi)
+        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 80 + tinggi)
+        e.Graphics.DrawString("Terima kasih", f10, Brushes.Black, 0, 90 + tinggi)
+        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 110 + tinggi)
     End Sub
 
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
@@ -692,4 +692,12 @@ Public Class FormKelontong
         Dim paijo = settings.PrinterName
         Return paijo
     End Function
+
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+
+    Private Sub txtjmltotal_TextChanged(sender As Object, e As EventArgs) Handles txtjmltotal.TextChanged
+
+    End Sub
 End Class

@@ -9,6 +9,7 @@ Public Class FormPenjualan
     Dim WithEvents PD As New PrintDocument
     Dim PPD As New PrintPreviewDialog
     Dim jmltotal As Integer
+    Dim granttotal As Integer
     Dim jmldiskon As Integer
 
     Dim panjang As Integer
@@ -125,6 +126,7 @@ Public Class FormPenjualan
     Sub bersih()
         txtkdcustomer.Text = "C0001"
         txtnamacustomer.Text = "Pelanggan Umum"
+        TextGrandTotal.Text = 0
         txtjmltotal.Text = 0
         txtdisplayjmltotal.Text = 0
         txtbayar.Text = 0
@@ -155,15 +157,10 @@ Public Class FormPenjualan
                 jmltotal += Int(DataGridView1.Item(8, i).Value)
 
             Next
-            'Dim nilai = jmltotal Mod 500
-            'If (nilai > 0 & nilai < 500) Then
-            '    jmltotal = Math.Round(jmltotal / 500) * 500 + 500
-            'Else
-            '    jmltotal = Math.Round(jmltotal / 500) * 500
-            'End If
 
 
-
+            granttotal = jmltotal + jmldiskon
+            TextGrandTotal.Text = granttotal.ToString("#,##0")
             txtjmltotal.Text = jmltotal.ToString()
             TextDiskon.Text = jmldiskon.ToString
             txtdisplayjmltotal.Text = jmltotal.ToString("#,##0")
@@ -313,7 +310,7 @@ Public Class FormPenjualan
         e.Graphics.DrawString("Harga sudah termasuk PPN", f10, Brushes.Black, 0, 105)
         e.Graphics.DrawString("No. Nota", f10, Brushes.Black, 0, 125)
         e.Graphics.DrawString(":", f10, Brushes.Black, 65, 125)
-        e.Graphics.DrawString(txtnonota.Text, f10, Brushes.Black, 65, 125)
+        e.Graphics.DrawString(txtnonota.Text, f10, Brushes.Black, 68, 125)
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, 135)
         e.Graphics.DrawString("Qty", f10, Brushes.Black, 0, 150)
         e.Graphics.DrawString("Nama", f10, Brushes.Black, 25, 150)
@@ -326,7 +323,7 @@ Public Class FormPenjualan
 
         For baris As Integer = 0 To jmldata - 1
             If (DataGridView1.Rows(baris).Cells(9).Value.ToString = "G0001" Or DataGridView1.Rows(baris).Cells(9).Value.ToString = "G0004") Or DataGridView1.Rows(baris).Cells(9).Value.ToString = "G0006" Then
-                hargagolongan = hargagolongan + (DataGridView1.Rows(baris).Cells(7).Value)
+                hargagolongan = hargagolongan + (DataGridView1.Rows(baris).Cells(8).Value)
             Else
                 tinggi += 15
                 e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(3).Value.ToString, f6, Brushes.Black, 0, 165 + tinggi)
@@ -354,20 +351,21 @@ Public Class FormPenjualan
         e.Graphics.DrawString(garis, f10, Brushes.Black, 0, tinggi)
         e.Graphics.DrawString(txtkasir.Text, f6, Brushes.Black, 0, 10 + tinggi)
         e.Graphics.DrawString("Total : ", f10b, Brushes.Black, 120, 10 + tinggi)
-        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
+        e.Graphics.DrawString(Format(granttotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 10 + tinggi, kanan)
         e.Graphics.DrawString("Diskon: ", f10b, Brushes.Black, 120, 20 + tinggi)
         e.Graphics.DrawString(Format(jmldiskon, "##,##0"), f10b, Brushes.Black, rigtmargin, 20 + tinggi, kanan)
+        e.Graphics.DrawString("Jumlah : ", f10b, Brushes.Black, 120, 30 + tinggi)
+        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
 
+        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 40 + tinggi)
+        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
+        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 50 + tinggi)
+        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 50 + tinggi, kanan)
 
-        e.Graphics.DrawString("Bayar : ", f10b, Brushes.Black, 120, 30 + tinggi)
-        e.Graphics.DrawString(Format(bayar, "##,##0"), f10b, Brushes.Black, rigtmargin, 30 + tinggi, kanan)
-        e.Graphics.DrawString("Kembalian : ", f10b, Brushes.Black, 120, 40 + tinggi)
-        e.Graphics.DrawString(txtkembali.Text, f10b, Brushes.Black, rigtmargin, 40 + tinggi, kanan)
-
-        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 60 + tinggi)
-        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 70 + tinggi)
-        e.Graphics.DrawString("SEMOGA LEKAS SEMBUH", f10, Brushes.Black, 0, 80 + tinggi)
-        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 100 + tinggi)
+        e.Graphics.DrawString("Mohon periksa kembalian dan barang yang telah", f10, Brushes.Black, 0, 70 + tinggi)
+        e.Graphics.DrawString("dibeli tidak bisa dikembalikan", f10, Brushes.Black, 0, 80 + tinggi)
+        e.Graphics.DrawString("SEMOGA LEKAS SEMBUH", f10, Brushes.Black, 0, 90 + tinggi)
+        e.Graphics.DrawString("~ 0 ~", f10, Brushes.Black, centermargin, 110 + tinggi)
     End Sub
 
     Private Sub PD_BeginPrint(sender As Object, e As PrintEventArgs) Handles PD.BeginPrint
@@ -546,6 +544,7 @@ Public Class FormPenjualan
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
 
         Dim modebayar As String
+        btnsimpan.Enabled = False
         If CheckBox1.Checked = True Then
                 modebayar = "NON TUNAI"
             Else
@@ -603,13 +602,16 @@ Public Class FormPenjualan
                 PD.Print()
             End If
 
-            btnsimpan.Enabled = False
+
             txtbayar.Enabled = False
             btncetak.Enabled = True
             btnclear.Select()
         Else
+
             ' API gagal
             MsgBox($"Gagal simpan. Respon: {responseContent}")
+            txtbayar.Enabled = True
+            txtbayar.Select()
         End If
 
 

@@ -15,22 +15,20 @@ use Illuminate\Support\Facades\DB;
 
 class ApiTransaksi extends Controller
 {
-    public function getinvoice(Request $request){
-        $iteminvoice = M_penjualan::where('id',$request->id)->get();
+    public function getinvoice(Request $request)
+    {
+        $iteminvoice = M_penjualan::where('id', $request->id)->get();
         return $data = [
             'status' => 'success',
             'data' => $iteminvoice,
         ];
     }
-    public function detailinvoice(Request $request){
-        $iteminvoice = M_detailpenjualan::join('barang','detailpenjualan.kdbarang','barang.kdbarang')->where('idpenjualan',$request->id)->
-        select('detailpenjualan.*','barang.namabarang','barang.idgolongan')->get();
+    public function detailinvoice(Request $request)
+    {
+        $iteminvoice = M_detailpenjualan::join('barang', 'detailpenjualan.kdbarang', 'barang.kdbarang')->where('idpenjualan', $request->id)->select('detailpenjualan.*', 'barang.namabarang', 'barang.idgolongan')->get();
         return $data = [
             'status' => 'success',
             'data' => $iteminvoice,
         ];
     }
-   
 }
-
- 

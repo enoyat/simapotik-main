@@ -38,7 +38,7 @@ Public Class FormKelontong
 
 
     Sub CariBarang(kode)
-        Dim xkdbarang, xnamabarang As String
+        Dim xkdbarang, xnamabarang, xsatuan As String
         Dim xharga, xqty, jumlah, qty, total As Int32
         Dim parameters = New Specialized.NameValueCollection
         parameters.Add("kdbarang", kode)
@@ -51,6 +51,8 @@ Public Class FormKelontong
             For Each Row2 In respons("data")
                 xkdbarang = Row2("kdbarang").ToString()
                 xnamabarang = Row2("namabarang").ToString()
+                xsatuan = Row2("satuan").ToString()
+
                 xqty = Row2("stok").ToString()
 
                 If (xqty = 0) Then
@@ -74,7 +76,7 @@ Public Class FormKelontong
                     qty = txtqty.Text
                     jumlah = xharga * qty
                     total = jumlah
-                    Dim row As String() = New String() {xkdbarang, xnamabarang, xharga, qty, jumlah, "0", "0", total, golongan}
+                    Dim row As String() = New String() {xkdbarang, xnamabarang, xharga, qty, xsatuan, jumlah, "0", "0", total, golongan}
                     DataGridView1.Rows.Add(row)
                 Else
                     MsgBox("Data tidak ditemukan", vbOK, "Informasi")
@@ -237,10 +239,10 @@ Public Class FormKelontong
             namabarang = DataGridView1.Item(1, i).Value
             qty = DataGridView1.Item(3, i).Value
             harga = DataGridView1.Item(2, i).Value
-            jumlah = DataGridView1.Item(4, i).Value
-            disc1 = DataGridView1.Item(5, i).Value
-            disc2 = DataGridView1.Item(6, i).Value
-            total = DataGridView1.Item(7, i).Value
+            jumlah = DataGridView1.Item(5, i).Value
+            disc1 = DataGridView1.Item(6, i).Value
+            disc2 = DataGridView1.Item(7, i).Value
+            total = DataGridView1.Item(8, i).Value
 
             data.Rows.Add(kdbarang, namabarang, qty, harga, jumlah, disc1, disc2, total)
         Next
@@ -334,8 +336,8 @@ Public Class FormKelontong
                 Else
                     e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(1).Value.ToString, f10, Brushes.Black, 25, 165 + tinggi)
                 End If
-                i = DataGridView1.Rows(baris).Cells(7).Value
-                DataGridView1.Rows(baris).Cells(7).Value = Format(i, "##,##0")
+                i = DataGridView1.Rows(baris).Cells(8).Value
+                DataGridView1.Rows(baris).Cells(8).Value = Format(i, "##,##0")
                 e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(7).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
             End If
         Next
@@ -421,34 +423,34 @@ Public Class FormKelontong
             qty = Int(DataGridView1.Item(3, selectedrow).Value)
             If (cekstok(DataGridView1.Item(0, selectedrow).Value, qty) = True) Then
                 harga = Int(DataGridView1.Item(2, selectedrow).Value)
-                disk1 = Int(DataGridView1.Item(5, selectedrow).Value)
-                disk2 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk1 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk2 = Int(DataGridView1.Item(7, selectedrow).Value)
                 If (disk1 > 0) Then
                     diskperson = (harga * qty) * disk1 / 100
-                    DataGridView1.Item(6, selectedrow).Value = diskperson
+                    DataGridView1.Item(7, selectedrow).Value = diskperson
                     disk2 = diskperson
                 End If
                 jumlah = (harga * qty) - disk2
                 total = jumlah
-                DataGridView1.Item(4, selectedrow).Value = (harga * qty)
-                DataGridView1.Item(7, selectedrow).Value = total
+                DataGridView1.Item(5, selectedrow).Value = (harga * qty)
+                DataGridView1.Item(8, selectedrow).Value = total
                 hitung()
             Else
                 MsgBox("cek stok")
                 qty = 1
                 DataGridView1.Item(3, selectedrow).Value = 1
                 harga = Int(DataGridView1.Item(2, selectedrow).Value)
-                disk1 = Int(DataGridView1.Item(5, selectedrow).Value)
-                disk2 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk1 = Int(DataGridView1.Item(6, selectedrow).Value)
+                disk2 = Int(DataGridView1.Item(7, selectedrow).Value)
                 If (disk1 > 0) Then
                     diskperson = (harga * qty) * disk1 / 100
-                    DataGridView1.Item(6, selectedrow).Value = diskperson
+                    DataGridView1.Item(7, selectedrow).Value = diskperson
                     disk2 = diskperson
                 End If
                 jumlah = (harga * qty) - disk2
                 total = jumlah
-                DataGridView1.Item(4, selectedrow).Value = (harga * qty)
-                DataGridView1.Item(7, selectedrow).Value = total
+                DataGridView1.Item(5, selectedrow).Value = (harga * qty)
+                DataGridView1.Item(8, selectedrow).Value = total
                 hitung()
 
 
@@ -463,6 +465,7 @@ Public Class FormKelontong
 
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
         Dim modebayar As String
+        btnsimpan.Enabled = False
         If CheckBox1.Checked = True Then
             modebayar = "NON TUNAI"
         Else
@@ -480,9 +483,9 @@ Public Class FormKelontong
                     {"kdbarang", DataGridView1.Item(0, i).Value},
                     {"qty", DataGridView1.Item(3, i).Value},
                     {"harga", DataGridView1.Item(2, i).Value},
-                    {"diskonpersen", DataGridView1.Item(5, i).Value},
-                    {"diskon", DataGridView1.Item(6, i).Value},
-                    {"jumlah", DataGridView1.Item(7, i).Value},
+                    {"diskonpersen", DataGridView1.Item(6, i).Value},
+                    {"diskon", DataGridView1.Item(7, i).Value},
+                    {"jumlah", DataGridView1.Item(8, i).Value},
                     {"idlokasi", "TOKO"}
                 }
             items.Add(item)
@@ -520,13 +523,15 @@ Public Class FormKelontong
                 PD.Print()
             End If
 
-            btnsimpan.Enabled = False
+
             txtbayar.Enabled = False
             btncetak.Enabled = True
             btnclear.Select()
         Else
             ' API gagal
             MsgBox($"Gagal simpan. Respon: {responseContent}")
+            btnsimpan.Enabled = True
+            txtbayar.Select()
         End If
 
 

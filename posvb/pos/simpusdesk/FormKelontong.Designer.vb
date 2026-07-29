@@ -54,7 +54,6 @@ Partial Class FormKelontong
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.Label11 = New System.Windows.Forms.Label()
-        Me.qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btncetak = New System.Windows.Forms.Button()
         Me.btnsimpan = New System.Windows.Forms.Button()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
@@ -62,23 +61,25 @@ Partial Class FormKelontong
         Me.txtkembali = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtbayar = New System.Windows.Forms.TextBox()
-        Me.namabarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnclear = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtjmltotal = New System.Windows.Forms.TextBox()
         Me.txtdisplayjmltotal = New System.Windows.Forms.TextBox()
-        Me.harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.txtkdbarang = New System.Windows.Forms.TextBox()
         Me.txtqty = New System.Windows.Forms.TextBox()
         Me.DataGridView1 = New System.Windows.Forms.DataGridView()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.TextGrandTotal = New System.Windows.Forms.TextBox()
+        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.namabarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Satuan = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.jumlah = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.diskonpersen = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.diskonamount = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.total = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.golongan = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Label16 = New System.Windows.Forms.Label()
-        Me.TextGrandTotal = New System.Windows.Forms.TextBox()
         Me.Panel1.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -145,7 +146,7 @@ Partial Class FormKelontong
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(764, 539)
+        Me.Label6.Location = New System.Drawing.Point(841, 535)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(50, 16)
         Me.Label6.TabIndex = 87
@@ -154,7 +155,7 @@ Partial Class FormKelontong
         'TextDiskon
         '
         Me.TextDiskon.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextDiskon.Location = New System.Drawing.Point(844, 533)
+        Me.TextDiskon.Location = New System.Drawing.Point(921, 529)
         Me.TextDiskon.Name = "TextDiskon"
         Me.TextDiskon.ReadOnly = True
         Me.TextDiskon.Size = New System.Drawing.Size(222, 22)
@@ -317,18 +318,9 @@ Partial Class FormKelontong
         Me.Label11.TabIndex = 71
         Me.Label11.Text = "Pelanggan"
         '
-        'qty
-        '
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.qty.DefaultCellStyle = DataGridViewCellStyle1
-        Me.qty.HeaderText = "QTY"
-        Me.qty.Name = "qty"
-        Me.qty.Width = 50
-        '
         'btncetak
         '
-        Me.btncetak.Location = New System.Drawing.Point(910, 691)
+        Me.btncetak.Location = New System.Drawing.Point(987, 687)
         Me.btncetak.Name = "btncetak"
         Me.btncetak.Size = New System.Drawing.Size(75, 30)
         Me.btncetak.TabIndex = 70
@@ -337,7 +329,7 @@ Partial Class FormKelontong
         '
         'btnsimpan
         '
-        Me.btnsimpan.Location = New System.Drawing.Point(829, 691)
+        Me.btnsimpan.Location = New System.Drawing.Point(906, 687)
         Me.btnsimpan.Name = "btnsimpan"
         Me.btnsimpan.Size = New System.Drawing.Size(75, 30)
         Me.btnsimpan.TabIndex = 68
@@ -347,7 +339,7 @@ Partial Class FormKelontong
         'CheckBox1
         '
         Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(844, 664)
+        Me.CheckBox1.Location = New System.Drawing.Point(921, 660)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(138, 17)
         Me.CheckBox1.TabIndex = 67
@@ -358,7 +350,7 @@ Partial Class FormKelontong
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(765, 633)
+        Me.Label3.Location = New System.Drawing.Point(842, 629)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(57, 16)
         Me.Label3.TabIndex = 66
@@ -367,7 +359,7 @@ Partial Class FormKelontong
         'txtkembali
         '
         Me.txtkembali.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtkembali.Location = New System.Drawing.Point(845, 630)
+        Me.txtkembali.Location = New System.Drawing.Point(922, 626)
         Me.txtkembali.Name = "txtkembali"
         Me.txtkembali.ReadOnly = True
         Me.txtkembali.Size = New System.Drawing.Size(222, 22)
@@ -378,7 +370,7 @@ Partial Class FormKelontong
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(765, 604)
+        Me.Label2.Location = New System.Drawing.Point(842, 600)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(44, 16)
         Me.Label2.TabIndex = 64
@@ -387,29 +379,15 @@ Partial Class FormKelontong
         'txtbayar
         '
         Me.txtbayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtbayar.Location = New System.Drawing.Point(845, 598)
+        Me.txtbayar.Location = New System.Drawing.Point(922, 594)
         Me.txtbayar.Name = "txtbayar"
         Me.txtbayar.Size = New System.Drawing.Size(222, 22)
         Me.txtbayar.TabIndex = 63
         Me.txtbayar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
-        'namabarang
-        '
-        Me.namabarang.HeaderText = "Nama Barang"
-        Me.namabarang.Name = "namabarang"
-        Me.namabarang.ReadOnly = True
-        Me.namabarang.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.namabarang.Width = 300
-        '
-        'Kode
-        '
-        Me.Kode.HeaderText = "Kode"
-        Me.Kode.Name = "Kode"
-        Me.Kode.ReadOnly = True
-        '
         'btnclear
         '
-        Me.btnclear.Location = New System.Drawing.Point(991, 691)
+        Me.btnclear.Location = New System.Drawing.Point(1068, 687)
         Me.btnclear.Name = "btnclear"
         Me.btnclear.Size = New System.Drawing.Size(75, 30)
         Me.btnclear.TabIndex = 69
@@ -420,7 +398,7 @@ Partial Class FormKelontong
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(764, 570)
+        Me.Label1.Location = New System.Drawing.Point(841, 566)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(51, 16)
         Me.Label1.TabIndex = 62
@@ -429,7 +407,7 @@ Partial Class FormKelontong
         'txtjmltotal
         '
         Me.txtjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtjmltotal.Location = New System.Drawing.Point(844, 564)
+        Me.txtjmltotal.Location = New System.Drawing.Point(921, 560)
         Me.txtjmltotal.Name = "txtjmltotal"
         Me.txtjmltotal.ReadOnly = True
         Me.txtjmltotal.Size = New System.Drawing.Size(222, 22)
@@ -441,21 +419,13 @@ Partial Class FormKelontong
         Me.txtdisplayjmltotal.BackColor = System.Drawing.Color.Blue
         Me.txtdisplayjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtdisplayjmltotal.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.txtdisplayjmltotal.Location = New System.Drawing.Point(432, 12)
+        Me.txtdisplayjmltotal.Location = New System.Drawing.Point(508, 12)
         Me.txtdisplayjmltotal.Multiline = True
         Me.txtdisplayjmltotal.Name = "txtdisplayjmltotal"
         Me.txtdisplayjmltotal.ReadOnly = True
         Me.txtdisplayjmltotal.Size = New System.Drawing.Size(635, 81)
         Me.txtdisplayjmltotal.TabIndex = 58
         Me.txtdisplayjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'harga
-        '
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        Me.harga.DefaultCellStyle = DataGridViewCellStyle2
-        Me.harga.HeaderText = "harga"
-        Me.harga.Name = "harga"
-        Me.harga.ReadOnly = True
         '
         'txtkdbarang
         '
@@ -482,12 +452,70 @@ Partial Class FormKelontong
         Me.DataGridView1.AllowUserToResizeColumns = False
         Me.DataGridView1.AllowUserToResizeRows = False
         Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.namabarang, Me.harga, Me.qty, Me.jumlah, Me.diskonpersen, Me.diskonamount, Me.total, Me.golongan})
+        Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.namabarang, Me.harga, Me.qty, Me.Satuan, Me.jumlah, Me.diskonpersen, Me.diskonamount, Me.total, Me.golongan})
         Me.DataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.DataGridView1.Location = New System.Drawing.Point(21, 117)
         Me.DataGridView1.Name = "DataGridView1"
-        Me.DataGridView1.Size = New System.Drawing.Size(1046, 378)
+        Me.DataGridView1.Size = New System.Drawing.Size(1122, 378)
         Me.DataGridView1.TabIndex = 57
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label16.Location = New System.Drawing.Point(841, 507)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(39, 16)
+        Me.Label16.TabIndex = 93
+        Me.Label16.Text = "Total"
+        '
+        'TextGrandTotal
+        '
+        Me.TextGrandTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextGrandTotal.Location = New System.Drawing.Point(921, 501)
+        Me.TextGrandTotal.Name = "TextGrandTotal"
+        Me.TextGrandTotal.ReadOnly = True
+        Me.TextGrandTotal.Size = New System.Drawing.Size(222, 22)
+        Me.TextGrandTotal.TabIndex = 92
+        Me.TextGrandTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Kode
+        '
+        Me.Kode.HeaderText = "Kode"
+        Me.Kode.Name = "Kode"
+        Me.Kode.ReadOnly = True
+        '
+        'namabarang
+        '
+        Me.namabarang.HeaderText = "Nama Barang"
+        Me.namabarang.Name = "namabarang"
+        Me.namabarang.ReadOnly = True
+        Me.namabarang.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.namabarang.Width = 300
+        '
+        'harga
+        '
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.harga.DefaultCellStyle = DataGridViewCellStyle1
+        Me.harga.HeaderText = "harga"
+        Me.harga.Name = "harga"
+        Me.harga.ReadOnly = True
+        '
+        'qty
+        '
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.qty.DefaultCellStyle = DataGridViewCellStyle2
+        Me.qty.HeaderText = "QTY"
+        Me.qty.Name = "qty"
+        Me.qty.Width = 50
+        '
+        'Satuan
+        '
+        Me.Satuan.HeaderText = "Satuan"
+        Me.Satuan.Name = "Satuan"
+        Me.Satuan.ReadOnly = True
+        Me.Satuan.Width = 80
         '
         'jumlah
         '
@@ -527,31 +555,11 @@ Partial Class FormKelontong
         Me.golongan.HeaderText = "Golongan"
         Me.golongan.Name = "golongan"
         '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label16.Location = New System.Drawing.Point(764, 511)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(39, 16)
-        Me.Label16.TabIndex = 93
-        Me.Label16.Text = "Total"
-        '
-        'TextGrandTotal
-        '
-        Me.TextGrandTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextGrandTotal.Location = New System.Drawing.Point(844, 505)
-        Me.TextGrandTotal.Name = "TextGrandTotal"
-        Me.TextGrandTotal.ReadOnly = True
-        Me.TextGrandTotal.Size = New System.Drawing.Size(222, 22)
-        Me.TextGrandTotal.TabIndex = 92
-        Me.TextGrandTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'FormKelontong
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1086, 740)
+        Me.ClientSize = New System.Drawing.Size(1160, 740)
         Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.TextGrandTotal)
         Me.Controls.Add(Me.Label7)
@@ -626,7 +634,6 @@ Partial Class FormKelontong
     Friend WithEvents Label13 As Label
     Friend WithEvents Label12 As Label
     Friend WithEvents Label11 As Label
-    Friend WithEvents qty As DataGridViewTextBoxColumn
     Friend WithEvents btncetak As Button
     Friend WithEvents btnsimpan As Button
     Friend WithEvents CheckBox1 As CheckBox
@@ -634,21 +641,23 @@ Partial Class FormKelontong
     Friend WithEvents txtkembali As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents txtbayar As TextBox
-    Friend WithEvents namabarang As DataGridViewTextBoxColumn
-    Friend WithEvents Kode As DataGridViewTextBoxColumn
     Friend WithEvents btnclear As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents txtjmltotal As TextBox
     Friend WithEvents txtdisplayjmltotal As TextBox
-    Friend WithEvents harga As DataGridViewTextBoxColumn
     Friend WithEvents txtkdbarang As TextBox
     Friend WithEvents txtqty As TextBox
     Friend WithEvents DataGridView1 As DataGridView
+    Friend WithEvents Label16 As Label
+    Friend WithEvents TextGrandTotal As TextBox
+    Friend WithEvents Kode As DataGridViewTextBoxColumn
+    Friend WithEvents namabarang As DataGridViewTextBoxColumn
+    Friend WithEvents harga As DataGridViewTextBoxColumn
+    Friend WithEvents qty As DataGridViewTextBoxColumn
+    Friend WithEvents Satuan As DataGridViewTextBoxColumn
     Friend WithEvents jumlah As DataGridViewTextBoxColumn
     Friend WithEvents diskonpersen As DataGridViewTextBoxColumn
     Friend WithEvents diskonamount As DataGridViewTextBoxColumn
     Friend WithEvents total As DataGridViewTextBoxColumn
     Friend WithEvents golongan As DataGridViewTextBoxColumn
-    Friend WithEvents Label16 As Label
-    Friend WithEvents TextGrandTotal As TextBox
 End Class

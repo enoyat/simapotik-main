@@ -155,8 +155,8 @@ Public Class FormKelontong
             jmldata = DataGridView1.Rows.Count
 
             For i = 0 To jmldata - 1
-                jmldiskon += Int(DataGridView1.Item(6, i).Value)
-                jmltotal += Int(DataGridView1.Item(7, i).Value)
+                jmldiskon += Int(DataGridView1.Item(7, i).Value)
+                jmltotal += Int(DataGridView1.Item(8, i).Value)
 
             Next
             GrandTotal = jmldiskon + jmltotal
@@ -338,7 +338,7 @@ Public Class FormKelontong
                 End If
                 i = DataGridView1.Rows(baris).Cells(8).Value
                 DataGridView1.Rows(baris).Cells(8).Value = Format(i, "##,##0")
-                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(7).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(8).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
             End If
         Next
         If (hargagolongan > 0) Then

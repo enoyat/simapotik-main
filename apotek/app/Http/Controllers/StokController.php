@@ -31,160 +31,168 @@ class StokController extends Controller
             'idlokasi' => 'required'
         ]);
 
-        $datastok = DB::select("
-        SELECT *,
-        SUM(masuk - keluar) OVER (
-        PARTITION BY kdbarang, idlokasi
-        ORDER BY tgltrans, jam, id
+        $sql = "SELECT
+    kartu.*,
+    l.namalokasi,
+    SUM(masuk - keluar) OVER (
+        PARTITION BY kartu.kdbarang, kartu.idlokasi
+        ORDER BY kartu.tgltrans, kartu.jam, kartu.id
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
     ) AS saldo
-        FROM
-        (
-            /* PEMBELIAN */
-            SELECT
-                pb.tgltrans,
-                pb.id,
-                'Pembelian' AS jenis_transaksi,
-                s.namasupplier AS lokasi_asal,
-                g.namalokasi AS gudang_tujuan,
-                d.qty AS masuk,
-                0 AS keluar,
-                d.kdbarang,
-                d.idlokasi,
-                pb.email,
-                TIME(pb.created_at) AS jam
-            FROM detailpembelian d
-            INNER JOIN pembelian pb
-                ON pb.id = d.idpembelian
-            INNER JOIN supplier s
-                ON s.idsupplier = pb.idsupplier
-            INNER JOIN stoklokasi g
-                ON g.idlokasi = d.idlokasi
-
-            UNION ALL
-
-            /* PENJUALAN */
-            SELECT
-                pj.tgltrans,
-                pj.id,
-                'Penjualan',
-                g.namalokasi,
-                pj.modebayar,
-                0,
-                d.qty,
-                d.kdbarang,
-                d.idlokasi,
-                pj.email,
-                pj.jam
-            FROM detailpenjualan d
-            INNER JOIN penjualan pj
-                ON pj.id = d.idpenjualan
-            INNER JOIN stoklokasi g
-                ON g.idlokasi = d.idlokasi
-
-            UNION ALL
-
-            /* MUTASI KELUAR */
-            SELECT
-                m.tglmutasi,
-                m.id,
-                'Mutasi Keluar',
-                ga.namalokasi,
-                gt.namalokasi,
-                0,
-                m.qty,
-                m.kdbarang,
-                m.idlokasi,
-                m.email,
-                TIME(m.created_at)
-            FROM detailmutasi m
-            INNER JOIN stoklokasi ga
-                ON ga.idlokasi = m.idlokasi
-            INNER JOIN stoklokasi gt
-                ON gt.idlokasi = m.idlokasidest
-
-            UNION ALL
-
-            /* ADJUSTMENT */
-            SELECT
-    a.tanggal,
-    a.id,
-    'Adjustment' AS jenis_transaksi,
-    ga.namalokasi,
-    a.keterangan,
-    CASE
-        WHEN a.selisih > 0 THEN a.selisih
-        ELSE 0
-    END AS masuk,
-    CASE
-        WHEN a.selisih < 0 THEN ABS(a.selisih)
-        ELSE 0
-    END AS keluar,
-    a.kdbarang,
-    a.idlokasi,
-    a.email,
-    TIME(a.created_at) AS jam
-FROM stokopname a
-JOIN stoklokasi ga
-    ON a.idlokasi = ga.idlokasi
-
-UNION ALL
-/* RETUR PEMBELIAN */
-SELECT
-    r.tgltrans,
-    r.id,
-    'Retur Pembelian' AS jenis_transaksi,
-    s.namasupplier AS lokasi_asal,
-    g.namalokasi AS gudang_tujuan,
-    d.qtykembali AS masuk,
-    d.qty AS keluar,
-    d.kdbarang,
-    d.idlokasi,
-    r.email,
-    TIME(r.tgltrans) AS jam
-FROM returdetailpembelian d
-JOIN returpembelian r
-    ON r.id = d.idretur
-JOIN detailpembelian dp
-	ON d.iddetailpembelian=dp.id
-   JOIN pembelian pb
-   on dp.idpembelian=pb.id
-JOIN supplier s
-    ON s.idsupplier = pb.idsupplier
-JOIN stoklokasi g
-    ON g.idlokasi = d.idlokasi
+FROM
+(
+    /* PEMBELIAN */
+    SELECT
+        pb.tgltrans,
+        pb.id,
+        'Pembelian' AS jenis_transaksi,
+        s.namasupplier AS lokasi_asal,
+        g.namalokasi AS gudang_tujuan,
+        d.qty AS masuk,
+        0 AS keluar,
+        d.kdbarang,
+        d.idlokasi,
+        pb.email,
+        TIME(pb.created_at) AS jam
+    FROM detailpembelian d
+    JOIN pembelian pb ON pb.id=d.idpembelian
+    JOIN supplier s ON s.idsupplier=pb.idsupplier
+    JOIN stoklokasi g ON g.idlokasi=d.idlokasi
 
     UNION ALL
-SELECT
-    r.tgltrans,
-    r.id,
-    'Retur Penjualan' AS jenis_transaksi,
-    c.namacustomer AS lokasi_asal,
-    g.namalokasi AS gudang_tujuan,
-    d.qty AS masuk,
-    0,
-    d.kdbarang,
-    d.idlokasi,
-    r.email,
-    TIME(r.tgltrans) AS jam
-FROM returdetailpenjualan d
-JOIN returpenjualan r
-    ON r.id = d.idretur
-JOIN detailpenjualan dp
-	ON d.iddetailpenjualan=dp.id
-   JOIN penjualan pb
-   on dp.idpenjualan=pb.id
-JOIN customer c
-    ON c.idcustomer = pb.idcustomer
-JOIN stoklokasi g
-    ON g.idlokasi = d.idlokasi
-        ) kartu
-        WHERE kdbarang = ?
-        and idlokasi= ?
-        ORDER BY tgltrans, jam, id
-    ", [
+
+    /* PENJUALAN */
+    SELECT
+        pj.tgltrans,
+        pj.id,
+        'Penjualan',
+        g.namalokasi,
+        pj.modebayar,
+        0,
+        d.qty,
+        d.kdbarang,
+        d.idlokasi,
+        pj.email,
+        pj.jam
+    FROM detailpenjualan d
+    JOIN penjualan pj ON pj.id=d.idpenjualan
+    JOIN stoklokasi g ON g.idlokasi=d.idlokasi
+
+    UNION ALL
+
+    /* MUTASI KELUAR */
+    SELECT
+        m.tglmutasi,
+        m.id,
+        'Mutasi Keluar',
+        ga.namalokasi,
+        gt.namalokasi,
+        0,
+        m.qty,
+        m.kdbarang,
+        m.idlokasi,
+        m.email,
+        TIME(m.created_at)
+    FROM detailmutasi m
+    JOIN stoklokasi ga ON ga.idlokasi=m.idlokasi
+    JOIN stoklokasi gt ON gt.idlokasi=m.idlokasidest
+
+    UNION ALL
+
+    /* MUTASI MASUK */
+    SELECT
+        m.tglmutasi,
+        m.id,
+        'Mutasi Masuk',
+        ga.namalokasi,
+        gt.namalokasi,
+        m.qty,
+        0,
+        m.kdbarang,
+        m.idlokasidest,
+        m.email,
+        TIME(m.created_at)
+    FROM detailmutasi m
+    JOIN stoklokasi ga ON ga.idlokasi=m.idlokasi
+    JOIN stoklokasi gt ON gt.idlokasi=m.idlokasidest
+
+    UNION ALL
+
+    /* ADJUSTMENT */
+    SELECT
+        a.tanggal,
+        a.id,
+        'Adjustment',
+        ga.namalokasi,
+        a.keterangan,
+        CASE WHEN a.selisih>0 THEN a.selisih ELSE 0 END,
+        CASE WHEN a.selisih<0 THEN ABS(a.selisih) ELSE 0 END,
+        a.kdbarang,
+        a.idlokasi,
+        a.email,
+        TIME(a.created_at)
+    FROM stokopname a
+    JOIN stoklokasi ga ON ga.idlokasi=a.idlokasi
+
+    UNION ALL
+
+    /* RETUR PEMBELIAN */
+    SELECT
+        r.tgltrans,
+        r.id,
+        'Retur Pembelian',
+        s.namasupplier,
+        g.namalokasi,
+        d.qtykembali,
+        d.qty,
+        d.kdbarang,
+        d.idlokasi,
+        r.email,
+        TIME(r.tgltrans)
+    FROM returdetailpembelian d
+    JOIN returpembelian r ON r.id=d.idretur
+    JOIN detailpembelian dp ON dp.id=d.iddetailpembelian
+    JOIN pembelian pb ON pb.id=dp.idpembelian
+    JOIN supplier s ON s.idsupplier=pb.idsupplier
+    JOIN stoklokasi g ON g.idlokasi=d.idlokasi
+
+    UNION ALL
+
+    /* RETUR PENJUALAN */
+    SELECT
+        r.tgltrans,
+        r.id,
+        'Retur Penjualan',
+        c.namacustomer,
+        g.namalokasi,
+        d.qty,
+        0,
+        d.kdbarang,
+        d.idlokasi,
+        r.email,
+        TIME(r.tgltrans)
+    FROM returdetailpenjualan d
+    JOIN returpenjualan r ON r.id=d.idretur
+    JOIN detailpenjualan dp ON dp.id=d.iddetailpenjualan
+    JOIN penjualan pb ON pb.id=dp.idpenjualan
+    JOIN customer c ON c.idcustomer=pb.idcustomer
+    JOIN stoklokasi g ON g.idlokasi=d.idlokasi
+
+) kartu
+JOIN stoklokasi l
+    ON l.idlokasi = kartu.idlokasi
+WHERE
+    kartu.kdbarang = ?
+    AND (? = 'all' OR kartu.idlokasi = ?)
+ORDER BY
+    kartu.idlokasi,
+    kartu.tgltrans,
+    kartu.jam,
+    kartu.id;";
+        $datastok = DB::select($sql, [
             $request->kdbarang,
-            $request->idlokasi
+            $request->idlokasi,
+            $request->idlokasi,
         ]);
 
         return view('kartustok.laporankartustok', [

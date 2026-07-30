@@ -31,7 +31,8 @@
                     <div class="col-6">
                         <label>Filter Pencarian</label>
                         <select name="idlokasi" id="idlokasi" class="form-control col-6">
-                            <option value="">== Pilih Lokasi ==</option>
+                            <option value="" selected>== Pilih Lokasi ==</option>
+                            <option value="all">Semua Lokasi</option>
                             @foreach ($lokasi as $row)
                                 <option value="{{ $row->idlokasi }}">{{ $row->namalokasi }}</option>
                             @endforeach

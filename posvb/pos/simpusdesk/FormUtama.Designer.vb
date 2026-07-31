@@ -150,7 +150,7 @@ Partial Class FormUtama
             Or System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom), System.Windows.Forms.ToolStripStatusLabelBorderSides)
         Me.ToolStripStatusLabel3.Name = "ToolStripStatusLabel3"
         Me.ToolStripStatusLabel3.Size = New System.Drawing.Size(148, 19)
-        Me.ToolStripStatusLabel3.Text = "SimApotek Ver. 29.07.2026"
+        Me.ToolStripStatusLabel3.Text = "SimApotek Ver. 31.07.2026"
         '
         'ToolStripStatusLabel1
         '

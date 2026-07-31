@@ -313,7 +313,7 @@ Public Class FormPenjualanResep
 
         '    i = DataGridView1.Rows(baris).Cells(7).Value
         '    DataGridView1.Rows(baris).Cells(7).Value = Format(i, "##,##0")
-        e.Graphics.DrawString(Format(jmltotal, "##,##0"), f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+        e.Graphics.DrawString(Format(grandtotal, "##,##0"), f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
         'Next
         tinggi = 180 + tinggi
         Dim bayar = Int(txtbayar.Text)

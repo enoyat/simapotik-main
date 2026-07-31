@@ -336,9 +336,9 @@ Public Class FormKelontong
                 Else
                     e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(1).Value.ToString, f10, Brushes.Black, 25, 165 + tinggi)
                 End If
-                i = DataGridView1.Rows(baris).Cells(8).Value
-                DataGridView1.Rows(baris).Cells(8).Value = Format(i, "##,##0")
-                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(8).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+                i = DataGridView1.Rows(baris).Cells(5).Value
+                DataGridView1.Rows(baris).Cells(5).Value = Format(i, "##,##0")
+                e.Graphics.DrawString(DataGridView1.Rows(baris).Cells(5).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
             End If
         Next
         If (hargagolongan > 0) Then

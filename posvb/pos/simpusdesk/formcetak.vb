@@ -230,16 +230,16 @@ Public Class formcetak
                 Else
                     e.Graphics.DrawString(DataGridView2.Rows(baris).Cells(1).Value.ToString, f10, Brushes.Black, 25, 165 + tinggi)
                 End If
-                i = DataGridView2.Rows(baris).Cells(7).Value
-                DataGridView2.Rows(baris).Cells(7).Value = Format(i, "##,##0")
-                e.Graphics.DrawString(DataGridView2.Rows(baris).Cells(7).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+                i = DataGridView2.Rows(baris).Cells(4).Value
+                DataGridView2.Rows(baris).Cells(4).Value = Format(i, "##,##0")
+                e.Graphics.DrawString(DataGridView2.Rows(baris).Cells(4).Value.ToString, f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
             End If
         Next
         If (hargagolongan > 0) Then
             tinggi += 15
             e.Graphics.DrawString("1", f10, Brushes.Black, 0, 165 + tinggi)
             e.Graphics.DrawString("Obat-Obatan", f10, Brushes.Black, 25, 165 + tinggi)
-            e.Graphics.DrawString(Format(hargagolongan, "##,##0"), f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
+            e.Graphics.DrawString(Format(grandtotal, "##,##0"), f10, Brushes.Black, rigtmargin, 165 + tinggi, kanan)
         End If
         tinggi = 180 + tinggi
         Dim bayar = 0

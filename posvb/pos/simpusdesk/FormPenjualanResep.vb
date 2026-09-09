@@ -28,8 +28,10 @@ Public Class FormPenjualanResep
         Dim asallokasi As String
         If (lokasi = 0) Then
             asallokasi = "TOKO"
-        Else
+        ElseIf (lokasi = 1) Then
             asallokasi = "G4"
+        ElseIf (lokasi = 2) Then
+            asallokasi = "G6"
         End If
 
         Dim parameters = New Specialized.NameValueCollection
@@ -360,8 +362,10 @@ Public Class FormPenjualanResep
         Dim asallokasi As String
         If (lokasi = 0) Then
             asallokasi = "TOKO"
-        Else
+        ElseIf (lokasi = 1) Then
             asallokasi = "G4"
+        ElseIf (lokasi = 2) Then
+            asallokasi = "G6"
         End If
 
         Dim parameters = New Specialized.NameValueCollection
@@ -451,8 +455,11 @@ Public Class FormPenjualanResep
             Dim idlokasi = ""
             If (ComboLokasi.SelectedIndex = 0) Then
                 idlokasi = "TOKO"
-            Else
+            ElseIf (ComboLokasi.SelectedIndex = 1) Then
                 idlokasi = "G4"
+            ElseIf (ComboLokasi.SelectedIndex = 2) Then
+                idlokasi = "G6"
+            
             End If
             Dim item As New Dictionary(Of String, String) From {
                     {"kdbarang", DataGridView1.Item(0, i).Value},

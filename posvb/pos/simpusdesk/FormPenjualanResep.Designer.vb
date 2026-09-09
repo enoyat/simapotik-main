@@ -29,6 +29,15 @@ Partial Class FormPenjualanResep
         Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.DataGridView1 = New System.Windows.Forms.DataGridView()
+        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.namabarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Satuan = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.jumlah = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.diskonpersen = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.diskonamount = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.total = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.txtdisplayjmltotal = New System.Windows.Forms.TextBox()
         Me.txtqty = New System.Windows.Forms.TextBox()
         Me.txtkdbarang = New System.Windows.Forms.TextBox()
@@ -70,15 +79,6 @@ Partial Class FormPenjualanResep
         Me.Label16 = New System.Windows.Forms.Label()
         Me.Button4 = New System.Windows.Forms.Button()
         Me.txtnamadokter = New System.Windows.Forms.TextBox()
-        Me.Kode = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.namabarang = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.harga = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.qty = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Satuan = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.jumlah = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.diskonpersen = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.diskonamount = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.total = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.TextGrandTotal = New System.Windows.Forms.TextBox()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -93,398 +93,25 @@ Partial Class FormPenjualanResep
         Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.DataGridView1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Kode, Me.namabarang, Me.harga, Me.qty, Me.Satuan, Me.jumlah, Me.diskonpersen, Me.diskonamount, Me.total})
         Me.DataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.DataGridView1.Location = New System.Drawing.Point(37, 124)
+        Me.DataGridView1.Location = New System.Drawing.Point(56, 191)
+        Me.DataGridView1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.DataGridView1.Name = "DataGridView1"
-        Me.DataGridView1.Size = New System.Drawing.Size(1123, 371)
+        Me.DataGridView1.RowHeadersWidth = 62
+        Me.DataGridView1.Size = New System.Drawing.Size(1684, 571)
         Me.DataGridView1.TabIndex = 0
-        '
-        'txtdisplayjmltotal
-        '
-        Me.txtdisplayjmltotal.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.txtdisplayjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtdisplayjmltotal.Location = New System.Drawing.Point(520, 12)
-        Me.txtdisplayjmltotal.Multiline = True
-        Me.txtdisplayjmltotal.Name = "txtdisplayjmltotal"
-        Me.txtdisplayjmltotal.ReadOnly = True
-        Me.txtdisplayjmltotal.Size = New System.Drawing.Size(640, 81)
-        Me.txtdisplayjmltotal.TabIndex = 2
-        Me.txtdisplayjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'txtqty
-        '
-        Me.txtqty.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtqty.Location = New System.Drawing.Point(35, 501)
-        Me.txtqty.Name = "txtqty"
-        Me.txtqty.Size = New System.Drawing.Size(53, 31)
-        Me.txtqty.TabIndex = 3
-        Me.txtqty.Text = "1"
-        Me.txtqty.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'txtkdbarang
-        '
-        Me.txtkdbarang.BackColor = System.Drawing.Color.Aqua
-        Me.txtkdbarang.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtkdbarang.Location = New System.Drawing.Point(94, 501)
-        Me.txtkdbarang.Name = "txtkdbarang"
-        Me.txtkdbarang.Size = New System.Drawing.Size(233, 31)
-        Me.txtkdbarang.TabIndex = 4
-        '
-        'txtjmltotal
-        '
-        Me.txtjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtjmltotal.Location = New System.Drawing.Point(938, 566)
-        Me.txtjmltotal.Name = "txtjmltotal"
-        Me.txtjmltotal.ReadOnly = True
-        Me.txtjmltotal.Size = New System.Drawing.Size(222, 22)
-        Me.txtjmltotal.TabIndex = 5
-        Me.txtjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(858, 572)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(51, 16)
-        Me.Label1.TabIndex = 6
-        Me.Label1.Text = "Jumlah"
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(859, 600)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(44, 16)
-        Me.Label2.TabIndex = 8
-        Me.Label2.Text = "Bayar"
-        '
-        'txtbayar
-        '
-        Me.txtbayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtbayar.Location = New System.Drawing.Point(939, 594)
-        Me.txtbayar.Name = "txtbayar"
-        Me.txtbayar.Size = New System.Drawing.Size(222, 22)
-        Me.txtbayar.TabIndex = 7
-        Me.txtbayar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(859, 629)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(57, 16)
-        Me.Label3.TabIndex = 10
-        Me.Label3.Text = "Kembali"
-        '
-        'txtkembali
-        '
-        Me.txtkembali.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtkembali.Location = New System.Drawing.Point(939, 626)
-        Me.txtkembali.Name = "txtkembali"
-        Me.txtkembali.ReadOnly = True
-        Me.txtkembali.Size = New System.Drawing.Size(222, 22)
-        Me.txtkembali.TabIndex = 9
-        Me.txtkembali.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'CheckBox1
-        '
-        Me.CheckBox1.AutoSize = True
-        Me.CheckBox1.Location = New System.Drawing.Point(938, 660)
-        Me.CheckBox1.Name = "CheckBox1"
-        Me.CheckBox1.Size = New System.Drawing.Size(138, 17)
-        Me.CheckBox1.TabIndex = 12
-        Me.CheckBox1.Text = "Pembayaran Non Tunai"
-        Me.CheckBox1.UseVisualStyleBackColor = True
-        '
-        'btnsimpan
-        '
-        Me.btnsimpan.Location = New System.Drawing.Point(923, 687)
-        Me.btnsimpan.Name = "btnsimpan"
-        Me.btnsimpan.Size = New System.Drawing.Size(75, 30)
-        Me.btnsimpan.TabIndex = 13
-        Me.btnsimpan.Text = "Simpan"
-        Me.btnsimpan.UseVisualStyleBackColor = True
-        '
-        'btncetak
-        '
-        Me.btncetak.Location = New System.Drawing.Point(1004, 687)
-        Me.btncetak.Name = "btncetak"
-        Me.btncetak.Size = New System.Drawing.Size(75, 30)
-        Me.btncetak.TabIndex = 15
-        Me.btncetak.Text = "Cetak Nota"
-        Me.btncetak.UseVisualStyleBackColor = True
-        '
-        'btnclear
-        '
-        Me.btnclear.Location = New System.Drawing.Point(1085, 687)
-        Me.btnclear.Name = "btnclear"
-        Me.btnclear.Size = New System.Drawing.Size(75, 30)
-        Me.btnclear.TabIndex = 14
-        Me.btnclear.Text = "Clear"
-        Me.btnclear.UseVisualStyleBackColor = True
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 11)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(83, 13)
-        Me.Label4.TabIndex = 16
-        Me.Label4.Text = "F2 : Cari Barang"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(120, 11)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(82, 13)
-        Me.Label5.TabIndex = 17
-        Me.Label5.Text = "F5 : Hapus Item"
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(12, 30)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(101, 13)
-        Me.Label9.TabIndex = 21
-        Me.Label9.Text = "Tab : Pindah Kursor"
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(119, 30)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(81, 13)
-        Me.Label10.TabIndex = 22
-        Me.Label10.Text = "+ : Pembayaran"
-        '
-        'Label11
-        '
-        Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(37, 18)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(39, 13)
-        Me.Label11.TabIndex = 23
-        Me.Label11.Text = "Pasien"
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(37, 44)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(75, 13)
-        Me.Label12.TabIndex = 24
-        Me.Label12.Text = "Tgl. Penjualan"
-        '
-        'Label13
-        '
-        Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(37, 69)
-        Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(78, 13)
-        Me.Label13.TabIndex = 25
-        Me.Label13.Text = "Tipe Penjualan"
-        '
-        'txtkdcustomer
-        '
-        Me.txtkdcustomer.Location = New System.Drawing.Point(754, 15)
-        Me.txtkdcustomer.Name = "txtkdcustomer"
-        Me.txtkdcustomer.Size = New System.Drawing.Size(78, 20)
-        Me.txtkdcustomer.TabIndex = 26
-        Me.txtkdcustomer.Text = "P0001"
-        Me.txtkdcustomer.Visible = False
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(315, 76)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(30, 13)
-        Me.Label14.TabIndex = 29
-        Me.Label14.Text = "Kasir"
-        '
-        'txtnamacustomer
-        '
-        Me.txtnamacustomer.Location = New System.Drawing.Point(546, 15)
-        Me.txtnamacustomer.Name = "txtnamacustomer"
-        Me.txtnamacustomer.ReadOnly = True
-        Me.txtnamacustomer.Size = New System.Drawing.Size(198, 20)
-        Me.txtnamacustomer.TabIndex = 30
-        Me.txtnamacustomer.Text = "Pelanggan Umum"
-        Me.txtnamacustomer.Visible = False
-        '
-        'Label15
-        '
-        Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(315, 102)
-        Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(50, 13)
-        Me.Label15.TabIndex = 32
-        Me.Label15.Text = "No. Nota"
-        '
-        'txtnonota
-        '
-        Me.txtnonota.Location = New System.Drawing.Point(371, 98)
-        Me.txtnonota.Name = "txtnonota"
-        Me.txtnonota.ReadOnly = True
-        Me.txtnonota.Size = New System.Drawing.Size(143, 20)
-        Me.txtnonota.TabIndex = 33
-        '
-        'cbjenisharga
-        '
-        Me.cbjenisharga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbjenisharga.FormattingEnabled = True
-        Me.cbjenisharga.Items.AddRange(New Object() {"Harga Resep"})
-        Me.cbjenisharga.Location = New System.Drawing.Point(546, 44)
-        Me.cbjenisharga.Name = "cbjenisharga"
-        Me.cbjenisharga.Size = New System.Drawing.Size(110, 21)
-        Me.cbjenisharga.TabIndex = 34
-        Me.cbjenisharga.Visible = False
-        '
-        'txtkasir
-        '
-        Me.txtkasir.Location = New System.Drawing.Point(371, 73)
-        Me.txtkasir.Name = "txtkasir"
-        Me.txtkasir.ReadOnly = True
-        Me.txtkasir.Size = New System.Drawing.Size(143, 20)
-        Me.txtkasir.TabIndex = 35
-        '
-        'tgltransaksi
-        '
-        Me.tgltransaksi.CustomFormat = "dd/mm/yyyy"
-        Me.tgltransaksi.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.tgltransaksi.Location = New System.Drawing.Point(126, 40)
-        Me.tgltransaksi.Margin = New System.Windows.Forms.Padding(2)
-        Me.tgltransaksi.Name = "tgltransaksi"
-        Me.tgltransaksi.Size = New System.Drawing.Size(111, 20)
-        Me.tgltransaksi.TabIndex = 44
-        '
-        'Panel1
-        '
-        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.Panel1.Controls.Add(Me.Label10)
-        Me.Panel1.Controls.Add(Me.Label4)
-        Me.Panel1.Controls.Add(Me.Label5)
-        Me.Panel1.Controls.Add(Me.Label9)
-        Me.Panel1.Location = New System.Drawing.Point(35, 539)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(668, 58)
-        Me.Panel1.TabIndex = 46
-        '
-        'PrintDocument1
-        '
-        '
-        'txtnamapasien
-        '
-        Me.txtnamapasien.Location = New System.Drawing.Point(126, 15)
-        Me.txtnamapasien.Name = "txtnamapasien"
-        Me.txtnamapasien.Size = New System.Drawing.Size(174, 20)
-        Me.txtnamapasien.TabIndex = 49
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(315, 18)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(39, 13)
-        Me.Label6.TabIndex = 50
-        Me.Label6.Text = "Dokter"
-        '
-        'combotipepenjualan
-        '
-        Me.combotipepenjualan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.combotipepenjualan.FormattingEnabled = True
-        Me.combotipepenjualan.Items.AddRange(New Object() {"T", "K"})
-        Me.combotipepenjualan.Location = New System.Drawing.Point(126, 66)
-        Me.combotipepenjualan.Name = "combotipepenjualan"
-        Me.combotipepenjualan.Size = New System.Drawing.Size(36, 21)
-        Me.combotipepenjualan.TabIndex = 52
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(168, 69)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(82, 13)
-        Me.Label7.TabIndex = 53
-        Me.Label7.Text = "K : Belum Bayar"
-        '
-        'txtiddokter
-        '
-        Me.txtiddokter.Enabled = False
-        Me.txtiddokter.Location = New System.Drawing.Point(371, 15)
-        Me.txtiddokter.Name = "txtiddokter"
-        Me.txtiddokter.Size = New System.Drawing.Size(100, 20)
-        Me.txtiddokter.TabIndex = 54
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(858, 544)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(50, 16)
-        Me.Label8.TabIndex = 56
-        Me.Label8.Text = "Diskon"
-        '
-        'TextDiskon
-        '
-        Me.TextDiskon.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextDiskon.Location = New System.Drawing.Point(938, 538)
-        Me.TextDiskon.Name = "TextDiskon"
-        Me.TextDiskon.ReadOnly = True
-        Me.TextDiskon.Size = New System.Drawing.Size(222, 22)
-        Me.TextDiskon.TabIndex = 55
-        Me.TextDiskon.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'ComboLokasi
-        '
-        Me.ComboLokasi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboLokasi.FormattingEnabled = True
-        Me.ComboLokasi.Items.AddRange(New Object() {"TOKO", "Dr. Heroe"})
-        Me.ComboLokasi.Location = New System.Drawing.Point(126, 93)
-        Me.ComboLokasi.Name = "ComboLokasi"
-        Me.ComboLokasi.Size = New System.Drawing.Size(174, 21)
-        Me.ComboLokasi.TabIndex = 57
-        '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(37, 96)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(38, 13)
-        Me.Label16.TabIndex = 58
-        Me.Label16.Text = "Lokasi"
-        '
-        'Button4
-        '
-        Me.Button4.Location = New System.Drawing.Point(487, 13)
-        Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(27, 23)
-        Me.Button4.TabIndex = 59
-        Me.Button4.Text = "..."
-        Me.Button4.UseVisualStyleBackColor = True
-        '
-        'txtnamadokter
-        '
-        Me.txtnamadokter.Location = New System.Drawing.Point(318, 41)
-        Me.txtnamadokter.Name = "txtnamadokter"
-        Me.txtnamadokter.ReadOnly = True
-        Me.txtnamadokter.Size = New System.Drawing.Size(196, 20)
-        Me.txtnamadokter.TabIndex = 61
         '
         'Kode
         '
         Me.Kode.HeaderText = "Kode"
+        Me.Kode.MinimumWidth = 8
         Me.Kode.Name = "Kode"
         Me.Kode.ReadOnly = True
+        Me.Kode.Width = 150
         '
         'namabarang
         '
         Me.namabarang.HeaderText = "Nama Barang"
+        Me.namabarang.MinimumWidth = 8
         Me.namabarang.Name = "namabarang"
         Me.namabarang.ReadOnly = True
         Me.namabarang.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
@@ -495,8 +122,10 @@ Partial Class FormPenjualanResep
         DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         Me.harga.DefaultCellStyle = DataGridViewCellStyle1
         Me.harga.HeaderText = "harga"
+        Me.harga.MinimumWidth = 8
         Me.harga.Name = "harga"
         Me.harga.ReadOnly = True
+        Me.harga.Width = 150
         '
         'qty
         '
@@ -504,12 +133,14 @@ Partial Class FormPenjualanResep
         DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.qty.DefaultCellStyle = DataGridViewCellStyle2
         Me.qty.HeaderText = "QTY"
+        Me.qty.MinimumWidth = 8
         Me.qty.Name = "qty"
         Me.qty.Width = 50
         '
         'Satuan
         '
         Me.Satuan.HeaderText = "Satuan"
+        Me.Satuan.MinimumWidth = 8
         Me.Satuan.Name = "Satuan"
         Me.Satuan.ReadOnly = True
         Me.Satuan.Width = 80
@@ -519,8 +150,10 @@ Partial Class FormPenjualanResep
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         Me.jumlah.DefaultCellStyle = DataGridViewCellStyle3
         Me.jumlah.HeaderText = "Jumlah"
+        Me.jumlah.MinimumWidth = 8
         Me.jumlah.Name = "jumlah"
         Me.jumlah.ReadOnly = True
+        Me.jumlah.Width = 150
         '
         'diskonpersen
         '
@@ -528,7 +161,9 @@ Partial Class FormPenjualanResep
         DataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.diskonpersen.DefaultCellStyle = DataGridViewCellStyle4
         Me.diskonpersen.HeaderText = "Disk %"
+        Me.diskonpersen.MinimumWidth = 8
         Me.diskonpersen.Name = "diskonpersen"
+        Me.diskonpersen.Width = 150
         '
         'diskonamount
         '
@@ -536,42 +171,463 @@ Partial Class FormPenjualanResep
         DataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.diskonamount.DefaultCellStyle = DataGridViewCellStyle5
         Me.diskonamount.HeaderText = "Disk Rp"
+        Me.diskonamount.MinimumWidth = 8
         Me.diskonamount.Name = "diskonamount"
+        Me.diskonamount.Width = 150
         '
         'total
         '
         DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
         Me.total.DefaultCellStyle = DataGridViewCellStyle6
         Me.total.HeaderText = "Total"
+        Me.total.MinimumWidth = 8
         Me.total.Name = "total"
         Me.total.ReadOnly = True
         Me.total.Width = 150
+        '
+        'txtdisplayjmltotal
+        '
+        Me.txtdisplayjmltotal.BackColor = System.Drawing.Color.FromArgb(CType(CType(128, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer))
+        Me.txtdisplayjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtdisplayjmltotal.Location = New System.Drawing.Point(780, 18)
+        Me.txtdisplayjmltotal.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtdisplayjmltotal.Multiline = True
+        Me.txtdisplayjmltotal.Name = "txtdisplayjmltotal"
+        Me.txtdisplayjmltotal.ReadOnly = True
+        Me.txtdisplayjmltotal.Size = New System.Drawing.Size(958, 122)
+        Me.txtdisplayjmltotal.TabIndex = 2
+        Me.txtdisplayjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtqty
+        '
+        Me.txtqty.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtqty.Location = New System.Drawing.Point(52, 771)
+        Me.txtqty.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtqty.Name = "txtqty"
+        Me.txtqty.Size = New System.Drawing.Size(78, 43)
+        Me.txtqty.TabIndex = 3
+        Me.txtqty.Text = "1"
+        Me.txtqty.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'txtkdbarang
+        '
+        Me.txtkdbarang.BackColor = System.Drawing.Color.Aqua
+        Me.txtkdbarang.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtkdbarang.Location = New System.Drawing.Point(141, 771)
+        Me.txtkdbarang.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtkdbarang.Name = "txtkdbarang"
+        Me.txtkdbarang.Size = New System.Drawing.Size(348, 43)
+        Me.txtkdbarang.TabIndex = 4
+        '
+        'txtjmltotal
+        '
+        Me.txtjmltotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtjmltotal.Location = New System.Drawing.Point(1407, 871)
+        Me.txtjmltotal.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtjmltotal.Name = "txtjmltotal"
+        Me.txtjmltotal.ReadOnly = True
+        Me.txtjmltotal.Size = New System.Drawing.Size(331, 30)
+        Me.txtjmltotal.TabIndex = 5
+        Me.txtjmltotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(1287, 880)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(76, 25)
+        Me.Label1.TabIndex = 6
+        Me.Label1.Text = "Jumlah"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Location = New System.Drawing.Point(1288, 923)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(63, 25)
+        Me.Label2.TabIndex = 8
+        Me.Label2.Text = "Bayar"
+        '
+        'txtbayar
+        '
+        Me.txtbayar.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtbayar.Location = New System.Drawing.Point(1408, 914)
+        Me.txtbayar.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtbayar.Name = "txtbayar"
+        Me.txtbayar.Size = New System.Drawing.Size(331, 30)
+        Me.txtbayar.TabIndex = 7
+        Me.txtbayar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label3.Location = New System.Drawing.Point(1288, 968)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(83, 25)
+        Me.Label3.TabIndex = 10
+        Me.Label3.Text = "Kembali"
+        '
+        'txtkembali
+        '
+        Me.txtkembali.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtkembali.Location = New System.Drawing.Point(1408, 963)
+        Me.txtkembali.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtkembali.Name = "txtkembali"
+        Me.txtkembali.ReadOnly = True
+        Me.txtkembali.Size = New System.Drawing.Size(331, 30)
+        Me.txtkembali.TabIndex = 9
+        Me.txtkembali.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'CheckBox1
+        '
+        Me.CheckBox1.AutoSize = True
+        Me.CheckBox1.Location = New System.Drawing.Point(1407, 1015)
+        Me.CheckBox1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.CheckBox1.Name = "CheckBox1"
+        Me.CheckBox1.Size = New System.Drawing.Size(200, 24)
+        Me.CheckBox1.TabIndex = 12
+        Me.CheckBox1.Text = "Pembayaran Non Tunai"
+        Me.CheckBox1.UseVisualStyleBackColor = True
+        '
+        'btnsimpan
+        '
+        Me.btnsimpan.Location = New System.Drawing.Point(1384, 1057)
+        Me.btnsimpan.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.btnsimpan.Name = "btnsimpan"
+        Me.btnsimpan.Size = New System.Drawing.Size(112, 46)
+        Me.btnsimpan.TabIndex = 13
+        Me.btnsimpan.Text = "Simpan"
+        Me.btnsimpan.UseVisualStyleBackColor = True
+        '
+        'btncetak
+        '
+        Me.btncetak.Location = New System.Drawing.Point(1506, 1057)
+        Me.btncetak.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.btncetak.Name = "btncetak"
+        Me.btncetak.Size = New System.Drawing.Size(112, 46)
+        Me.btncetak.TabIndex = 15
+        Me.btncetak.Text = "Cetak Nota"
+        Me.btncetak.UseVisualStyleBackColor = True
+        '
+        'btnclear
+        '
+        Me.btnclear.Location = New System.Drawing.Point(1628, 1057)
+        Me.btnclear.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.btnclear.Name = "btnclear"
+        Me.btnclear.Size = New System.Drawing.Size(112, 46)
+        Me.btnclear.TabIndex = 14
+        Me.btnclear.Text = "Clear"
+        Me.btnclear.UseVisualStyleBackColor = True
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(18, 17)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(124, 20)
+        Me.Label4.TabIndex = 16
+        Me.Label4.Text = "F2 : Cari Barang"
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(180, 17)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(123, 20)
+        Me.Label5.TabIndex = 17
+        Me.Label5.Text = "F5 : Hapus Item"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(18, 46)
+        Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(147, 20)
+        Me.Label9.TabIndex = 21
+        Me.Label9.Text = "Tab : Pindah Kursor"
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(178, 46)
+        Me.Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(119, 20)
+        Me.Label10.TabIndex = 22
+        Me.Label10.Text = "+ : Pembayaran"
+        '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(56, 28)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(57, 20)
+        Me.Label11.TabIndex = 23
+        Me.Label11.Text = "Pasien"
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Location = New System.Drawing.Point(56, 68)
+        Me.Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(108, 20)
+        Me.Label12.TabIndex = 24
+        Me.Label12.Text = "Tgl. Penjualan"
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(56, 106)
+        Me.Label13.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(113, 20)
+        Me.Label13.TabIndex = 25
+        Me.Label13.Text = "Tipe Penjualan"
+        '
+        'txtkdcustomer
+        '
+        Me.txtkdcustomer.Location = New System.Drawing.Point(1131, 23)
+        Me.txtkdcustomer.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtkdcustomer.Name = "txtkdcustomer"
+        Me.txtkdcustomer.Size = New System.Drawing.Size(115, 26)
+        Me.txtkdcustomer.TabIndex = 26
+        Me.txtkdcustomer.Text = "P0001"
+        Me.txtkdcustomer.Visible = False
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(472, 117)
+        Me.Label14.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(44, 20)
+        Me.Label14.TabIndex = 29
+        Me.Label14.Text = "Kasir"
+        '
+        'txtnamacustomer
+        '
+        Me.txtnamacustomer.Location = New System.Drawing.Point(819, 23)
+        Me.txtnamacustomer.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtnamacustomer.Name = "txtnamacustomer"
+        Me.txtnamacustomer.ReadOnly = True
+        Me.txtnamacustomer.Size = New System.Drawing.Size(295, 26)
+        Me.txtnamacustomer.TabIndex = 30
+        Me.txtnamacustomer.Text = "Pelanggan Umum"
+        Me.txtnamacustomer.Visible = False
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(472, 157)
+        Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(71, 20)
+        Me.Label15.TabIndex = 32
+        Me.Label15.Text = "No. Nota"
+        '
+        'txtnonota
+        '
+        Me.txtnonota.Location = New System.Drawing.Point(556, 151)
+        Me.txtnonota.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtnonota.Name = "txtnonota"
+        Me.txtnonota.ReadOnly = True
+        Me.txtnonota.Size = New System.Drawing.Size(212, 26)
+        Me.txtnonota.TabIndex = 33
+        '
+        'cbjenisharga
+        '
+        Me.cbjenisharga.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbjenisharga.FormattingEnabled = True
+        Me.cbjenisharga.Items.AddRange(New Object() {"Harga Resep"})
+        Me.cbjenisharga.Location = New System.Drawing.Point(819, 68)
+        Me.cbjenisharga.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cbjenisharga.Name = "cbjenisharga"
+        Me.cbjenisharga.Size = New System.Drawing.Size(163, 28)
+        Me.cbjenisharga.TabIndex = 34
+        Me.cbjenisharga.Visible = False
+        '
+        'txtkasir
+        '
+        Me.txtkasir.Location = New System.Drawing.Point(556, 112)
+        Me.txtkasir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtkasir.Name = "txtkasir"
+        Me.txtkasir.ReadOnly = True
+        Me.txtkasir.Size = New System.Drawing.Size(212, 26)
+        Me.txtkasir.TabIndex = 35
+        '
+        'tgltransaksi
+        '
+        Me.tgltransaksi.CustomFormat = "dd/mm/yyyy"
+        Me.tgltransaksi.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.tgltransaksi.Location = New System.Drawing.Point(189, 62)
+        Me.tgltransaksi.Name = "tgltransaksi"
+        Me.tgltransaksi.Size = New System.Drawing.Size(164, 26)
+        Me.tgltransaksi.TabIndex = 44
+        '
+        'Panel1
+        '
+        Me.Panel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.Panel1.Controls.Add(Me.Label10)
+        Me.Panel1.Controls.Add(Me.Label4)
+        Me.Panel1.Controls.Add(Me.Label5)
+        Me.Panel1.Controls.Add(Me.Label9)
+        Me.Panel1.Location = New System.Drawing.Point(52, 829)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(1002, 89)
+        Me.Panel1.TabIndex = 46
+        '
+        'PrintDocument1
+        '
+        '
+        'txtnamapasien
+        '
+        Me.txtnamapasien.Location = New System.Drawing.Point(189, 23)
+        Me.txtnamapasien.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtnamapasien.Name = "txtnamapasien"
+        Me.txtnamapasien.Size = New System.Drawing.Size(259, 26)
+        Me.txtnamapasien.TabIndex = 49
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(472, 28)
+        Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(57, 20)
+        Me.Label6.TabIndex = 50
+        Me.Label6.Text = "Dokter"
+        '
+        'combotipepenjualan
+        '
+        Me.combotipepenjualan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.combotipepenjualan.FormattingEnabled = True
+        Me.combotipepenjualan.Items.AddRange(New Object() {"T", "K"})
+        Me.combotipepenjualan.Location = New System.Drawing.Point(189, 102)
+        Me.combotipepenjualan.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.combotipepenjualan.Name = "combotipepenjualan"
+        Me.combotipepenjualan.Size = New System.Drawing.Size(52, 28)
+        Me.combotipepenjualan.TabIndex = 52
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(252, 106)
+        Me.Label7.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(121, 20)
+        Me.Label7.TabIndex = 53
+        Me.Label7.Text = "K : Belum Bayar"
+        '
+        'txtiddokter
+        '
+        Me.txtiddokter.Enabled = False
+        Me.txtiddokter.Location = New System.Drawing.Point(556, 23)
+        Me.txtiddokter.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtiddokter.Name = "txtiddokter"
+        Me.txtiddokter.Size = New System.Drawing.Size(148, 26)
+        Me.txtiddokter.TabIndex = 54
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Location = New System.Drawing.Point(1287, 837)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(72, 25)
+        Me.Label8.TabIndex = 56
+        Me.Label8.Text = "Diskon"
+        '
+        'TextDiskon
+        '
+        Me.TextDiskon.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextDiskon.Location = New System.Drawing.Point(1407, 828)
+        Me.TextDiskon.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.TextDiskon.Name = "TextDiskon"
+        Me.TextDiskon.ReadOnly = True
+        Me.TextDiskon.Size = New System.Drawing.Size(331, 30)
+        Me.TextDiskon.TabIndex = 55
+        Me.TextDiskon.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'ComboLokasi
+        '
+        Me.ComboLokasi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboLokasi.FormattingEnabled = True
+        Me.ComboLokasi.Items.AddRange(New Object() {"TOKO", "Dr. Heroe", "Halodoc"})
+        Me.ComboLokasi.Location = New System.Drawing.Point(189, 143)
+        Me.ComboLokasi.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.ComboLokasi.Name = "ComboLokasi"
+        Me.ComboLokasi.Size = New System.Drawing.Size(259, 28)
+        Me.ComboLokasi.TabIndex = 57
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Location = New System.Drawing.Point(56, 148)
+        Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(55, 20)
+        Me.Label16.TabIndex = 58
+        Me.Label16.Text = "Lokasi"
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(730, 20)
+        Me.Button4.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(40, 35)
+        Me.Button4.TabIndex = 59
+        Me.Button4.Text = "..."
+        Me.Button4.UseVisualStyleBackColor = True
+        '
+        'txtnamadokter
+        '
+        Me.txtnamadokter.Location = New System.Drawing.Point(477, 63)
+        Me.txtnamadokter.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtnamadokter.Name = "txtnamadokter"
+        Me.txtnamadokter.ReadOnly = True
+        Me.txtnamadokter.Size = New System.Drawing.Size(292, 26)
+        Me.txtnamadokter.TabIndex = 61
         '
         'Label17
         '
         Me.Label17.AutoSize = True
         Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label17.Location = New System.Drawing.Point(858, 516)
+        Me.Label17.Location = New System.Drawing.Point(1287, 794)
+        Me.Label17.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(39, 16)
+        Me.Label17.Size = New System.Drawing.Size(56, 25)
         Me.Label17.TabIndex = 63
         Me.Label17.Text = "Total"
         '
         'TextGrandTotal
         '
         Me.TextGrandTotal.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextGrandTotal.Location = New System.Drawing.Point(938, 510)
+        Me.TextGrandTotal.Location = New System.Drawing.Point(1407, 785)
+        Me.TextGrandTotal.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.TextGrandTotal.Name = "TextGrandTotal"
         Me.TextGrandTotal.ReadOnly = True
-        Me.TextGrandTotal.Size = New System.Drawing.Size(222, 22)
+        Me.TextGrandTotal.Size = New System.Drawing.Size(331, 30)
         Me.TextGrandTotal.TabIndex = 62
         Me.TextGrandTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'FormPenjualanResep
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1188, 744)
+        Me.ClientSize = New System.Drawing.Size(1782, 1145)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.TextGrandTotal)
         Me.Controls.Add(Me.txtnamadokter)
@@ -611,6 +667,7 @@ Partial Class FormPenjualanResep
         Me.Controls.Add(Me.txtqty)
         Me.Controls.Add(Me.txtdisplayjmltotal)
         Me.Controls.Add(Me.DataGridView1)
+        Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Name = "FormPenjualanResep"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "FormPenjualan Resep"

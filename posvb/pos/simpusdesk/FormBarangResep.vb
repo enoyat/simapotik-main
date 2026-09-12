@@ -5,8 +5,10 @@
         Dim asallokasi As String
         If (lokasi = 0) Then
             asallokasi = "TOKO"
-        Else
+        ElseIf (lokasi = 1) Then
             asallokasi = "G4"
+        ElseIf (lokasi = 2) Then
+            asallokasi = "G6"
         End If
         parameters.Add("kdpst", "00001")
         parameters.Add("namabarang", txtcari.Text)

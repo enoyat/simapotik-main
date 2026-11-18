@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Redirect;
 use Response;
+use App\Services\ActivityLogService;
 
 class Pembelian extends Controller
 {
@@ -29,8 +30,20 @@ class Pembelian extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -86,10 +99,7 @@ class Pembelian extends Controller
         $lokasi = M_stoklokasi::where('f_default', '0')->get();
 
         $kdtransaksi = "TR0001" . Session::get('globalkdpst');
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('kdpst', Session::get('globalkdpst'))->
-            where('stok.stok', '>=', 0)->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('kdpst', Session::get('globalkdpst'))->where('stok.stok', '>=', 0)->get();
 
         $mstransaksis = M_mstransaksi::where(['kdktgtransaksi' => 'TRKEU', 'kdpst' => Session::get('globalkdpst')])->orderby('namatransaksi')->get();
         return view('pembelian.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi, 'supplier' => $supplier, 'lokasi' => $lokasi]);
@@ -148,69 +158,100 @@ class Pembelian extends Controller
         $newID = $char . sprintf("%017s", $noUrut);
         return $newID;
     }
+
     public function store(Request $request)
     {
+        // Validasi sebelum memulai transaksi database
+        $validator = Validator::make($request->all(), [
+            'tgltrans' => 'required',
+            'idsupplier' => 'required',
+            'total' => 'required',
+            'ppn' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
         DB::beginTransaction();
+
         try {
-            // dd($request->all());
-            $validator = Validator::make($request->all(), [
-                'tgltrans' => 'required',
-                'idsupplier' => 'required',
-                'total' => 'required',
-                'ppn'=> 'required',
-            ]);
+            $cart = Session::get('cart');
 
-            if ($validator->fails()) {
-                return response()->json($validator->errors(), 400);
-            } else {
-                $cart = Session::get('cart');
-                $lastid = pembelian::gennotrans();
-                if (empty($request->modebayar)) {
-                    $modebayar = "TUNAI";
-                } else {
-                    $modebayar = "NONTUNAI";
-                }
-
-                $pembelian = new M_pembelian;
-                $pembelian->nofaktur = $request->nofaktur;
-                $pembelian->idsupplier = $request->idsupplier;
-                $pembelian->idlokasi = $request->idlokasi;
-                $pembelian->tgltrans = $request->tgltrans;
-                $pembelian->total = $request->grandtotal;
-                $pembelian->email = Session::get('email');
-                $pembelian->tipepembelian = $request->tipepembelian;
-                $pembelian->ppn = $request->ppn;
-                $pembelian->save();
-                $lastid = $pembelian->id;
-                $cart = Session::get('cart');
-
-                foreach ($cart as $key => $value) {
-                    M_detailpembelian::create([
-                        'idpembelian' => $lastid,
-                        'kdbarang' => $value['kdbarang'],
-                        'nobatch' => $value['nobatch'],
-                        'tglkadaluarsa' => $value['tglkadaluarsa'],
-                        'qty' => $value['qty'],
-                        'harga' => $value['harga'],
-                        'diskonpersen' => $value['diskonpersen'],
-                        'diskon' => $value['diskon'],
-                        'jumlah' => $value['jumlah'],
-                        'idlokasi' => $request->idlokasi,
-                    ]);
-                }
-
-                Session::forget('cart');
-                Session::put('id', $lastid);
-                DB::commit();
-                return Redirect()->route('pembelian.invoice');
-
+            if (empty($cart)) {
+                throw new \Exception('Keranjang pembelian kosong.');
             }
+
+            $pembelian = new M_pembelian;
+
+            $pembelian->nofaktur = $request->nofaktur;
+            $pembelian->idsupplier = $request->idsupplier;
+            $pembelian->idlokasi = $request->idlokasi;
+            $pembelian->tgltrans = $request->tgltrans;
+            $pembelian->total = $request->grandtotal;
+            $pembelian->email = Session::get('email');
+            $pembelian->tipepembelian = $request->tipepembelian;
+            $pembelian->ppn = $request->ppn;
+            $pembelian->save();
+
+            $lastid = $pembelian->id;
+
+            foreach ($cart as $key => $value) {
+                M_detailpembelian::create([
+                    'idpembelian' => $lastid,
+                    'kdbarang' => $value['kdbarang'],
+                    'nobatch' => $value['nobatch'],
+                    'tglkadaluarsa' => $value['tglkadaluarsa'],
+                    'qty' => $value['qty'],
+                    'harga' => $value['harga'],
+                    'diskonpersen' => $value['diskonpersen'],
+                    'diskon' => $value['diskon'],
+                    'jumlah' => $value['jumlah'],
+                    'idlokasi' => $request->idlokasi,
+                ]);
+            }
+
+            // CATAT AUDIT PEMBELIAN
+            app(ActivityLogService::class)->record(
+                'PEMBELIAN',
+                'CREATE',
+                'Membuat transaksi pembelian dengan faktur ' . $pembelian->nofaktur,
+                [
+                    'subject_type' => M_pembelian::class,
+                    'subject_id' => $pembelian->id,
+
+                    'new_values' => [
+                        'nofaktur' => $pembelian->nofaktur,
+                        'idsupplier' => $pembelian->idsupplier,
+                        'tgltrans' => $pembelian->tgltrans,
+                        'total' => $pembelian->total,
+                        'ppn' => $pembelian->ppn,
+                        'tipepembelian' => $pembelian->tipepembelian,
+                    ],
+
+                    'properties' => [
+                        'idlokasi' => $request->idlokasi,
+                        'jumlah_jenis_barang' => count($cart),
+                    ],
+                ]
+            );
+
+            Session::forget('cart');
+            Session::put('id', $lastid);
+
+            DB::commit();
+
+            return Redirect()->route('pembelian.invoice');
         } catch (\Exception $e) {
+
             DB::rollback();
+
             Alert::error('Error', $e->getMessage());
+
             return Redirect()->back()->withInput();
         }
     }
+
     public function invoice()
     {
         $datapembelian = M_pembelian::find(Session::get('id'));
@@ -264,7 +305,7 @@ class Pembelian extends Controller
     {
         //cek retur
         $cek = M_returpembelian::where('idpembelian', $request->id)->where('f_statustransaksi', '0')->get();
-        if ($cek->count()==0) {
+        if ($cek->count() == 0) {
             $pembelian = M_pembelian::find($request->id);
             $notrans = $pembelian->notrans;
             $pembelian->f_statustransaksi = "1";
@@ -285,11 +326,7 @@ class Pembelian extends Controller
     public function caribarang(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('barang.namabarang', 'like', '%aa%')->
-            where('stok.stok', '>=', 0)->
-            orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%aa%')->where('stok.stok', '>=', 0)->orderby('namabarang')->get();
 
         return view('pembelian.formbarang', ['barang' => $barang, 'jenisharga' => $request->jenisharga]);
         //
@@ -297,12 +334,8 @@ class Pembelian extends Controller
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->
-            where('stok.stok', '>=', 0)->
-            orderby('namabarang')->get();
-       
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->where('stok.stok', '>=', 0)->orderby('namabarang')->get();
+
         return view('pembelian.fetch', ['barang' => $barang]);
         //
     }
@@ -325,8 +358,7 @@ class Pembelian extends Controller
                 ->where('f_statustransaksi', '0')
                 ->select('pembelian.*', 'supplier.namasupplier')
                 ->get();
-        } 
-        else if ($request->kriteria == "namaproduk") {
+        } else if ($request->kriteria == "namaproduk") {
             $pembelian = M_pembelian::join('supplier', 'pembelian.idsupplier', '=', 'supplier.idsupplier')
                 ->join('detailpembelian', 'pembelian.id', '=', 'detailpembelian.idpembelian')
                 ->join('barang', 'detailpembelian.kdbarang', '=', 'barang.kdbarang')
@@ -334,8 +366,7 @@ class Pembelian extends Controller
                 ->where('f_statustransaksi', '0')
                 ->select('pembelian.*', 'supplier.namasupplier')
                 ->get();
-        } 
-        else if ($request->kriteria == "noinvoice") {
+        } else if ($request->kriteria == "noinvoice") {
             $pembelian = M_pembelian::join('supplier', 'pembelian.idsupplier', '=', 'supplier.idsupplier')
                 ->join('detailpembelian', 'pembelian.id', '=', 'detailpembelian.idpembelian')
                 ->join('barang', 'detailpembelian.kdbarang', '=', 'barang.kdbarang')
@@ -343,14 +374,11 @@ class Pembelian extends Controller
                 ->where('f_statustransaksi', '0')
                 ->select('pembelian.*', 'supplier.namasupplier')
                 ->get();
-               
-        } 
-        else {
+        } else {
             $pembelian = M_pembelian::join('supplier', 'pembelian.idsupplier', '=', 'supplier.idsupplier')
                 ->where('supplier.namasupplier', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')
                 ->where('f_statustransaksi', '0')
                 ->get();
-
         }
         return view('pembelian.fetchretur', ['pembelian' => $pembelian]);
         //
@@ -372,7 +400,7 @@ class Pembelian extends Controller
     {
         $lokasi = M_stoklokasi::where('f_default', '0')->get();
         $kdtransaksi = "TR0001" . Session::get('globalkdpst');
-        $data = M_returdetailpembelian::where('idretur',$id)->first();
+        $data = M_returdetailpembelian::where('idretur', $id)->first();
         $dataorder = M_returdetailpembelian::with('get_barang')->where('idretur', $id)->get();
         return view('pembelian.inretur')->with(['pembelian' => $data, 'datapembelian' => $dataorder, 'lokasi' => $lokasi, 'kdtransaksi' => $kdtransaksi]);
     }
@@ -418,13 +446,12 @@ class Pembelian extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function approveinretur(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'idretur'=> 'required',
+            'idretur' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -453,7 +480,6 @@ class Pembelian extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function formretur(Request $request)
@@ -476,15 +502,13 @@ class Pembelian extends Controller
     }
     public function hapusreturpembelian(Request $request)
     {
-        try 
-        {
-        M_returpembelian::find($request->id)->delete();
-        M_returdetailpembelian::where('idretur', $request->id)->delete();
-        Alert::success('retur sukses dihapus');
-        return redirect()->route('pembelian.retur')
-            ->with('success', 'Transaksi Hapus Sukses');
-        }
-        catch (\Exception $e) {
+        try {
+            M_returpembelian::find($request->id)->delete();
+            M_returdetailpembelian::where('idretur', $request->id)->delete();
+            Alert::success('retur sukses dihapus');
+            return redirect()->route('pembelian.retur')
+                ->with('success', 'Transaksi Hapus Sukses');
+        } catch (\Exception $e) {
             Alert::error('Error', 'Udah ada transaksi, tidak bisa dihapus ');
             return redirect()->back()->with('error', $e->getMessage());
         }

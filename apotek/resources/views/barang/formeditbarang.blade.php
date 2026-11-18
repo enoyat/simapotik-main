@@ -31,7 +31,7 @@
                                 </ul>
                             </div>
                         @endif
-                        <form action="{{ route('barang.update',$barang->kdbarang) }}" method="POST" role="form"
+                        <form action="{{ route('barang.update') }}" method="POST" role="form"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="row">
@@ -41,7 +41,8 @@
                                             <div class="form-group">
                                                 <label>Kode</label>
                                                 <input type="text" class="form-control" id="kdbarang" name="kdbarang"
-                                                    placeholder="kode barang" value="{{ $barang->kdbarang }}" required="">
+                                                    placeholder="kode barang" value="{{ $barang->kdbarang }}" required
+                                                    readonly>
                                                 <small>Minimal 5 Karakter</small>
                                             </div>
                                             <div class="form-group">
@@ -53,7 +54,8 @@
                                             <div class="form-group">
                                                 <label>Nama Produk</label>
                                                 <input type="text" class="form-control" id="namabarang" name="namabarang"
-                                                    placeholder="Nama barang" value="{{ $barang->namabarang }}" required="">
+                                                    placeholder="Nama barang" value="{{ $barang->namabarang }}"
+                                                    required="">
                                             </div>
                                             <div class="form-group">
                                                 <label>Jenis </label>
@@ -64,7 +66,7 @@
                                                             @if ($value->idjenis == $barang->idjenis) selected @endif>
                                                             {{ $value->namajenis }}
 
-                                                           </option>
+                                                        </option>
                                                     @endforeach
                                                 </select>
 
@@ -78,7 +80,7 @@
                                                             @if ($value->idgolongan == $barang->idgolongan) selected @endif>
                                                             {{ $value->namagolongan }}
 
-                                                           </option>
+                                                        </option>
                                                     @endforeach
                                                 </select>
 
@@ -86,9 +88,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>Satuan</label>
-                                                <input type="text" class="form-control" id="satuan"
-                                                    name="satuan" placeholder="satuan"
-                                                    value="{{ $barang->satuan }}">
+                                                <input type="text" class="form-control" id="satuan" name="satuan"
+                                                    placeholder="satuan" value="{{ $barang->satuan }}">
 
                                             </div>
                                             <div class="form-group">
@@ -108,7 +109,7 @@
                                                             @if ($value->idsupplier == $barang->idsupplier) selected @endif>
                                                             {{ $value->namasupplier }}
 
-                                                           </option>
+                                                        </option>
                                                     @endforeach
 
                                                 </select>
@@ -119,11 +120,11 @@
                                                     required="required">
                                                     <option value="" disabled> == BHP ==</option>
                                                     <option value="BHP"
-                                                            @if ($barang->bhp == "BHP") selected @endif>
-                                                           BHP</option>
-                                                           <option value="NON BHP"
-                                                            @if ($barang->bhp == "NON BHP") selected @endif>
-                                                           NON BHP</option>
+                                                        @if ($barang->bhp == 'BHP') selected @endif>
+                                                        BHP</option>
+                                                    <option value="NON BHP"
+                                                        @if ($barang->bhp == 'NON BHP') selected @endif>
+                                                        NON BHP</option>
 
 
 
@@ -140,7 +141,7 @@
                                                             @if ($value->kdkategori == $barang->kdkategori) selected @endif>
                                                             {{ $value->namakategori }}
 
-                                                           </option>
+                                                        </option>
                                                     @endforeach
 
                                                 </select>
@@ -152,12 +153,11 @@
                                                     required="required">
                                                     <option value="" disabled> == Aktif ==</option>
                                                     <option value="AKTIF"
-
-                                                    @if ($barang->f_status == "AKTIF") selected @endif>
-                                                    AKTIF</option>
+                                                        @if ($barang->f_status == 'AKTIF') selected @endif>
+                                                        AKTIF</option>
                                                     <option value="NON AKTIF"
-                                                     @if ($barang->f_status == "NON AKTIF") selected @endif>
-                                                    NON AKTIF</option>
+                                                        @if ($barang->f_status == 'NON AKTIF') selected @endif>
+                                                        NON AKTIF</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -264,10 +264,10 @@
                     var hna = parseFloat($("#hna").val());
                     var ppn = parseFloat($("#ppn").val());
                     var diskon = parseFloat($("#diskon").val());
-                    var hargadiskon= (hna * diskon) / 100;
-                    var hargaafterdiskon=hna-hargadiskon;
-                    var hargappn=(hargaafterdiskon * ppn / 100)
-                   
+                    var hargadiskon = (hna * diskon) / 100;
+                    var hargaafterdiskon = hna - hargadiskon;
+                    var hargappn = (hargaafterdiskon * ppn / 100)
+
                     var hargabeli = hargaafterdiskon + hargappn;
                     $("#hargabeli").val(hargabeli.toFixed(2));
 

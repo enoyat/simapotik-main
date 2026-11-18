@@ -133,7 +133,7 @@ Public Class FormPenjualanResep
         txtiddokter.Text = ""
         txtnamadokter.Text = ""
         txtbayar.Enabled = True
-
+        ComboBox1.SelectedIndex = 0
 
     End Sub
 
@@ -435,11 +435,17 @@ Public Class FormPenjualanResep
 
         btnsimpan.Enabled = False
         Dim modebayar As String
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
+        modebayar = "Cash"
+        If ComboBox1.SelectedIndex = 0 Then
+            modebayar = "Cash"
+        ElseIf ComboBox1.SelectedIndex = 1 Then
+            modebayar = "Transfer"
+        ElseIf ComboBox1.SelectedIndex = 2 Then
+            modebayar = "QRIS"
+        ElseIf ComboBox1.SelectedIndex = 3 Then
+            modebayar = "Debit Card (EDC)"
         End If
+
         If (txtiddokter.Text = "") Then
             MsgBox("Belum memilih DOkter")
             Exit Sub
@@ -540,11 +546,7 @@ Public Class FormPenjualanResep
 
     Private Sub btnpending_Click(sender As Object, e As EventArgs)
         Dim modebayar As String
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
-        End If
+
         Dim parameters = New Specialized.NameValueCollection
 
         parameters.Add("idcustomer", txtkdcustomer.Text)

@@ -115,8 +115,79 @@ Public Class FormPenjualan
     Private Sub TextBox3_KeyDown(sender As Object, e As KeyEventArgs)
 
     End Sub
+    Private Sub AturLayoutKasir()
+
+        Dim W As Integer = Me.ClientSize.Width
+        Dim H As Integer = Me.ClientSize.Height
+
+        Dim MarginKiri As Integer = 20
+        Dim MarginKanan As Integer = 20
+        Dim MarginAtas As Integer = 10
+
+        '========================================
+        ' PANEL INFO - KIRI ATAS
+        '========================================
+        Panel_info.Dock = DockStyle.None
+
+        Panel_info.SetBounds(
+        MarginKiri,
+        MarginAtas,
+        CInt(W * 0.32),
+        CInt(H * 0.18)
+    )
+
+        '========================================
+        ' PANEL TOTAL - KANAN ATAS
+        '========================================
+        Panel_total.Dock = DockStyle.None
+
+        Panel_total.SetBounds(
+        CInt(W * 0.37),
+        MarginAtas,
+        CInt(W * 0.47),
+        CInt(H * 0.12)
+    )
+
+        '========================================
+        ' PANEL GRID - MEMENUHI AREA TENGAH
+        '========================================
+        Panel_grid.Dock = DockStyle.None
+
+        Panel_grid.SetBounds(
+        MarginKiri,
+        CInt(H * 0.2),
+        W - MarginKiri - MarginKanan,
+        CInt(H * 0.5)
+    )
+
+        '========================================
+        ' PANEL FOOTER - BAGIAN BAWAH
+        '========================================
+        Panel_footer.Dock = DockStyle.None
+
+        Panel_footer.SetBounds(
+        MarginKiri,
+        CInt(H * 0.73),
+        W - MarginKiri - MarginKanan,
+        CInt(H * 0.25)
+    )
+
+    End Sub
+
 
     Private Sub FormPenjualan_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.WindowState = FormWindowState.Maximized
+        Me.FormBorderStyle = FormBorderStyle.Sizable
+        Me.StartPosition = FormStartPosition.CenterScreen
+
+        AturLayoutKasir()
+        DataGridView1.Dock = DockStyle.Fill
+        txtdisplayjmltotal.Dock = DockStyle.Fill
+
+        'With DataGridView1
+
+        '    .Columns("Total").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+        'End With
         txtkdbarang.Select()
         cbjenisharga.SelectedIndex = 0
         txtkasir.Text = FormUtama.ToolStripStatusLabel1.Text
@@ -140,6 +211,7 @@ Public Class FormPenjualan
         ubahharga()
         combotipepenjualan.Text = "T"
         txtbayar.Enabled = True
+        ComboBox1.SelectedIndex = 0
     End Sub
 
     ''' <summary>
@@ -189,9 +261,9 @@ Public Class FormPenjualan
             End If
 
         ElseIf (e.KeyCode = Keys.Add) Then
-                txtbayar.Select()
-            ElseIf (e.KeyCode = Keys.F2) Then
-                FormBarang.Close()
+            txtbayar.Select()
+        ElseIf (e.KeyCode = Keys.F2) Then
+            FormBarang.Close()
             FormBarang.ShowDialog()
         End If
     End Sub
@@ -545,19 +617,25 @@ Public Class FormPenjualan
 
         Dim modebayar As String
         btnsimpan.Enabled = False
-        If CheckBox1.Checked = True Then
-                modebayar = "NON TUNAI"
-            Else
-                modebayar = "TUNAI"
-            End If
-            btnsimpan.Enabled = False
+        modebayar = "Cash"
+        If ComboBox1.SelectedIndex = 0 Then
+            modebayar = "Cash"
+        ElseIf ComboBox1.SelectedIndex = 1 Then
+            modebayar = "Transfer"
+        ElseIf ComboBox1.SelectedIndex = 2 Then
+            modebayar = "QRIS"
+        ElseIf ComboBox1.SelectedIndex = 3 Then
+            modebayar = "Debit Card (EDC)"
+        End If
+
+        btnsimpan.Enabled = False
 
 
-            ' Mengumpulkan data untuk Items dari DataGridView1
-            Dim items As New List(Of Dictionary(Of String, String))
-            Dim jmldata As Integer = DataGridView1.Rows.Count
+        ' Mengumpulkan data untuk Items dari DataGridView1
+        Dim items As New List(Of Dictionary(Of String, String))
+        Dim jmldata As Integer = DataGridView1.Rows.Count
 
-            For i As Integer = 0 To jmldata - 1
+        For i As Integer = 0 To jmldata - 1
             Dim item As New Dictionary(Of String, String) From {
                     {"kdbarang", DataGridView1.Item(0, i).Value},
                     {"qty", DataGridView1.Item(3, i).Value},
@@ -568,10 +646,10 @@ Public Class FormPenjualan
                     {"idlokasi", "TOKO"}
                 }
             items.Add(item)
-            Next
+        Next
 
-            ' Membuat dictionary utama untuk JSON
-            Dim datapenjualan As New Dictionary(Of String, Object) From {
+        ' Membuat dictionary utama untuk JSON
+        Dim datapenjualan As New Dictionary(Of String, Object) From {
                     {"idcustomer", txtkdcustomer.Text},
                     {"total", jmltotal},
                     {"email", txtkasir.Text},
@@ -581,11 +659,11 @@ Public Class FormPenjualan
                     {"Items", items}
             }
 
-            ' Serialize ke JSON string
-            Dim jsonString As String = JsonConvert.SerializeObject(datapenjualan, Formatting.Indented)
+        ' Serialize ke JSON string
+        Dim jsonString As String = JsonConvert.SerializeObject(datapenjualan, Formatting.Indented)
 
-            ' Kirim ke API
-            Dim apiUrl As String = urlprefix + "penjualan/store" ' Ganti dengan URL API Anda
+        ' Kirim ke API
+        Dim apiUrl As String = urlprefix + "penjualan/store" ' Ganti dengan URL API Anda
         Dim responseContent As String = ""
         'Console.WriteLine(jsonString)
         Dim isSuccess As Boolean = SendJsonToApi(apiUrl, jsonString, responseContent)
@@ -629,11 +707,22 @@ Public Class FormPenjualan
 
     Private Sub btnpending_Click(sender As Object, e As EventArgs) Handles btnpending.Click
         Dim modebayar As String
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
+        'If CheckBox1.Checked = True Then
+        '    modebayar = "NON TUNAI"
+        'Else
+        '    modebayar = "TUNAI"
+        'End If
+        modebayar = "Cash"
+        If ComboBox1.SelectedIndex = 0 Then
+            modebayar = "Cash"
+        ElseIf ComboBox1.SelectedIndex = 1 Then
+            modebayar = "Transfer"
+        ElseIf ComboBox1.SelectedIndex = 2 Then
+            modebayar = "QRIS"
+        ElseIf ComboBox1.SelectedIndex = 3 Then
+            modebayar = "Debit Card (EDC)"
         End If
+
         Dim parameters = New Specialized.NameValueCollection
 
         parameters.Add("idcustomer", txtkdcustomer.Text)
@@ -699,4 +788,7 @@ Public Class FormPenjualan
         Return paijo
     End Function
 
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Close()
+    End Sub
 End Class

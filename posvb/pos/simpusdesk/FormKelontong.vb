@@ -142,6 +142,7 @@ Public Class FormKelontong
         ubahharga()
         combotipepenjualan.Text = "T"
         txtbayar.Enabled = True
+        ComboBox1.SelectedIndex = 0
     End Sub
 
     ''' <summary>
@@ -466,11 +467,17 @@ Public Class FormKelontong
     Private Sub btnsimpan_Click(sender As Object, e As EventArgs) Handles btnsimpan.Click
         Dim modebayar As String
         btnsimpan.Enabled = False
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
+        modebayar = "Cash"
+        If ComboBox1.SelectedIndex = 0 Then
+            modebayar = "Cash"
+        ElseIf ComboBox1.SelectedIndex = 1 Then
+            modebayar = "Transfer"
+        ElseIf ComboBox1.SelectedIndex = 2 Then
+            modebayar = "QRIS"
+        ElseIf ComboBox1.SelectedIndex = 3 Then
+            modebayar = "Debit Card (EDC)"
         End If
+
         btnsimpan.Enabled = False
 
 
@@ -629,11 +636,7 @@ Public Class FormKelontong
 
     Private Sub btnpending_Click(sender As Object, e As EventArgs) Handles btnpending.Click
         Dim modebayar As String
-        If CheckBox1.Checked = True Then
-            modebayar = "NON TUNAI"
-        Else
-            modebayar = "TUNAI"
-        End If
+
         Dim parameters = New Specialized.NameValueCollection
 
         parameters.Add("idcustomer", txtkdcustomer.Text)

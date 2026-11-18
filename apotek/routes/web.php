@@ -34,6 +34,8 @@ use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -70,6 +72,14 @@ Route::get('/access', [App\Http\Controllers\HomeController::class, 'access'])->n
 
 Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
     Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
+
+        Route::get(
+            '/monitoring/aktivitas',
+            [App\Http\Controllers\ActivityMonitoringController::class, 'index']
+        )->name('monitoring.activity');
+
+
+
         Route::get('administrator/home', [AdministratorHomeController::class, 'index'])->name('administrator.home.index');
         Route::get('manajer/home', [ManajerHomeController::class, 'index'])->name('manajer.home.index');
         Route::get('operator/home', [OperatorHomeController::class, 'index'])->name('operator.home.index');
@@ -278,6 +288,14 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::post('cetakstokopname', [StokOpnameController::class, 'cetakstokopname'])->name('stokopname.cetakstokopname');
             Route::get('expstokopname', [StokOpnameController::class, 'expstokopname'])->name('stokopname.expstokopname');
             Route::post('exportstokopname', [StokOpnameController::class, 'exportstokopname'])->name('stokopname.exportstokopname');
+            Route::delete(
+                '/stokopname/hapus/{id}',
+                [StokOpnameController::class, 'hapusOpname']
+            )->name('stokopname.hapus');
+            Route::get(
+                '/stokopname/riwayat',
+                [StokOpnameController::class, 'riwayat']
+            )->name('stokopname.riwayat');
         });
         Route::group(['prefix' => 'stokawal'], function () {
             Route::get('/', [StokAwalController::class, 'index'])->name('stokawal.index');
@@ -349,6 +367,8 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
     Route::group(['roles' => ['manajer']], function () {
         Route::get('barang/edit/{kdorder}', [BarangController::class, 'edit'])->name('barang.edit');
         Route::post('barang/update', [BarangController::class, 'update'])->name('barang.update');
+        Route::get('barang/formexportproduk', [BarangController::class, 'formexportproduk'])->name('barang.formexportproduk');
+        Route::post('barang/exportproduk', [BarangController::class, 'exportproduk'])->name('barang.exportproduk');
     });
     Route::group(['roles' => ['manajer', 'administrasi', 'operator']], function () {
         Route::group(['prefix' => 'hspembelian'], function () {

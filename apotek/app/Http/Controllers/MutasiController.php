@@ -20,6 +20,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use PDF;
 use Redirect;
 use Response;
+use App\Services\ActivityLogService;
 
 class MutasiController extends Controller
 {
@@ -29,8 +30,20 @@ class MutasiController extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -96,13 +109,13 @@ class MutasiController extends Controller
     public function cart(Request $request)
     {
 
-        if($request->qty==0){
+        if ($request->qty == 0) {
             return 'Qty tidak boleh 0';
         }
-        if(intval($request->qty) > intval($request->qtymax)){
+        if (intval($request->qty) > intval($request->qtymax)) {
             return 'Mutasi Stok melebihi stok tersedia';
         }
-        if($request->idlokasi==$request->idlokasidest){
+        if ($request->idlokasi == $request->idlokasidest) {
             return 'Lokasi tidak boleh sama';
         }
 
@@ -122,15 +135,16 @@ class MutasiController extends Controller
         Session::put('cart', $cart);
         return "sukses";
     }
-    public function cartview(){
-        $data=Session::get('cart');
-        return view('mutasi.cartview')->with(['data'=>$data]);
+    public function cartview()
+    {
+        $data = Session::get('cart');
+        return view('mutasi.cartview')->with(['data' => $data]);
     }
     public function carthapus(Request $request)
     {
         $cart = Session::get('cart');
         unset($cart[$request->idx]);
-        $cart=array_values($cart);
+        $cart = array_values($cart);
         Session::put('cart', $cart);
         return view('mutasi.cartview');
     }
@@ -150,55 +164,99 @@ class MutasiController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tgltrans' => 'required',
-            'idlokasi' => 'required',
-            'idlokasidest' => 'required',
-
+            'tgltrans'       => 'required',
+            'idlokasi'       => 'required',
+            'idlokasidest'   => 'required',
         ]);
+
         $cart = Session::get('cart');
+
         if (empty($cart)) {
-            Alert::error('error', 'data belum dipilih');
+            Alert::error('Error', 'Data belum dipilih');
             return Redirect()->back();
-           
         }
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
-        } else {
-            $cart = Session::get('cart');
-            if (empty($cart)) {
-                Alert::error('error', 'data belum dipilih');
-                return Redirect()->back();
-               
-            }
-            $cart=Session::get('cart');            
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $emailKasir = Session::get('email')
+                ?? (auth()->user()->email ?? null);
+
             foreach ($cart as $key => $value) {
-                M_detailmutasi::create([
-                    'tglmutasi' => $value['tglmutasi'],
-                    'kdbarang' => $value['kdbarang'],
-                    'qty' => $value['qty'],
-                    'idlokasi' => $value['idlokasi'],
-                    'idlokasidest' => $value['idlokasidest'],
-                    'email'=>Session::get('email'),
+
+                // 1. Simpan detail mutasi
+                $mutasi = M_detailmutasi::create([
+                    'tglmutasi'     => $value['tglmutasi'],
+                    'kdbarang'      => $value['kdbarang'],
+                    'qty'           => $value['qty'],
+                    'idlokasi'      => $value['idlokasi'],
+                    'idlokasidest'  => $value['idlokasidest'],
+                    'email'         => $emailKasir,
                 ]);
+
+                // 2. CATAT ACTIVITY LOG
+                app(ActivityLogService::class)->record(
+                    'MUTASI_STOK',
+                    'CREATE',
+                    'Memutasi barang ' . $value['kdbarang']
+                        . ' sebanyak ' . $value['qty']
+                        . ' unit dari lokasi '
+                        . $value['idlokasi']
+                        . ' ke lokasi '
+                        . $value['idlokasidest'],
+                    [
+                        'subject_type' => M_detailmutasi::class,
+                        'subject_id'   => $mutasi->getKey(),
+
+                        'new_values' => [
+                            'tglmutasi'    => $value['tglmutasi'],
+                            'kdbarang'     => $value['kdbarang'],
+                            'qty'          => $value['qty'],
+                            'idlokasi'     => $value['idlokasi'],
+                            'idlokasidest' => $value['idlokasidest'],
+                            'email'        => $emailKasir,
+                        ],
+
+                        'properties' => [
+                            'jenis_aktivitas' => 'Mutasi stok',
+                            'lokasi_asal'     => $value['idlokasi'],
+                            'lokasi_tujuan'   => $value['idlokasidest'],
+                            'kdbarang'        => $value['kdbarang'],
+                            'jumlah'           => $value['qty'],
+                        ],
+                    ]
+                );
             }
 
+            // 3. Hapus cart
             Session::forget('cart');
-            //Session::put('id', $lastid);
-            Alert::success('Berhasil', 'Data Berhasil Disimpan');
-            return Redirect()->route('mutasi.index');
 
+            DB::commit();
+
+            Alert::success('Berhasil', 'Data Berhasil Disimpan');
+
+            return Redirect()->route('mutasi.index');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            Alert::error('Error', $e->getMessage());
+
+            return Redirect()->back();
         }
     }
     public function invoice()
     {
         $datapembelian = M_pembelian::find(Session::get('id'));
-        $data = M_detailpembelian::with('get_barang','get_pembelian')->where('idpembelian', Session::get('id'))->get();
+        $data = M_detailpembelian::with('get_barang', 'get_pembelian')->where('idpembelian', Session::get('id'))->get();
         return view('mutasi.invoice')->with(['pembelian' => $data, 'datapembelian' => $datapembelian]);
     }
-    public function createPDF()
-    {
-
-    }
+    public function createPDF() {}
     public function batal()
     {
         return view('mutasi.batal');
@@ -224,7 +282,7 @@ class MutasiController extends Controller
     }
     public function trpembelian()
     {
-        $pembelian = M_pembelian::where('kdpst', Session::get('globalkdpst'))->orderBy('id','DESC')->get();
+        $pembelian = M_pembelian::where('kdpst', Session::get('globalkdpst'))->orderBy('id', 'DESC')->get();
         return view('mutasi.trpembelian')->with(['pembelian' => $pembelian]);
     }
     public function trdetail($id)
@@ -236,7 +294,7 @@ class MutasiController extends Controller
     public function hapuspembelian(Request $request)
     {
         $pembelian = M_pembelian::find($request->id);
-        $notrans=$pembelian->notrans;
+        $notrans = $pembelian->notrans;
         $pembelian->delete();
         M_detailpembelian::where('idpembelian', $request->id)->delete();
         M_jurnalumum::where('notrans', $notrans)->delete();
@@ -246,12 +304,10 @@ class MutasiController extends Controller
     }
     public function listproduk(Request $request)
     {
-        $barang=M_barang::join('stok','barang.kdbarang','=','stok.kdbarang')->
-        where('stok.idlokasi',$request->idlokasi)->
-        where('stok.stok','>',0)->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', $request->idlokasi)->where('stok.stok', '>', 0)->get();
 
-        return view('mutasi.listproduk',['barang' => $barang]);
-   //
+        return view('mutasi.listproduk', ['barang' => $barang]);
+        //
     }
 
     public function rptmutasi()

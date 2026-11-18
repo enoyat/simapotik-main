@@ -12,6 +12,7 @@ use App\Models\M_pendingpenjualan;
 use App\Models\M_penjualan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogService;
 
 class ApiPenjualan extends Controller
 {
@@ -44,119 +45,229 @@ class ApiPenjualan extends Controller
         $newID = $char . sprintf("%017s", $noUrut);
         return $newID;
     }
+    public function store(Request $request)
+    {
+        $user = DB::table('users')
+            ->where('email', $request->email)
+            ->first();
 
-   public function store(Request $request)
-{
-    DB::beginTransaction();
-
-    try {
 
         $items = $request->Items ?? $request->items;
 
-        if(!$items){
+        // VALIDASI ITEMS
+        if (empty($items)) {
             return response()->json([
-                "status"=>"error",
-                "message"=>"Items tidak ditemukan"
-            ],400);
+                'status' => 'error',
+                'message' => 'Items tidak ditemukan'
+            ], 400);
         }
 
-        $stokKurang = [];
+        DB::beginTransaction();
 
-        foreach($items as $item){
+        try {
 
-            $barang = DB::table('stok')
-                ->where('kdbarang',$item['kdbarang'])
-                ->where('idlokasi',$item['idlokasi'])
-                ->lockForUpdate()
-                ->first();
+            // ==========================================
+            // 1. CEK KETERSEDIAAN STOK
+            // ==========================================
 
-            if(!$barang){
-                $stokKurang[] = [
-                    'kdbarang'=>$item['kdbarang'],
-                    'stok'=>0,
-                    'diminta'=>$item['qty']
-                ];
-                continue;
+            $stokKurang = [];
+
+            foreach ($items as $item) {
+
+                $barang = DB::table('stok')
+                    ->where('kdbarang', $item['kdbarang'])
+                    ->where('idlokasi', $item['idlokasi'])
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$barang) {
+                    $stokKurang[] = [
+                        'kdbarang' => $item['kdbarang'],
+                        'stok' => 0,
+                        'diminta' => $item['qty']
+                    ];
+
+                    continue;
+                }
+
+                if ($barang->stok < $item['qty']) {
+                    $stokKurang[] = [
+                        'kdbarang' => $item['kdbarang'],
+                        'stok' => $barang->stok,
+                        'diminta' => $item['qty']
+                    ];
+                }
             }
 
-            if($barang->stok < $item['qty']){
-                $stokKurang[] = [
-                    'kdbarang'=>$item['kdbarang'],
-                    'stok'=>$barang->stok,
-                    'diminta'=>$item['qty']
-                ];
+            // JIKA STOK TIDAK MENCUKUPI
+            if (!empty($stokKurang)) {
+
+                DB::rollBack();
+
+                return response()->json([
+                    'status' => 'stok_tidak_cukup',
+                    'items' => $stokKurang
+                ]);
             }
 
-        }
+            // ==========================================
+            // 2. PERSIAPAN TRANSAKSI
+            // ==========================================
 
-        if(count($stokKurang) > 0){
+            $jam = date('H:i');
+
+            $jenispenjualan = ($request->idcustomer == 'P0001')
+                ? 'R'
+                : 'N';
+
+            // ==========================================
+            // 3. SIMPAN HEADER PENJUALAN
+            // ==========================================
+
+            $penjualanId = DB::table('penjualan')->insertGetId([
+                'idcustomer' => $request->idcustomer,
+                'total' => $request->total,
+                'email' => $request->email,
+                'modebayar' => $request->modebayar,
+                'tgltrans' => date('Y-m-d'),
+                'tipepenjualan' => $request->tipepenjualan,
+                'jam' => $jam,
+                'jenispenjualan' => $jenispenjualan,
+            ]);
+
+            // ==========================================
+            // 4. IDENTITAS AUDIT STOK
+            // ==========================================
+
+            DB::statement("
+            SET
+                @audit_user_id = NULL,
+                @audit_username = ?,
+                @audit_ip_address = ?,
+                @audit_activity = ?,
+                @audit_ref_id = ?,
+                @audit_description = ?
+        ", [
+                $request->email,
+                $request->ip(),
+                'PENJUALAN',
+                $penjualanId,
+                'Stok berkurang melalui transaksi penjualan aplikasi desktop'
+            ]);
+
+            // ==========================================
+            // 5. SIMPAN DETAIL PENJUALAN
+            // ==========================================
+
+            foreach ($items as $item) {
+
+                DB::table('detailpenjualan')->insert([
+                    'idpenjualan' => $penjualanId,
+                    'kdbarang' => $item['kdbarang'],
+                    'qty' => $item['qty'],
+                    'harga' => $item['harga'],
+                    'diskonpersen' => $item['diskonpersen'],
+                    'diskon' => $item['diskon'],
+                    'jumlah' => $item['jumlah'],
+                    'idlokasi' => $item['idlokasi'],
+                ]);
+
+                /*
+             * Trigger t_jual otomatis mengurangi stok.
+             *
+             * Trigger trg_audit_stok_update otomatis
+             * mencatat perubahan stok.
+             */
+            }
+
+            // ==========================================
+            // 6. RESET IDENTITAS AUDIT
+            // ==========================================
+
+            DB::statement("
+            SET
+                @audit_user_id = NULL,
+                @audit_username = NULL,
+                @audit_ip_address = NULL,
+                @audit_activity = NULL,
+                @audit_ref_id = NULL,
+                @audit_description = NULL
+        ");
+            // ==========================================
+            // 7. ACTIVITY LOG PENJUALAN
+            // ==========================================
+
+
+            app(ActivityLogService::class)->record(
+                'PENJUALAN',
+                'CREATE',
+                'Transaksi penjualan melalui aplikasi desktop',
+                [
+                    'email' => $request->email,
+                    'subject_type' => 'penjualan',
+                    'subject_id' => $penjualanId,
+
+                    'new_values' => [
+                        'idpenjualan' => $penjualanId,
+                        'idcustomer' => $request->idcustomer,
+                        'total' => $request->total,
+                        'email' => $request->email,
+                        'modebayar' => $request->modebayar,
+                        'tgltrans' => date('Y-m-d'),
+                        'tipepenjualan' => $request->tipepenjualan,
+                        'jenispenjualan' => $jenispenjualan,
+                        'jumlah_item' => count($items),
+                    ],
+
+                    'properties' => [
+                        'sumber' => 'APLIKASI_DESKTOP',
+                        'email_kasir' => $request->email,
+                        'idcustomer' => $request->idcustomer,
+                        'jumlah_item' => count($items),
+                        'lokasi_penjualan' => collect($items)
+                            ->pluck('idlokasi')
+                            ->unique()
+                            ->values()
+                            ->toArray(),
+                    ],
+                ]
+            );
+            // ==========================================
+            // 7. COMMIT TRANSAKSI
+            // ==========================================
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+                'id_penjualan' => $penjualanId
+            ]);
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
+            // RESET AUDIT JIKA TERJADI ERROR
+            try {
+                DB::statement("
+                SET
+                    @audit_user_id = NULL,
+                    @audit_username = NULL,
+                    @audit_ip_address = NULL,
+                    @audit_activity = NULL,
+                    @audit_ref_id = NULL,
+                    @audit_description = NULL
+            ");
+            } catch (\Throwable $resetError) {
+                // Abaikan error reset
+            }
+
             return response()->json([
-                "status"=>"stok_tidak_cukup",
-                "items"=>$stokKurang
-            ]);
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        $jam = date("H:i");
-
-        if ($request->idcustomer == "P0001") {
-            $jenispenjualan = "R";
-        } else {
-            $jenispenjualan = "N";
-        }
-
-        $penjualanId = DB::table('penjualan')->insertGetId([
-            'idcustomer' => $request->idcustomer,
-            'total' => $request->total,
-            'email' => $request->email,
-            'modebayar' => $request->modebayar,
-            'tgltrans' => date("Y-m-d"),
-            'tipepenjualan' => $request->tipepenjualan,
-            'jam' => $jam,
-            'jenispenjualan' => $jenispenjualan,
-        ]);
-
-        foreach ($items as $item) {
-
-            DB::table('detailpenjualan')->insert([
-                'idpenjualan' => $penjualanId,
-                'kdbarang' => $item['kdbarang'],
-                'qty' => $item['qty'],
-                'harga' => $item['harga'],
-                'diskonpersen' => $item['diskonpersen'],
-                'diskon' => $item['diskon'],
-                'jumlah' => $item['jumlah'],
-                'idlokasi' => $item['idlokasi'],
-            ]);
-
-            // // UPDATE STOK
-            // DB::table('stok')
-            //     ->where('kdbarang',$item['kdbarang'])
-            //     ->where('idlokasi',$item['idlokasi'])
-            //     ->decrement('stok',$item['qty']);
-
-        }
-
-        DB::commit();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data berhasil disimpan',
-            'id_penjualan' => $penjualanId
-        ]);
-
-    } catch (\Exception $e) {
-
-        DB::rollBack();
-
-        return response()->json([
-            'status'=>'error',
-            'message'=>$e->getMessage()
-        ],500);
     }
-}
 
     public function storepending(Request $request)
     {

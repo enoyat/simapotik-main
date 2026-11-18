@@ -52,24 +52,28 @@ class User extends Authenticatable
     {
         $this->have_role = $this->getUserRole();
 
-        if(is_array($roles)){
-            foreach($roles as $need_role){
-                if($this->cekUserRole($need_role)) {
+        if (is_array($roles)) {
+            foreach ($roles as $need_role) {
+                if ($this->cekUserRole($need_role)) {
                     return true;
                 }
             }
-        } else{
+        } else {
             return $this->cekUserRole($roles);
         }
         return false;
     }
     private function getUserRole()
     {
-       return $this->role()->getResults();
+        return $this->role()->getResults();
     }
 
     private function cekUserRole($role)
     {
-        return (strtolower($role)==strtolower($this->have_role->role_name)) ? true : false;
+        return (strtolower($role) == strtolower($this->have_role->role_name)) ? true : false;
+    }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }

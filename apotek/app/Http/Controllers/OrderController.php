@@ -20,6 +20,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use PDF;
 use Redirect;
 use Response;
+use App\Services\ActivityLogService;
 
 class OrderController extends Controller
 {
@@ -166,6 +167,7 @@ class OrderController extends Controller
         $newID = $char . sprintf("%017s", $noUrut);
         return $newID;
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -176,16 +178,25 @@ class OrderController extends Controller
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
-        } else {
+        }
+
+        DB::beginTransaction();
+
+        try {
             $cart = Session::get('cart');
+
+            if (empty($cart)) {
+                throw new \Exception('Keranjang order kosong.');
+            }
+
             $order = new M_order;
             $order->tgltrans = $request->tgltrans;
             $order->idsupplier = $request->idsupplier;
             $order->total = $request->total;
             $order->kdpst = Session::get('globalkdpst');
             $order->save();
+
             $lastid = $order->id;
-            $cart = Session::get('cart');
 
             foreach ($cart as $key => $value) {
                 M_detailorder::create([
@@ -197,11 +208,44 @@ class OrderController extends Controller
                 ]);
             }
 
+            // CATAT AUDIT ORDER
+            app(ActivityLogService::class)->record(
+                'ORDER',
+                'CREATE',
+                'Membuat order supplier dengan ID ' . $order->id,
+                [
+                    'subject_type' => M_order::class,
+                    'subject_id' => $order->id,
+
+                    'new_values' => [
+                        'tgltrans' => $order->tgltrans,
+                        'idsupplier' => $order->idsupplier,
+                        'total' => $order->total,
+                        'kdpst' => $order->kdpst,
+                    ],
+
+                    'properties' => [
+                        'jumlah_jenis_barang' => count($cart),
+                    ],
+                ]
+            );
+
             Session::forget('cart');
             Session::put('id', $lastid);
+
+            DB::commit();
+
             return Redirect()->route('order.invoice');
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            Alert::error('Error', $e->getMessage());
+
+            return Redirect()->back()->withInput();
         }
     }
+
     public function invoice()
     {
         $data = M_order::find(Session::get('id'));
@@ -305,7 +349,25 @@ class OrderController extends Controller
                 $pembelian->idorder = $request->idorder;
                 $pembelian->save();
                 $lastid = $pembelian->id;
+                // IDENTITAS AUDIT STOK
+                $user = auth()->user();
 
+                DB::statement("
+    SET
+        @audit_user_id = ?,
+        @audit_username = ?,
+        @audit_ip_address = ?,
+        @audit_activity = ?,
+        @audit_ref_id = ?,
+        @audit_description = ?
+", [
+                    $user ? $user->id : null,
+                    $user ? $user->email : Session::get('email'),
+                    request()->ip(),
+                    'PEMBELIAN',
+                    $lastid,
+                    'Stok bertambah melalui persetujuan pembelian'
+                ]);
                 $jml = count($request->harga);
                 for ($i = 0; $i < $jml; $i++) {
                     M_detailpembelian::create([
@@ -347,6 +409,38 @@ class OrderController extends Controller
 
                 Session::forget('cart');
                 Session::put('id', $lastid);
+
+                // CATAT AUDIT PERSETUJUAN ORDER
+                app(ActivityLogService::class)->record(
+                    'ORDER',
+                    'APPROVE',
+                    'Menyetujui order ID ' . $request->idorder .
+                        ' dan membuat pembelian faktur ' . $pembelian->nofaktur,
+                    [
+                        'subject_type' => M_order::class,
+                        'subject_id' => $request->idorder,
+
+                        'new_values' => [
+                            'f_aktif' => '1',
+                            'idpembelian' => $lastid,
+                            'nofaktur' => $pembelian->nofaktur,
+                            'total_pembelian' => $pembelian->total,
+                            'status_pembelian' => '1',
+                            'notrans_jurnal' => $lastidjurnal,
+                        ],
+
+                        'properties' => [
+                            'idlokasi' => $request->idlokasi,
+                            'jumlah_jenis_barang' => $jml,
+                            'idsupplier' => $request->idsupplier,
+                        ],
+                    ]
+                );
+
+                Session::forget('cart');
+                Session::put('id', $lastid);
+
+
                 DB::commit();
                 return Redirect()->route('order.invoicepembelian');
             } catch (\Exception $e) {

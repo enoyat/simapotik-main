@@ -177,6 +177,13 @@
                                 <p>Etalase</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('barang.formexportproduk') }}"
+                                class="nav-link {{ request()->is('barang/formexportproduk') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Export Produk</p>
+                            </a>
+                        </li>
 
                     </ul>
                 </li>
@@ -227,9 +234,14 @@
                                 <p>Export Excel Stok Opname</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('stokopname.riwayat') }}" class="nav-link">
+                                <i class="nav-icon fas fa-history"></i>
+                                <p>Riwayat Adjustment</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
-
 
 
                 <li class="nav-item">
@@ -365,6 +377,16 @@
                         </li>
 
                     </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('monitoring.activity') }}" class="nav-link">
+
+                        <i class="nav-icon fas fa-history"></i>
+
+                        <p>Monitoring Aktivitas</p>
+
+                    </a>
                 </li>
                 {{-- History --}}
                 <li class="nav-item">

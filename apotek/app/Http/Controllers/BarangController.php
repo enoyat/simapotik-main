@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Session;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogService;
 
 class barangController extends Controller
 {
@@ -26,15 +27,15 @@ class barangController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function genkdbarang() {
-        $kode =DB::table('barang')->whereRaw("substr(kdbarang,1,1) = 'B'")->max('kdbarang');    
+    function genkdbarang()
+    {
+        $kode = DB::table('barang')->whereRaw("substr(kdbarang,1,1) = 'B'")->max('kdbarang');
 
-        if(empty($kode)) {
-                $noUrut = 1;
-        }
-        else {
+        if (empty($kode)) {
+            $noUrut = 1;
+        } else {
             $noUrut = substr($kode, 1);
-            $noUrut++;            
+            $noUrut++;
         }
         $char = "B";
         $newID = $char . sprintf("%010s", $noUrut);
@@ -42,31 +43,26 @@ class barangController extends Controller
     }
     public function index()
     {
-        $jenis=M_jenis::get();
-        $kategori=M_kategori::get();
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%aa%')->
-        where('stok.stok', '>=', 0)->paginate(10);
-        return view('barang.index',['barang'=>$barang, 'kategori'=>$kategori, 'jenis'=>$jenis]);
-   //
+        $jenis = M_jenis::get();
+        $kategori = M_kategori::get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%aa%')->where('stok.stok', '>=', 0)->paginate(10);
+        return view('barang.index', ['barang' => $barang, 'kategori' => $kategori, 'jenis' => $jenis]);
+        //
     }
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%'.$request->namabarang.'%')->
-        where('stok.stok', '>=', 0)->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->where('stok.stok', '>=', 0)->get();
 
         return view('barang.fetch', ['barang' => $barang]);
         //
     }
-  public function detail($kdbarang){
-    $kategori=M_kategori::get();
-    $product = M_barang::where('kdbarang',$kdbarang)->with('get_foto')->get();
-    return view('detailbarang',['barang' => $product, 'kategori'=>$kategori]);
-  }
+    public function detail($kdbarang)
+    {
+        $kategori = M_kategori::get();
+        $product = M_barang::where('kdbarang', $kdbarang)->with('get_foto')->get();
+        return view('detailbarang', ['barang' => $product, 'kategori' => $kategori]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -74,9 +70,9 @@ class barangController extends Controller
      */
     public function create()
     {
-        $supplier=M_supplier::orderBy('namasupplier','asc')->get();
-        $kategori=M_kategori::get();
-        return view('barang.formbarang',['kategori'=>$kategori,'supplier'=>$supplier]);
+        $supplier = M_supplier::orderBy('namasupplier', 'asc')->get();
+        $kategori = M_kategori::get();
+        return view('barang.formbarang', ['kategori' => $kategori, 'supplier' => $supplier]);
     }
 
     /**
@@ -89,37 +85,38 @@ class barangController extends Controller
     {
 
 
-        $request->validate([
-            'kdbarang'    => 'required|min:5',
-            'namabarang'  => 'required',
-            'hargabeli'   => 'required',
-            'kdkategori'  => 'required',
-            'idgolongan' =>'required',
-            'idjenis'=>'required',
-            'barcode'=>'required',
-            'idsupplier'=>'required',
-        ],
-        [
-          'kdbarang.required'   => 'Kdbaranng tidak boleh kosong',
-          'kdbarang.min'   => 'Kdbarang Minimal 5 karakter',
-          'namabarang.min'      => 'nama Minimal 5 karakter',
-          'hargabeli.numeric'   => 'Harga beli harus angka',
-        ]);
-        $cekbarang=M_barang::where('kdbarang',$request->kdbarang)->count();
-        if($cekbarang>0){
+        $request->validate(
+            [
+                'kdbarang'    => 'required|min:5',
+                'namabarang'  => 'required',
+                'hargabeli'   => 'required',
+                'kdkategori'  => 'required',
+                'idgolongan' => 'required',
+                'idjenis' => 'required',
+                'barcode' => 'required',
+                'idsupplier' => 'required',
+            ],
+            [
+                'kdbarang.required'   => 'Kdbaranng tidak boleh kosong',
+                'kdbarang.min'   => 'Kdbarang Minimal 5 karakter',
+                'namabarang.min'      => 'nama Minimal 5 karakter',
+                'hargabeli.numeric'   => 'Harga beli harus angka',
+            ]
+        );
+        $cekbarang = M_barang::where('kdbarang', $request->kdbarang)->count();
+        if ($cekbarang > 0) {
             Alert::error('Kode barang sudah ada', 'Gagal');
             return redirect()->back()->withInput();
         }
-       
+
 
         $barang = new M_barang;
-        if ($request->otomatis=="1"){
-            $kdbarang = $this->genkdbarang();            
-        }
-        else {
+        if ($request->otomatis == "1") {
+            $kdbarang = $this->genkdbarang();
+        } else {
             $kdbarang = $request->kdbarang;
         }
-       // dd($kdbarang);
+        // dd($kdbarang);
         $barang->kdbarang = $kdbarang;
         $barang->barcode = $request->barcode;
         $barang->idjenis = $request->idjenis;
@@ -140,11 +137,11 @@ class barangController extends Controller
         $barang->bhp = $request->bhp;
         $barang->kdkategori = $request->kdkategori;
         $barang->kdpst = Session::get('globalkdpst');
-        $barang->f_status=$request->f_status;
-        $barang->satuan=$request->satuan;
+        $barang->f_status = $request->f_status;
+        $barang->satuan = $request->satuan;
         $simpan = $barang->save();
-        $lokasi=M_stoklokasi::get();
-        foreach($lokasi as $lok){
+        $lokasi = M_stoklokasi::get();
+        foreach ($lokasi as $lok) {
             $stok = new M_stok;
             $stok->kdbarang = $kdbarang;
             $stok->idlokasi = $lok->idlokasi;
@@ -152,14 +149,14 @@ class barangController extends Controller
             $stok->save();
         }
 
-        if($simpan){
+        if ($simpan) {
             alert::success('Sukses', 'Data Berhasil Disimpan');
-                return redirect()->route('barang.index')
-                    ->with(['success'=>'barang sukses disimpan']);
+            return redirect()->route('barang.index')
+                ->with(['success' => 'barang sukses disimpan']);
         } else {
             alert::error('Gagal', 'Data Gagal Disimpan');
             return redirect()->route('barang.index')
-                    ->with(['success', 'ada kesalahan simpan, coba beberapa saat lagi']);
+                ->with(['success', 'ada kesalahan simpan, coba beberapa saat lagi']);
         }
     }
 
@@ -182,22 +179,23 @@ class barangController extends Controller
      */
     public function edit($id)
     {
-        $jenis=M_jenis::get();
+        $jenis = M_jenis::get();
         $golongan = M_golongan::get();
-        $supplier=M_supplier::orderBy('namasupplier','asc')->get();
-        $kategori=M_kategori::get();
+        $supplier = M_supplier::orderBy('namasupplier', 'asc')->get();
+        $kategori = M_kategori::get();
         $barang = M_barang::find($id);
-        return view('barang.formeditbarang',['barang' => $barang, 'kategori'=>$kategori,'supplier'=>$supplier,'jenis'=>$jenis,'golongan'=>$golongan]);
-       //
+        return view('barang.formeditbarang', ['barang' => $barang, 'kategori' => $kategori, 'supplier' => $supplier, 'jenis' => $jenis, 'golongan' => $golongan]);
+        //
     }
 
-    public function uploadgallery(Request $request){
+    public function uploadgallery(Request $request)
+    {
         $file = $request->filefoto;
         $pathUpload = 'assets/inventory';
 
         $extension = $file->getClientOriginalExtension();
-        $filename = time().".".$extension;
-        $file->move($pathUpload,$filename);
+        $filename = time() . "." . $extension;
+        $file->move($pathUpload, $filename);
         return redirect()->back();
     }
     /**
@@ -210,14 +208,14 @@ class barangController extends Controller
     public function update(Request $request)
     {
 
-       // dd($request->all());
+        // dd($request->all());
         $request->validate([
             'namabarang'  => 'required',
             'kdkategori'  => 'required',
-            'idgolongan' =>'required',
-            'idjenis'=>'required',
-            'barcode'=>'required',
-            'idsupplier'=>'required',
+            'idgolongan' => 'required',
+            'idjenis' => 'required',
+            'barcode' => 'required',
+            'idsupplier' => 'required',
 
         ]);
 
@@ -240,19 +238,62 @@ class barangController extends Controller
         $barang->minstok = $request->minstok;
         $barang->bhp = $request->bhp;
         $barang->kdkategori = $request->kdkategori;
-        $barang->kdpst=Session::get('globalkdpst');
-        $barang->f_status=$request->f_status;
-        $barang->satuan=$request->satuan;
+        $barang->kdpst = Session::get('globalkdpst');
+        $barang->f_status = $request->f_status;
+        $barang->satuan = $request->satuan;
         $simpan = $barang->save();
-        if($simpan){
+        // Ambil data produk sebelum perubahan
+        $dataLama = $barang->only([
+            'kdbarang',
+            'namabarang',
+            'idjenis',
+            'idkategori',
+            'harga',
+            'satuan',
+        ]);
+
+        // Update produk
+        $barang->update($request->all());
+
+        // Ambil data produk setelah perubahan
+        $dataBaru = $barang->fresh()->only([
+            'kdbarang',
+            'namabarang',
+            'idjenis',
+            'idkategori',
+            'harga',
+            'satuan',
+        ]);
+
+        // CATAT AUDIT PERUBAHAN PRODUK
+        app(ActivityLogService::class)->record(
+            'PRODUK',
+            'UPDATE',
+            'Mengubah data produk ' . $barang->namabarang,
+            [
+                'subject_type' => M_barang::class,
+                'subject_id'   => $barang->id,
+
+                'old_values' => $dataLama,
+
+                'new_values' => $dataBaru,
+
+                'properties' => [
+                    'kdbarang' => $barang->kdbarang,
+                    'namabarang' => $barang->namabarang,
+                ],
+            ]
+        );
+        if ($simpan) {
             alert::success('Sukses', 'Data Berhasil Disimpan');
-                return redirect()->route('barang.index')
-                    ->with(['success'=>'barang sukses disimpan']);
+            return redirect()->route('barang.index')
+                ->with(['success' => 'barang sukses disimpan']);
         } else {
             alert::error('Gagal', 'Data Gagal Disimpan');
             return redirect()->route('barang.index')
-                    ->with(['success', 'ada kesalahan simpan, coba beberapa saat lagi']);
+                ->with(['success', 'ada kesalahan simpan, coba beberapa saat lagi']);
         }       //
+
     }
 
     /**
@@ -264,28 +305,28 @@ class barangController extends Controller
 
     public function destroy(Request $request)
     {
-   
+
         try {
-            $id=$request->kdbarang;
-            $mfoto=M_barang::find($id);
+            $id = $request->kdbarang;
+            $mfoto = M_barang::find($id);
             $destinationPath = 'assets/inventory/';
-            File::delete($destinationPath.$mfoto->foto);
+            File::delete($destinationPath . $mfoto->foto);
             M_stok::where('kdbarang', '=', $id)->delete();
             M_barang::where('kdbarang', '=', $id)->delete();
 
             Alert::success('Sukses', 'Data Berhasil Dihapus');
-
-           } catch(QueryException $ex){
-                Alert::error('Gagal', 'Barang tidak bisa dihapus karena masih digunakan');
-                return redirect()->route('barang.index');
-           }
+        } catch (QueryException $ex) {
+            Alert::error('Gagal', 'Barang tidak bisa dihapus karena masih digunakan');
+            return redirect()->route('barang.index');
+        }
 
 
 
         return redirect()->back();       //
     }
-    public function getjenis(Request $request){
-        $jenis = M_jenis::where('namajenis', 'LIKE', '%'.$request->search.'%')->orderBy('namajenis', 'ASC')->get();
+    public function getjenis(Request $request)
+    {
+        $jenis = M_jenis::where('namajenis', 'LIKE', '%' . $request->search . '%')->orderBy('namajenis', 'ASC')->get();
 
         $response = array();
         foreach ($jenis as $value) {
@@ -297,7 +338,8 @@ class barangController extends Controller
 
         return response()->json($response);
     }
-    public function getgolongan(){
+    public function getgolongan()
+    {
         $golongan = M_golongan::get();
 
         $response = array();
@@ -310,8 +352,9 @@ class barangController extends Controller
 
         return response()->json($response);
     }
-    public function getbarang(Request $request){
-        $barang = M_barang::where('namabarang', 'LIKE', '%'.$request->search.'%')->orderBy('namabarang', 'ASC')->get();
+    public function getbarang(Request $request)
+    {
+        $barang = M_barang::where('namabarang', 'LIKE', '%' . $request->search . '%')->orderBy('namabarang', 'ASC')->get();
 
         $response = array();
         foreach ($barang as $value) {
@@ -322,5 +365,15 @@ class barangController extends Controller
         }
 
         return response()->json($response);
+    }
+    public function formexportproduk()
+    {
+        return view('barang.formexportproduk');
+    }
+    public function exportproduk(Request $request)
+    {
+        $barang = M_barang::where('f_status', '=', 'AKTIF')->orderBy('namabarang', 'ASC')->get();
+
+        return view('barang.exportproduk', ['barang' => $barang, 'title' => 'Export Produk']);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\M_barang;
@@ -117,6 +118,7 @@ class LaporanTransaksi extends Controller
         $tglakhir      = $request->tglakhir;
         $tipepenjualan = $request->tipepenjualan;
         $kasir         = $request->email;
+        $modebayar = $request->modebayar;
         if ($tipepenjualan == "K") {
             // dd($kasir);
             if ($request->kriteria == "nofaktur") {
@@ -125,6 +127,9 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'N')
                     ->where('tipepenjualan', 'K')
                     ->where('penjualan.idcustomer', "!=", "GBG")
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -141,6 +146,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'N')
                         ->where('penjualan.idcustomer', "!=", "GBG")
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('namagolongan', 'asc')
                         ->get();
                 } else {
@@ -154,6 +162,9 @@ class LaporanTransaksi extends Controller
                         ->where('tipepenjualan', 'K')
                         ->where('barang.idgolongan', $request->idgolongan)
                         ->where('penjualan.idcustomer', "!=", "GBG")
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('tgltrans', 'asc')
                         ->get();
                 }
@@ -169,6 +180,9 @@ class LaporanTransaksi extends Controller
                     ->where('tipepenjualan', 'K')
                     ->where('penjualan.idcustomer', "!=", "GBG")
                     ->where('barang.kdbarang', $request->kdbarang)
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->orderBy('tgltrans', 'asc')
                     ->get();
                 return view('laporantransaksi.laporanpenjualanpergolongan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
@@ -180,6 +194,9 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'N')
                     ->where('tipepenjualan', 'K')
                     ->where('penjualan.idcustomer', "!=", "GBG")
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -196,6 +213,9 @@ class LaporanTransaksi extends Controller
                     ->where('tipepenjualan', 'T')
                     ->where('penjualan.idcustomer', "!=", "GBG")
                     ->where('penjualan.idcustomer', "!=", "C0012")
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -213,6 +233,9 @@ class LaporanTransaksi extends Controller
                         ->where('tipepenjualan', 'T')
                         ->where('penjualan.idcustomer', "!=", "GBG")
                         ->where('penjualan.idcustomer', "!=", "C0012")
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('namagolongan', 'asc')
                         ->get();
                 } else {
@@ -227,6 +250,9 @@ class LaporanTransaksi extends Controller
                         ->where('penjualan.idcustomer', "!=", "GBG")
                         ->where('penjualan.idcustomer', "!=", "C0012")
                         ->where('barang.idgolongan', $request->idgolongan)
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('tgltrans', 'asc')
                         ->get();
                 }
@@ -243,6 +269,9 @@ class LaporanTransaksi extends Controller
                     ->where('penjualan.idcustomer', "!=", "GBG")
                     ->where('penjualan.idcustomer', "!=", "C0012")
                     ->where('barang.kdbarang', $request->kdbarang)
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->orderBy('tgltrans', 'asc')
                     ->get();
                 return view('laporantransaksi.laporanpenjualanpergolongan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
@@ -255,6 +284,9 @@ class LaporanTransaksi extends Controller
                     ->where('tipepenjualan', 'T')
                     ->where('penjualan.idcustomer', "!=", "GBG")
                     ->where('penjualan.idcustomer', "!=", "C0012")
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -276,6 +308,7 @@ class LaporanTransaksi extends Controller
         $tglakhir      = $request->tglakhir;
         $kasir         = $request->email;
         $tipepenjualan = $request->tipepenjualan;
+        $modebayar = $request->modebayar;
         // dd($kasir);
         if ($tipepenjualan == "K") {
             if ($request->kriteria == "nofaktur") {
@@ -297,6 +330,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'K')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('namagolongan', 'asc')
                         ->get();
                 } else {
@@ -309,6 +345,9 @@ class LaporanTransaksi extends Controller
                         ->where('barang.idgolongan', $request->idgolongan)
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'K')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('tgltrans', 'asc')
                         ->get();
                 }
@@ -319,7 +358,9 @@ class LaporanTransaksi extends Controller
                     ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
                     ->where('email', $request->email)
                     ->where('jenispenjualan', 'R')
-
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -333,6 +374,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'K')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->get()
                         ->sortBy(function ($query) {
                             return $query->namadokter;
@@ -348,6 +392,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'K')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->get()
                         ->sortBy(function ($query) {
                             return $query->namadokter;
@@ -356,7 +403,6 @@ class LaporanTransaksi extends Controller
                     return view('laporantransaksi.laporanpenjualanresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Kredit']);
                 }
             }
-
         } else {
             if ($request->kriteria == "nofaktur") {
                 $datapenjualan = M_penjualan::with('get_detailpenjualan', 'get_customer', 'get_detailresep')
@@ -378,6 +424,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'T')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('namagolongan', 'asc')
                         ->get();
                 } else {
@@ -390,6 +439,9 @@ class LaporanTransaksi extends Controller
                         ->where('barang.idgolongan', $request->idgolongan)
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'T')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->orderBy('tgltrans', 'asc')
                         ->get();
                 }
@@ -401,6 +453,9 @@ class LaporanTransaksi extends Controller
                     ->where('email', $request->email)
                     ->where('jenispenjualan', 'R')
                     ->where('tipepenjualan', 'T')
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->get()
                     ->sortBy(function ($query) {
                         return $query->get_customer->namacustomer;
@@ -414,6 +469,9 @@ class LaporanTransaksi extends Controller
                         ->whereBetween('tgltrans', [$tglmulai, $tglakhir])
                         ->where('jenispenjualan', 'R')
                         ->where('tipepenjualan', 'T')
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->get()
                         ->sortBy(function ($query) {
                             return $query->namadokter;
@@ -440,6 +498,9 @@ class LaporanTransaksi extends Controller
                         ->whereHas('get_detailresep', function ($query) use ($request) {
                             $query->where('iddokter', $request->iddokter);
                         })
+                        ->when($modebayar, function ($query) use ($modebayar) {
+                            $query->where('penjualan.modebayar', $modebayar);
+                        })
                         ->get()
                         ->sortBy(function ($query) {
                             return $query->namadokter;
@@ -458,11 +519,13 @@ class LaporanTransaksi extends Controller
                     ->where('jenispenjualan', 'R')
                     ->where('tipepenjualan', 'T')
                     ->where('barang.kdbarang', $request->kdbarang)
+                    ->when($modebayar, function ($query) use ($modebayar) {
+                        $query->where('penjualan.modebayar', $modebayar);
+                    })
                     ->orderBy('tgltrans', 'asc')
                     ->get();
 
                 return view('laporantransaksi.laporanpenjualanpergolonganresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
-
             }
         }
     }
@@ -481,6 +544,7 @@ class LaporanTransaksi extends Controller
             ->join('golongan', 'golongan.idgolongan', '=', 'barang.idgolongan')
             ->whereBetween('penjualan.tgltrans', [$tglmulai, $tglakhir])
             ->where('tipepenjualan', 'T')
+
             ->orderBy('namagolongan', 'asc')
             ->get();
 
@@ -626,7 +690,5 @@ class LaporanTransaksi extends Controller
         }
 
         return view('laporantransaksi.laporanrekappenjualan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $request->tglmulai, 'tglakhir' => $request->tglakhir]);
-
     }
-
 }

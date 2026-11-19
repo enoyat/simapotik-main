@@ -37,26 +37,33 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <label for="">Tipe Penjualan</label>
-                                    <Select name="tipepenjualan" id="tipepenjualan" class="form-control">
-                                        <option>-- Tipe Penjualan --</option>
+                                    <label for="tipepenjualan">Tipe Penjualan</label>
+                                    <select name="tipepenjualan" id="tipepenjualan" class="form-control">
+                                        <option value="">-- Semua Tipe Penjualan --</option>
                                         <option value="T">Tunai</option>
                                         <option value="K">Kredit/belum bayar</option>
-                                        
+                                    </select>
+                                </div>
 
-
-                                    </Select>
-
+                                <div class="form-group">
+                                    <label for="modebayar">Mode Pembayaran</label>
+                                    <select name="modebayar" id="modebayar" class="form-control">
+                                        <option value="">-- Semua Mode Pembayaran --</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Transfer">Transfer</option>
+                                        <option value="QRIS">QRIS</option>
+                                        <option value="Debit Card (EDC)">Debit Card (EDC)</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="">Kriteria</label>
                                     <Select name="kriteria" id="kriteria" class="form-control">
                                         <option>-- kriteria --</option>
                                         <option value="nofaktur">Urut No Transaksi Penjualan</option>
-                                        <option value="kasir">Kasir</option> 
+                                        <option value="kasir">Kasir</option>
                                         <option value="golongan">Golongan</option>
                                         <option value="barang">Item Barang</option>
-                                        
+
 
 
                                     </Select>
@@ -99,7 +106,7 @@
         </section>
     </div>
     <script>
-var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
         $("#email").select2({
             placeholder: 'Pilih email user',
             ajax: {
@@ -131,44 +138,41 @@ var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
                 $("#golongan").show();
                 $("#kasir").hide();
                 $("#barang").hide();
-            }
-            else if (pilihan == "kasir") {
+            } else if (pilihan == "kasir") {
                 $("#kasir").show();
                 $("#golongan").hide();
                 $("#barang").hide();
-            }
-            else if (pilihan == "barang") {
+            } else if (pilihan == "barang") {
                 $("#kasir").hide();
                 $("#golongan").hide();
                 $("#barang").show();
 
-            }
-            else {
+            } else {
                 $("#golongan").hide();
                 $("#kasir").hide();
                 $("#barang").hide();
             }
         });
         $("#kdbarang").select2({
-    placeholder: 'Pilih barang',
-    ajax: {
-        url: "{{ route('barang.getbarang') }}",
-        type: "GET",
-        dataType: 'JSON',
-        delay: 250,
-        data: function(params) {
-            return {
-                _token: CSRF_TOKEN,
-                search: params.term,
-            };
-        },
-        processResults: function(response) {
-            return {
-                results: response
-            };
-        },
-        cache: true
-    }
-});
+            placeholder: 'Pilih barang',
+            ajax: {
+                url: "{{ route('barang.getbarang') }}",
+                type: "GET",
+                dataType: 'JSON',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        _token: CSRF_TOKEN,
+                        search: params.term,
+                    };
+                },
+                processResults: function(response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
+        });
     </script>
 @endsection

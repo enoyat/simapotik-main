@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\History;
 
 use App\Http\Controllers\Controller;
@@ -32,8 +33,20 @@ class HsPembelian extends Controller
     public static function kekata($x)
     {
         $x     = abs($x);
-        $angka = ["", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+        $angka = [
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        ];
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -89,10 +102,7 @@ class HsPembelian extends Controller
         $lokasi   = M_stoklokasi::where('f_default', '0')->get();
 
         $kdtransaksi = "TR0001" . Session::get('globalkdpst');
-        $barang      = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('kdpst', Session::get('globalkdpst'))->
-            where('stok.stok', '>=', 0)->get();
+        $barang      = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('kdpst', Session::get('globalkdpst'))->where('stok.stok', '>=', 0)->get();
 
         $mstransaksis = M_mstransaksi::where(['kdktgtransaksi' => 'TRKEU', 'kdpst' => Session::get('globalkdpst')])->orderby('namatransaksi')->get();
         return view('history.pembelian.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi, 'supplier' => $supplier, 'lokasi' => $lokasi]);
@@ -206,7 +216,6 @@ class HsPembelian extends Controller
                 Session::put('id', $lastid);
                 DB::commit();
                 return Redirect()->route('history.pembelian.invoice');
-
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -288,11 +297,7 @@ class HsPembelian extends Controller
     public function caribarang(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('barang.namabarang', 'like', '%aa%')->
-            where('stok.stok', '>=', 0)->
-            orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%aa%')->where('stok.stok', '>=', 0)->orderby('namabarang')->get();
 
         return view('history.pembelian.formbarang', ['barang' => $barang, 'jenisharga' => $request->jenisharga]);
         //
@@ -300,11 +305,7 @@ class HsPembelian extends Controller
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-            where('stok.idlokasi', "TOKO")->
-            where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->
-            where('stok.stok', '>=', 0)->
-            orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->where('stok.stok', '>=', 0)->orderby('namabarang')->get();
 
         return view('history.pembelian.fetch', ['barang' => $barang]);
         //
@@ -349,14 +350,12 @@ class HsPembelian extends Controller
                 ->where('hspembelian.kodeopname', $request->kodeopname)
                 ->select('hspembelian.*', 'supplier.namasupplier')
                 ->get();
-
         } else {
             $pembelian = M_hspembelian::join('supplier', 'hspembelian.idsupplier', '=', 'supplier.idsupplier')
                 ->where('supplier.namasupplier', 'like', '%' . $request->keyword . '%')->orderBy('id', 'DESC')
                 ->where('hspembelian.kodeopname', $request->kodeopname)
                 ->where('f_statustransaksi', '0')
                 ->get();
-
         }
         return view('history.pembelian.fetchretur', ['pembelian' => $pembelian]);
         //
@@ -424,7 +423,6 @@ class HsPembelian extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function approveinretur(Request $request)
@@ -459,7 +457,6 @@ class HsPembelian extends Controller
                 DB::rollback();
                 return redirect()->back()->with('error', $e->getMessage());
             }
-
         }
     }
     public function formretur(Request $request)
@@ -482,8 +479,7 @@ class HsPembelian extends Controller
     }
     public function hapusreturpembelian(Request $request)
     {
-        try
-        {
+        try {
             M_returpembelian::find($request->id)->delete();
             M_returdetailpembelian::where('idretur', $request->id)->delete();
             Alert::success('retur sukses dihapus');

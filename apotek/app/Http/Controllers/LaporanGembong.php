@@ -93,7 +93,6 @@ class LaporanGembong extends Controller
                         ->where('penjualan.idcustomer', "GBG")
                         ->orderBy('namagolongan', 'asc')
                         ->get();
-                       
                 } else {
                     $datapenjualan = M_detailpenjualan::select('*', 'detailpenjualan.diskon', 'golongan.namagolongan')
                         ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')
@@ -150,7 +149,6 @@ class LaporanGembong extends Controller
                         ->where('penjualan.idcustomer', "GBG")
                         ->orderBy('namagolongan', 'asc')
                         ->get();
-                      
                 } else {
                     $datapenjualan = M_detailpenjualan::select('*', 'detailpenjualan.diskon', 'golongan.namagolongan')
                         ->join('penjualan', 'detailpenjualan.idpenjualan', '=', 'penjualan.id')

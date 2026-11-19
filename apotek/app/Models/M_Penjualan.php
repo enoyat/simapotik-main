@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class M_Penjualan extends Model
+class M_penjualan extends Model
 {
 
     use HasFactory;
@@ -23,9 +23,8 @@ class M_Penjualan extends Model
     {
         return $this->belongsTo(M_customer::class, 'idcustomer', 'idcustomer');
     }
-    public function get_detailresep() {
+    public function get_detailresep()
+    {
         return $this->hasMany(M_detailresep::class, 'idpenjualan', 'id');
     }
-
-
 }

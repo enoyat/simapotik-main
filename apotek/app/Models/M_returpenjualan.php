@@ -19,8 +19,8 @@ class M_returpenjualan extends Model
     {
         return $this->belongsTo(M_penjualan::class, 'idpenjualan', 'id');
     }
-    public function get_returdetailpenjualan() {
+    public function get_returdetailpenjualan()
+    {
         return $this->hasMany(M_returdetailpenjualan::class, 'id', 'idretur');
     }
-
 }

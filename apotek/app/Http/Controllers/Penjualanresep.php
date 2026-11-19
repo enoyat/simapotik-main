@@ -31,8 +31,20 @@ class Penjualanresep extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -84,17 +96,15 @@ class Penjualanresep extends Controller
 
     public function index()
     {
-        $kdtransaksi="TR0002";
+        $kdtransaksi = "TR0002";
         $customer = M_customer::get();
-        $jenispasiens=M_jenispasien::get();
-        $polys=M_poly::get();
-        $dokters=M_dokter::get();
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('stok.stok', '>', 0)->get();
+        $jenispasiens = M_jenispasien::get();
+        $polys = M_poly::get();
+        $dokters = M_dokter::get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('stok.stok', '>', 0)->get();
 
         $mstransaksis = M_mstransaksi::where(['kdktgtransaksi' => 'TRKEU', 'kdpst' => Session::get('globalkdpst')])->orderby('namatransaksi')->get();
-        return view('penjualanresep.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi,'customer'=>$customer,'jenispasiens'=>$jenispasiens,'polys'=>$polys,'dokters'=>$dokters]);
+        return view('penjualanresep.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi, 'customer' => $customer, 'jenispasiens' => $jenispasiens, 'polys' => $polys, 'dokters' => $dokters]);
     }
     public function baru()
     {
@@ -105,7 +115,7 @@ class Penjualanresep extends Controller
 
     public function cart(Request $request)
     {
-        if($request->qty==0){
+        if ($request->qty == 0) {
             return 'Qty tidak boleh 0';
         }
         $cart = Session::get('cart');
@@ -114,7 +124,7 @@ class Penjualanresep extends Controller
             'namabarang' => $request->namabarang,
             'qty' => $request->qty,
             'harga' => $request->harga,
-            'diskonpersen'=>$request->diskonpersen,
+            'diskonpersen' => $request->diskonpersen,
             'diskon' => $request->diskon,
             'jumlah' => $request->jumlah,
         );
@@ -122,15 +132,16 @@ class Penjualanresep extends Controller
         Session::put('cart', $cart);
         return "sukses";
     }
-    public function cartview(){
-        $data=Session::get('cart');
-        return view('penjualanresep.cartview')->with(['data'=>$data]);
+    public function cartview()
+    {
+        $data = Session::get('cart');
+        return view('penjualanresep.cartview')->with(['data' => $data]);
     }
     public function carthapus(Request $request)
     {
         $cart = Session::get('cart');
         unset($cart[$request->idx]);
-        $cart=array_values($cart);
+        $cart = array_values($cart);
         Session::put('cart', $cart);
         return view('penjualanresep.cartview');
     }
@@ -151,68 +162,66 @@ class Penjualanresep extends Controller
     {
         DB::beginTransaction();
         try {
-       // dd($request->all());
-        $validator = Validator::make($request->all(), [
-            'idcustomer' => 'required',
-            'total' => 'required',
-        ]);
+            // dd($request->all());
+            $validator = Validator::make($request->all(), [
+                'idcustomer' => 'required',
+                'total' => 'required',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        } else {
-            $cart = Session::get('cart');
-            $lastid = Penjualanresep::gennotrans();
-            if (empty($request->modebayar)) {
-                $modebayar = "TUNAI";
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            } else {
+                $cart = Session::get('cart');
+                $lastid = Penjualanresep::gennotrans();
+                if (empty($request->modebayar)) {
+                    $modebayar = "TUNAI";
+                } else {
+                    $modebayar = "NONTUNAI";
+                }
+                $penjualanresep = new M_penjualan;
+                $penjualanresep->tgltrans = Carbon::now();
+                $penjualanresep->jam = date("h:i");
+                $penjualanresep->idcustomer = $request->idcustomer;
+                $penjualanresep->total = $request->total;
+                $penjualanresep->email = Session::get('email');
+                $penjualanresep->tipepenjualan = $request->tipepenjualan;
+                $penjualanresep->modebayar = $modebayar;
+                $penjualanresep->jenispenjualan = "R";
+
+
+                $penjualanresep->save();
+                $lastid = $penjualanresep->id;
+                $cart = Session::get('cart');
+
+                foreach ($cart as $key => $value) {
+                    M_detailpenjualan::create([
+                        'idpenjualan' => $lastid,
+                        'kdbarang' => $value['kdbarang'],
+                        'qty' => $value['qty'],
+                        'harga' => $value['harga'],
+                        'diskonpersen' => $value['diskonpersen'],
+                        'diskon' => $value['diskon'],
+                        'jumlah' => $value['jumlah'],
+                        'idlokasi' => 'TOKO'
+                    ]);
+                }
+                $detailresep = new M_detailresep;
+                $detailresep->idpenjualan = $lastid;
+                $detailresep->idjenispasien = $request->idjenispasien;
+                $detailresep->namapasien = $request->namapasien;
+                $detailresep->idpoly = $request->idpoly;
+                $detailresep->iddokter = $request->iddokter;
+                $detailresep->noresep = $lastid;
+                $detailresep->admresep = '0';
+                $detailresep->admracik = '0';
+                $detailresep->save();
+
+
+                Session::forget('cart');
+                Session::put('id', $lastid);
+                DB::commit();
+                return Redirect()->route('penjualanresep.invoice');
             }
-            else {
-                $modebayar="NONTUNAI";
-            }
-            $penjualanresep=new M_penjualan;
-            $penjualanresep->tgltrans=Carbon::now();
-            $penjualanresep->jam=date("h:i");
-            $penjualanresep->idcustomer=$request->idcustomer;
-            $penjualanresep->total=$request->total;
-            $penjualanresep->email=Session::get('email');
-            $penjualanresep->tipepenjualan=$request->tipepenjualan;
-            $penjualanresep->modebayar=$modebayar;
-            $penjualanresep->jenispenjualan="R";
-
-
-            $penjualanresep->save();
-            $lastid=$penjualanresep->id;
-            $cart=Session::get('cart');
-
-            foreach ($cart as $key => $value) {
-                M_detailpenjualan::create([
-                    'idpenjualan' => $lastid,
-                    'kdbarang' => $value['kdbarang'],
-                    'qty' => $value['qty'],
-                    'harga' => $value['harga'],
-                    'diskonpersen' => $value['diskonpersen'],
-                    'diskon' => $value['diskon'],
-                    'jumlah' => $value['jumlah'],
-                    'idlokasi'=>'TOKO'
-                ]);
-            }
-            $detailresep=new M_detailresep;
-            $detailresep->idpenjualan=$lastid;
-            $detailresep->idjenispasien=$request->idjenispasien;
-            $detailresep->namapasien=$request->namapasien;
-            $detailresep->idpoly=$request->idpoly;
-            $detailresep->iddokter=$request->iddokter;
-            $detailresep->noresep=$lastid;
-            $detailresep->admresep='0';
-            $detailresep->admracik='0';
-            $detailresep->save();
-
-
-            Session::forget('cart');
-            Session::put('id', $lastid);
-            DB::commit();
-            return Redirect()->route('penjualanresep.invoice');
-
-        }
         } catch (\Exception $e) {
             DB::rollback();
             Alert::error('Error', $e->getMessage());
@@ -222,9 +231,9 @@ class Penjualanresep extends Controller
     public function invoice()
     {
         $datapenjualan = M_penjualan::find(Session::get('id'));
-        $data = M_detailpenjualan::with('get_barang','get_penjualan')->where('idpenjualan', Session::get('id'))->get();
-        $dataresep=M_detailresep::with('get_jenispasien','get_poly','get_dokter')->where('idpenjualan', Session::get('id'))->first();
-        return view('penjualanresep.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan,'dataresep'=>$dataresep]);
+        $data = M_detailpenjualan::with('get_barang', 'get_penjualan')->where('idpenjualan', Session::get('id'))->get();
+        $dataresep = M_detailresep::with('get_jenispasien', 'get_poly', 'get_dokter')->where('idpenjualan', Session::get('id'))->first();
+        return view('penjualanresep.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan, 'dataresep' => $dataresep]);
     }
 
     public function batal()
@@ -250,7 +259,7 @@ class Penjualanresep extends Controller
     }
     public function trpenjualanresep()
     {
-        $penjualanresep = M_penjualan::where('f_statustransaksi','0')->orderBy('id','DESC')->get();
+        $penjualanresep = M_penjualan::where('f_statustransaksi', '0')->orderBy('id', 'DESC')->get();
         return view('penjualanresep.trpenjualanresep')->with(['penjualanresep' => $penjualanresep]);
     }
     public function trdetail($id)
@@ -262,8 +271,8 @@ class Penjualanresep extends Controller
     public function hapuspenjualanresep(Request $request)
     {
         $penjualanresep = M_penjualan::find($request->id);
-        $penjualanresep->f_statustransaksi="1";
-        $penjualanresep->emailhapus=Session::get('email');
+        $penjualanresep->f_statustransaksi = "1";
+        $penjualanresep->emailhapus = Session::get('email');
         $penjualanresep->save();
         M_detailpenjualan::where('idpenjualanresep', $request->id)->delete();
         return redirect()->route('penjualanresep.trpenjualanresep')
@@ -272,23 +281,15 @@ class Penjualanresep extends Controller
     public function caribarang(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%aa%')->
-        where('stok.stok', '>', 0)->
-        orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%aa%')->where('stok.stok', '>', 0)->orderby('namabarang')->get();
 
-        return view('penjualanresep.formbarang', ['barang' => $barang, 'jenisharga'=>$request->jenisharga]);
+        return view('penjualanresep.formbarang', ['barang' => $barang, 'jenisharga' => $request->jenisharga]);
         //
     }
     public function fetch(Request $request)
     {
 
-        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->
-        where('stok.idlokasi', "TOKO")->
-        where('barang.namabarang', 'like', '%'.$request->namabarang.'%')->
-        where('stok.stok', '>', 0)->
-        orderby('namabarang')->get();
+        $barang = M_barang::join('stok', 'barang.kdbarang', '=', 'stok.kdbarang')->where('stok.idlokasi', "TOKO")->where('barang.namabarang', 'like', '%' . $request->namabarang . '%')->where('stok.stok', '>', 0)->orderby('namabarang')->get();
 
         return view('penjualanresep.fetch', ['barang' => $barang]);
         //

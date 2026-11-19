@@ -68,8 +68,14 @@ class LaporanRetur extends Controller
         $tglakhir = $request->tglakhir;
         if ($request->kriteria == "golongan") {
             if ($request->idgolongan == "all") {
-                $datapembelian = M_returdetailpembelian::select('returdetailpembelian.*', 
-                'detailpembelian.harga','detailpembelian.diskonpersen','barang.namabarang','golongan.namagolongan','supplier.namasupplier')
+                $datapembelian = M_returdetailpembelian::select(
+                    'returdetailpembelian.*',
+                    'detailpembelian.harga',
+                    'detailpembelian.diskonpersen',
+                    'barang.namabarang',
+                    'golongan.namagolongan',
+                    'supplier.namasupplier'
+                )
                     ->join('returpembelian', 'returdetailpembelian.idretur', '=', 'returpembelian.id')
                     ->join('detailpembelian', 'detailpembelian.id', '=', 'returdetailpembelian.iddetailpembelian')
                     ->join('barang', 'barang.kdbarang', '=', 'returdetailpembelian.kdbarang')
@@ -79,10 +85,15 @@ class LaporanRetur extends Controller
                     ->whereBetween('returpembelian.tgltrans', [$tglmulai, $tglakhir])
                     ->orderBy('namagolongan', 'asc')
                     ->get();
-                   
             } else {
-                $datapembelian = M_returdetailpembelian::select('returdetailpembelian.*', 
-                'detailpembelian.harga','detailpembelian.diskonpersen','barang.namabarang','golongan.namagolongan','supplier.namasupplier')
+                $datapembelian = M_returdetailpembelian::select(
+                    'returdetailpembelian.*',
+                    'detailpembelian.harga',
+                    'detailpembelian.diskonpersen',
+                    'barang.namabarang',
+                    'golongan.namagolongan',
+                    'supplier.namasupplier'
+                )
                     ->join('returpembelian', 'returdetailpembelian.idretur', '=', 'returpembelian.id')
                     ->join('detailpembelian', 'detailpembelian.id', '=', 'returdetailpembelian.iddetailpembelian')
                     ->join('barang', 'barang.kdbarang', '=', 'returdetailpembelian.kdbarang')
@@ -93,8 +104,6 @@ class LaporanRetur extends Controller
                     ->where('barang.idgolongan', $request->idgolongan)
                     ->orderBy('namagolongan', 'asc')
                     ->get();
-               
-
             }
             return view('laporantransaksi.returpembelian.laporanreturpembelianpergolongan')->with(['datapembelian' => $datapembelian, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir]);
         }
@@ -111,8 +120,14 @@ class LaporanRetur extends Controller
         $tglakhir = $request->tglakhir;
         if ($request->kriteria == "golongan") {
             if ($request->idgolongan == "all") {
-                $datapenjualan = M_returdetailpenjualan::select('returdetailpenjualan.*', 
-                'detailpenjualan.harga','detailpenjualan.diskonpersen','barang.namabarang','golongan.namagolongan','customer.namacustomer')
+                $datapenjualan = M_returdetailpenjualan::select(
+                    'returdetailpenjualan.*',
+                    'detailpenjualan.harga',
+                    'detailpenjualan.diskonpersen',
+                    'barang.namabarang',
+                    'golongan.namagolongan',
+                    'customer.namacustomer'
+                )
                     ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
                     ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
                     ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
@@ -122,10 +137,15 @@ class LaporanRetur extends Controller
                     ->whereBetween('returpenjualan.tgltrans', [$tglmulai, $tglakhir])
                     ->orderBy('namagolongan', 'asc')
                     ->get();
-                  
             } else {
-                $datapenjualan = M_returdetailpenjualan::select('returdetailpenjualan.*', 
-                'detailpenjualan.harga','detailpenjualan.diskonpersen','barang.namabarang','golongan.namagolongan','customer.namacustomer')
+                $datapenjualan = M_returdetailpenjualan::select(
+                    'returdetailpenjualan.*',
+                    'detailpenjualan.harga',
+                    'detailpenjualan.diskonpersen',
+                    'barang.namabarang',
+                    'golongan.namagolongan',
+                    'customer.namacustomer'
+                )
                     ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
                     ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
                     ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
@@ -136,15 +156,18 @@ class LaporanRetur extends Controller
                     ->where('barang.idgolongan', $request->idgolongan)
                     ->orderBy('namagolongan', 'asc')
                     ->get();
-              
-               
-
             }
             return view('laporantransaksi.returpenjualan.laporanreturpenjualanpergolongan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir]);
-        } 
+        }
         if ($request->kriteria == "kasir") {
-            $datapenjualan = M_returdetailpenjualan::select('returdetailpenjualan.*', 
-            'detailpenjualan.harga','detailpenjualan.diskonpersen','barang.namabarang','golongan.namagolongan','customer.namacustomer')
+            $datapenjualan = M_returdetailpenjualan::select(
+                'returdetailpenjualan.*',
+                'detailpenjualan.harga',
+                'detailpenjualan.diskonpersen',
+                'barang.namabarang',
+                'golongan.namagolongan',
+                'customer.namacustomer'
+            )
                 ->join('returpenjualan', 'returdetailpenjualan.idretur', '=', 'returpenjualan.id')
                 ->join('detailpenjualan', 'detailpenjualan.id', '=', 'returdetailpenjualan.iddetailpenjualan')
                 ->join('barang', 'barang.kdbarang', '=', 'returdetailpenjualan.kdbarang')
@@ -155,9 +178,7 @@ class LaporanRetur extends Controller
                 ->where('returpenjualan.email', $request->email)
                 ->orderBy('namagolongan', 'asc')
                 ->get();
-                return view('laporantransaksi.returpenjualan.laporanreturpenjualanpergolongan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir,'email'=>$request->email]);
-
+            return view('laporantransaksi.returpenjualan.laporanreturpenjualanpergolongan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'email' => $request->email]);
         }
-        
     }
 }

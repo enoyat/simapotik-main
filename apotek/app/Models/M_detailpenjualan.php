@@ -23,5 +23,4 @@ class M_detailpenjualan extends Model
     {
         return $this->belongsTo(M_barang::class, 'kdbarang', 'kdbarang');
     }
-
 }

@@ -24,8 +24,20 @@ class StokAwalController extends Controller
     public static function kekata($x)
     {
         $x = abs($x);
-        $angka = array("", "satu", "dua", "tiga", "empat", "lima",
-            "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $angka = array(
+            "",
+            "satu",
+            "dua",
+            "tiga",
+            "empat",
+            "lima",
+            "enam",
+            "tujuh",
+            "delapan",
+            "sembilan",
+            "sepuluh",
+            "sebelas"
+        );
         $temp = "";
         if ($x < 12) {
             $temp = " " . $angka[$x];
@@ -77,7 +89,7 @@ class StokAwalController extends Controller
 
     public function index()
     {
-        $kdtransaksi="TR0001".Session::get('globalkdpst');
+        $kdtransaksi = "TR0001" . Session::get('globalkdpst');
         $barang = M_barang::where('kdpst', Session::get('globalkdpst'))->get();
         $mstransaksis = M_mstransaksi::where(['kdktgtransaksi' => 'TRKEU', 'kdpst' => Session::get('globalkdpst')])->orderby('namatransaksi')->get();
         return view('stokawal.index')->with(['mstransaksis' => $mstransaksis, 'barang' => $barang, 'kdtransaksi' => $kdtransaksi]);
@@ -91,10 +103,10 @@ class StokAwalController extends Controller
 
     public function cart(Request $request)
     {
-        if($request->qty==0){
+        if ($request->qty == 0) {
             return 'Qty tidak boleh 0';
         }
-        if($request->harga==0){
+        if ($request->harga == 0) {
             return 'Harga tidak boleh 0';
         }
 
@@ -111,15 +123,16 @@ class StokAwalController extends Controller
         Session::put('cart', $cart);
         return "sukses";
     }
-    public function cartview(){
-        $data=Session::get('cart');
-        return view('stokawal.cartview')->with(['data'=>$data]);
+    public function cartview()
+    {
+        $data = Session::get('cart');
+        return view('stokawal.cartview')->with(['data' => $data]);
     }
     public function carthapus(Request $request)
     {
         $cart = Session::get('cart');
         unset($cart[$request->idx]);
-        $cart=array_values($cart);
+        $cart = array_values($cart);
         Session::put('cart', $cart);
         return view('stokawal.cartview');
     }
@@ -149,15 +162,15 @@ class StokAwalController extends Controller
             $cart = Session::get('cart');
             $lastid = StokAwalController::gennotrans();
 
-            $pembelian=new M_pembelian;
-            $pembelian->tgltrans=$request->tgltrans;
-            $pembelian->idsupplier='Stok Awal';
-            $pembelian->total=$request->total;
-            $pembelian->kdpst=Session::get('globalkdpst');
-            $pembelian->idlokasi="TOKO";
+            $pembelian = new M_pembelian;
+            $pembelian->tgltrans = $request->tgltrans;
+            $pembelian->idsupplier = 'Stok Awal';
+            $pembelian->total = $request->total;
+            $pembelian->kdpst = Session::get('globalkdpst');
+            $pembelian->idlokasi = "TOKO";
             $pembelian->save();
-            $lastid=$pembelian->id;
-            $cart=Session::get('cart');
+            $lastid = $pembelian->id;
+            $cart = Session::get('cart');
 
             foreach ($cart as $key => $value) {
                 M_detailpembelian::create([
@@ -167,7 +180,7 @@ class StokAwalController extends Controller
                     'harga' => $value['harga'],
                     'diskon' => $value['diskon'],
                     'jumlah' => $value['jumlah'],
-                    'idlokasi'=>'TOKO',
+                    'idlokasi' => 'TOKO',
                 ]);
             }
 
@@ -179,7 +192,7 @@ class StokAwalController extends Controller
             $jurnalumum->kdpst = Session::get('globalkdpst');
             $jurnalumum->tgltrans = $request->tgltrans;
             $jurnalumum->jumlah = $request->total;
-            $jurnalumum->keterangan = "Pembelian ".$request->supplier;
+            $jurnalumum->keterangan = "Pembelian " . $request->supplier;
             $jurnalumum->kdtransaksi = $request->kdtransaksi;
             $datatransaksi = M_mstransaksi::find($request->kdtransaksi);
             $jurnalumum->debet = $datatransaksi->kdakun_d;
@@ -188,22 +201,21 @@ class StokAwalController extends Controller
             $jurnalumum->userid = Session::get('email');
             $jurnalumum->save();
 
-            $transaksipembelian=M_pembelian::find($lastid);
-            $transaksipembelian->f_status='1';
-            $transaksipembelian->notrans=$lastidjurnal;
+            $transaksipembelian = M_pembelian::find($lastid);
+            $transaksipembelian->f_status = '1';
+            $transaksipembelian->notrans = $lastidjurnal;
             $transaksipembelian->save();
 
             Session::forget('cart');
             //Session::put('id', $lastid);
             Alert::success('Berhasil', 'Data Berhasil Disimpan');
             return Redirect()->route('stokawal.index');
-
         }
     }
     public function invoice()
     {
         $datapembelian = M_pembelian::find(Session::get('id'));
-        $data = M_detailpembelian::with('get_barang','get_pembelian')->where('idpembelian', Session::get('id'))->get();
+        $data = M_detailpembelian::with('get_barang', 'get_pembelian')->where('idpembelian', Session::get('id'))->get();
         return view('stokawal.invoice')->with(['pembelian' => $data, 'datapembelian' => $datapembelian]);
     }
     public function createPDF()
@@ -245,7 +257,7 @@ class StokAwalController extends Controller
     }
     public function trpembelian()
     {
-        $pembelian = M_pembelian::where('kdpst', Session::get('globalkdpst'))->orderBy('id','DESC')->get();
+        $pembelian = M_pembelian::where('kdpst', Session::get('globalkdpst'))->orderBy('id', 'DESC')->get();
         return view('stokawal.trpembelian')->with(['pembelian' => $pembelian]);
     }
     public function trdetail($id)
@@ -257,7 +269,7 @@ class StokAwalController extends Controller
     public function hapuspembelian(Request $request)
     {
         $pembelian = M_pembelian::find($request->id);
-        $notrans=$pembelian->notrans;
+        $notrans = $pembelian->notrans;
         $pembelian->delete();
         M_detailpembelian::where('idpembelian', $request->id)->delete();
         M_jurnalumum::where('notrans', $notrans)->delete();
@@ -265,5 +277,4 @@ class StokAwalController extends Controller
         return redirect()->route('stokawal.trpembelian')
             ->with('success', 'Transaksi Hapus Sukses');
     }
-
 }

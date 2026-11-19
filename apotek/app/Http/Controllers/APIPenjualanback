@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\M_Penjualan;
+use App\Models\M_penjualan;
 use App\Models\M_detailpenjualan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +15,7 @@ class ApiPenjualan extends Controller
 {
     public function index()
     {
-        $barang = M_Penjualan::where('kdpst','')->get();
+        $barang = M_penjualan::where('kdpst','')->get();
         return $data=[
             'status' => 'success',
             'data' => $barang
@@ -23,7 +23,7 @@ class ApiPenjualan extends Controller
     }
     public function show($id)
     {
-        $barang = M_Penjualan::find($id);
+        $barang = M_penjualan::find($id);
         return $data=[
             'status' => 'success',
             'data' => $barang

@@ -31,5 +31,4 @@ class M_detailresep extends Model
     {
         return $this->belongsTo(M_dokter::class, 'iddokter', 'iddokter');
     }
-
 }

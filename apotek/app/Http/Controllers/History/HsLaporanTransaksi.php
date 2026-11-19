@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\History;
 
 use App\Http\Controllers\Controller;
@@ -358,7 +359,6 @@ class HsLaporanTransaksi extends Controller
                     return view('laporantransaksi.laporanpenjualanresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Kredit']);
                 }
             }
-
         } else {
             if ($request->kriteria == "nofaktur") {
                 $datapenjualan = M_penjualan::with('get_detailpenjualan', 'get_customer', 'get_detailresep')
@@ -464,7 +464,6 @@ class HsLaporanTransaksi extends Controller
                     ->get();
 
                 return view('laporantransaksi.laporanpenjualanpergolonganresep')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $tglmulai, 'tglakhir' => $tglakhir, 'tipepenjualan' => 'Tunai/Lunas']);
-
             }
         }
     }
@@ -535,7 +534,6 @@ class HsLaporanTransaksi extends Controller
                     }])
                     ->orderBy('namagolongan', 'asc')
                     ->get();
-
             } else {
                 $datastok = M_barang::select('barang.*', 'golongan.namagolongan')
                     ->join('golongan', 'barang.idgolongan', '=', 'golongan.idgolongan')
@@ -646,7 +644,5 @@ class HsLaporanTransaksi extends Controller
         }
 
         return view('laporantransaksi.laporanrekappenjualan')->with(['datapenjualan' => $datapenjualan, 'tglmulai' => $request->tglmulai, 'tglakhir' => $request->tglakhir]);
-
     }
-
 }

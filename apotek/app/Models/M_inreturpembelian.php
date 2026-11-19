@@ -19,8 +19,8 @@ class M_inreturpembelian extends Model
     {
         return $this->belongsTo(M_pembelian::class, 'idpembelian', 'id');
     }
-    public function get_retur() {
-        return $this->belongsTo(M_returpembelian::class, 'idretur','id' );
+    public function get_retur()
+    {
+        return $this->belongsTo(M_returpembelian::class, 'idretur', 'id');
     }
-
 }

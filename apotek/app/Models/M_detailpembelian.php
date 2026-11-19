@@ -23,6 +23,4 @@ class M_detailpembelian extends Model
     {
         return $this->belongsTo(M_barang::class, 'kdbarang', 'kdbarang');
     }
-
-
 }

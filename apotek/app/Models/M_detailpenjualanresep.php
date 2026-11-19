@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,5 +23,4 @@ class M_detailpenjualanresep extends Model
     {
         return $this->belongsTo(M_barang::class, 'kdbarang', 'kdbarang');
     }
-
 }

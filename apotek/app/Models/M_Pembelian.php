@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class M_Pembelian extends Model
+class M_pembelian extends Model
 {
 
     use HasFactory;

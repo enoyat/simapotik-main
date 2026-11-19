@@ -437,6 +437,35 @@ class Pembelian extends Controller
                         'idlokasi' => $request->idlokasi[$request->checkretur[$i]],
                     ]);
                 }
+                app(ActivityLogService::class)->record(
+                    'RETUR_PEMBELIAN',
+                    'APPROVE',
+                    'Menyetujui retur pembelian',
+                    [
+                        'subject_type' => M_returpembelian::class,
+                        'subject_id' => $lastid,
+
+                        'new_values' => [
+                            'idretur' => $lastid,
+                            'idpembelian' => $request->idpembelian,
+                            'tgltrans' => $request->tgltrans,
+                            'email' => Session::get('email'),
+                            'jumlah_item' => $jml,
+                        ],
+
+                        'properties' => [
+                            'sumber' => 'APLIKASI_WEB',
+                            'jumlah_item_retur' => $jml,
+                            'idlokasi' => collect($request->checkretur)
+                                ->map(function ($index) use ($request) {
+                                    return $request->idlokasi[$index];
+                                })
+                                ->unique()
+                                ->values()
+                                ->toArray(),
+                        ],
+                    ]
+                );
                 Alert::success("retur sukses");
                 Session::put('id', $lastid);
                 DB::commit();

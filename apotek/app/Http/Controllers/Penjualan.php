@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Redirect;
 use Response;
+use App\Services\ActivityLogService;
 
 class Penjualan extends Controller
 {
@@ -223,7 +224,7 @@ class Penjualan extends Controller
         if ($kategori == "khusus") {
             return view('penjualan.invoicekhusus')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan]);
         } else {
-            return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan, 'toko'=>$toko]);
+            return view('penjualan.invoice')->with(['penjualan' => $data, 'datapenjualan' => $datapenjualan, 'toko' => $toko]);
         }
     }
 
@@ -418,6 +419,29 @@ class Penjualan extends Controller
                         'idlokasi' => 'TOKO',
                     ]);
                 }
+                app(ActivityLogService::class)->record(
+                    'RETUR_PENJUALAN',
+                    'APPROVE',
+                    'Menyetujui retur penjualan',
+                    [
+                        'subject_type' => M_returpenjualan::class,
+                        'subject_id' => $lastid,
+
+                        'new_values' => [
+                            'idretur' => $lastid,
+                            'idpenjualan' => $request->idpenjualan,
+                            'tgltrans' => $request->tgltrans,
+                            'email' => Session::get('email'),
+                            'jumlah_item' => $jml,
+                        ],
+
+                        'properties' => [
+                            'sumber' => 'APLIKASI_WEB',
+                            'jumlah_item_retur' => $jml,
+                            'idlokasi' => 'TOKO',
+                        ],
+                    ]
+                );
                 Alert::success("retur sukses");
                 Session::put('id', $lastid);
                 DB::commit();

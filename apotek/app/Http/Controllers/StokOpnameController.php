@@ -348,10 +348,12 @@ class StokOpnameController extends Controller
 
             DB::commit();
 
-            return [
-                'status' => true,
-                'message' => 'Data stok opname berhasil dihapus dan stok telah dikembalikan'
-            ];
+            // return [
+            //     'status' => true,
+            //     'message' => 'Data stok opname berhasil dihapus dan stok telah dikembalikan'
+            // ];
+            return redirect()->route('stokopname.riwayat')
+                ->with('success', 'Data stok adjustment berhasil dihapus dan stok telah dikembalikan');
         } catch (\Exception $e) {
 
             DB::rollBack();

@@ -262,6 +262,12 @@ class Penjualan extends Controller
             ->with('get_barang')->get();
         return view("penjualan.detail")->with('data', $data);
     }
+    public function formpelunasan($id)
+    {
+        $data = M_penjualan::where('id', $id)
+            ->with('get_customer')->first();
+        return view("penjualan.formpelunasan")->with('data', $data);
+    }
     public function trdetailresep($id)
     {
         $data = M_detailresep::with('get_jenispasien', 'get_poly', 'get_dokter')->where('idpenjualan', $id)->get();
@@ -482,6 +488,7 @@ class Penjualan extends Controller
             'tipepenjualan' => "T",
             'tgltrans' => Carbon::now(),
             'jam' => date("h:i"),
+            'modebayar' => $request->modebayar,
             'email' => Session::get('email')
 
 

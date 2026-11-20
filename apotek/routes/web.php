@@ -122,6 +122,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles']], function () {
             Route::get('invoice', [Penjualan::class, 'invoice'])->name('penjualan.invoice');
             Route::get('trpenjualan', [Penjualan::class, 'trpenjualan'])->name('penjualan.trpenjualan');
             Route::get('trdetail/{id}', [Penjualan::class, 'trdetail'])->name('penjualan.trdetail');
+              Route::get('formpelunasan/{id}', [Penjualan::class, 'formpelunasan'])->name('penjualan.formpelunasan');
             Route::delete('hapuspenjualan/{id}', [Penjualan::class, 'hapuspenjualan'])->name('penjualan.hapuspenjualan');
             Route::get('caribarang', [Penjualan::class, 'caribarang'])->name('penjualan.caribarang');
             Route::get('fetch', [Penjualan::class, 'fetch'])->name('penjualan.fetch');
